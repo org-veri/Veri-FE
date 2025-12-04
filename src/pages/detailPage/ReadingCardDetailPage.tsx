@@ -253,7 +253,7 @@ function ReadingCardDetailPage() {
       const minute = (`0${date.getMinutes()}`).slice(-2);
       return `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
     } catch (error) {
-      console.error('날짜 파싱 오류:', error);
+      console.error('날짜 오류:', error);
       return null;
     }
   };
