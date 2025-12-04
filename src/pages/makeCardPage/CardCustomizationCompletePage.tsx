@@ -24,7 +24,7 @@ const CardCustomizationCompletePage: React.FC = () => {
     const [saveError, setSaveError] = useState<string | null>(null);
     const [bookTitle, setBookTitle] = useState<string>('책 제목 불러오는 중...');
     const [bookDetail, setBookDetail] = useState<GetBookByIdResponse['result'] | null>(null);
-    const [savedCardId, setSavedCardId] = useState<number | null>(null);
+    const [_savedCardId, setSavedCardId] = useState<number | null>(null);
     const [toast, setToast] = useState<{
         message: string;
         type: 'success' | 'error' | 'warning' | 'info';

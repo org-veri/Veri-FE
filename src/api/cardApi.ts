@@ -440,7 +440,8 @@ export async function updateCardVisibility(cardId: number, isPublic: boolean): P
     }
     return createMockResponse({
       id: cardId,
-      isPublic: isPublic,
+      idPublic: isPublic,
+      isPublic: isPublic, // 호환성을 위해 유지
     }, '목 카드 공개 여부 수정 성공');
   }
 

@@ -37,11 +37,6 @@ const SEO = ({
 }: SEOProps) => {
   // 현재 URL 가져오기
   const currentUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
-  
-  // 기본 사이트 URL (환경변수나 설정에서 가져올 수 있음)
-  const siteUrl = typeof window !== 'undefined' 
-    ? `${window.location.protocol}//${window.location.host}` 
-    : '';
 
   return (
     <Helmet>

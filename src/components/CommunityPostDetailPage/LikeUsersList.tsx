@@ -9,10 +9,9 @@ interface LikeUser {
 
 interface LikeUsersListProps {
   users: LikeUser[];
-  onClose?: () => void;
 }
 
-function LikeUsersList({ users, onClose }: LikeUsersListProps) {
+function LikeUsersList({ users }: LikeUsersListProps) {
   if (users.length === 0) {
     return (
       <div className="like-users-list">

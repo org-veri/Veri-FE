@@ -1,5 +1,4 @@
 // src/components/CommunityPostDetailPage/PostActionToggle.tsx
-import React from 'react';
 import './PostActionToggle.css';
 
 interface PostActionToggleProps {

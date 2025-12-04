@@ -5,7 +5,6 @@ import {useNavigate} from 'react-router-dom';
 import {handleSocialLoginCallback, setAccessToken} from '../api/auth';
 import {USE_MOCK_DATA} from '../api/mock';
 import kakaoIcon from '../assets/icons/login/kakao_icon.svg';
-import naverIcon from '../assets/icons/login/naver_icon.svg';
 import './LoginPage.css';
 
 const LoginPage: React.FC = () => {
@@ -65,22 +64,6 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const handleNaverLogin = async () => {
-    if (USE_MOCK_DATA) {
-      try {
-        console.log('목업 모드: 네이버 로그인 시뮬레이션');
-        const accessToken = await handleSocialLoginCallback('naver', 'mock-code', 'mock-state');
-        setAccessToken(accessToken);
-        navigate('/');
-      } catch (error) {
-        console.error('목업 로그인 실패:', error);
-        alert(`로그인 처리 중 오류가 발생했습니다.\n\n${(error as Error).message}`);
-      }
-    } else {
-      console.log('Naver login button clicked');
-      // 실제 네이버 로그인 구현 시 여기에 추가
-    }
-  };
 
   return (
     <div className="page-container">
