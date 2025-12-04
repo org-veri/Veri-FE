@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPostDetail, deletePost, likePost, unlikePost } from '../../api/communityApi';
+import { getPostDetail, deletePost, likePost, unlikePost, publishPost, unpublishPost } from '../../api/communityApi';
 import type { PostDetail, Comment } from '../../api/communityApi';
 import { createComment, deleteComment, updateComment, createReply } from '../../api/communityCommentsApi';
 import { getCurrentUserId } from '../../api/auth';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-import DeleteConfirmationModal from '../../components/CommunityPostDetailPage/DeleteConfirmationModal';
+import DeleteConfirmationModal from '../../components/DeleteConfirmationModal';
 import CommentList from '../../components/CommunityPostDetailPage/CommentList';
 import CommentInput from '../../components/CommunityPostDetailPage/CommentInput';
+import PostActionToggle from '../../components/CommunityPostDetailPage/PostActionToggle';
+import LikeUsersList from '../../components/CommunityPostDetailPage/LikeUsersList';
 import Toast from '../../components/Toast';
 import './CommunityPostDetailPage.css';
 
@@ -35,6 +37,12 @@ function CommunityPostDetailPage() {
     type: 'info',
     isVisible: false
   });
+  const [isLikeUsersOpen, setIsLikeUsersOpen] = useState(false);
+  const [isCommentsOpen, setIsCommentsOpen] = useState(true); // 댓글은 기본적으로 열려있음
+  const [likeUsers, setLikeUsers] = useState<Array<{ id: number; nickname: string; profileImageUrl: string }>>([]);
+  const [isLoadingLikeUsers, setIsLoadingLikeUsers] = useState(false);
+  const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
+  const [isPublic, setIsPublic] = useState<boolean | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // 메뉴 외부 클릭 감지
@@ -51,17 +59,17 @@ function CommunityPostDetailPage() {
   // 댓글에 isMine 필드 추가하는 함수
   const addIsMineToComments = (comments: Comment[], currentUserId: number | null): Comment[] => {
     if (!currentUserId) return comments;
-    
+
     return comments.map(comment => {
       const commentWithIsMine: Comment = {
         ...comment,
         isMine: comment.author?.id === currentUserId
       };
-      
+
       if (comment.replies && comment.replies.length > 0) {
         commentWithIsMine.replies = addIsMineToComments(comment.replies, currentUserId);
       }
-      
+
       return commentWithIsMine;
     });
   };
@@ -78,25 +86,24 @@ function CommunityPostDetailPage() {
       try {
         setLoading(true);
         setError(null);
-        
+
         const response = await getPostDetail(parseInt(postId));
-        
+
         if (response.isSuccess && response.result) {
           const currentUserId = getCurrentUserId();
           const postData = response.result;
-          
-          // 게시글의 isMine 계산
-          const isMyPost = currentUserId !== null && postData.author.id === currentUserId;
-          
+
           // 댓글들에 isMine 추가
           const commentsWithIsMine = addIsMineToComments(postData.comments, currentUserId);
-          
+
           setPost({
             ...postData,
-            isMine: isMyPost,
             comments: commentsWithIsMine
           });
           setIsLiked(postData.isLiked);
+          // API 응답에서 isPublic 가져오기 (응답에 포함되어 있다면)
+          const responseResult = postData as any;
+          setIsPublic(responseResult.isPublic !== undefined ? responseResult.isPublic : true);
         } else {
           throw new Error(response.message || '게시글을 불러오는데 실패했습니다.');
         }
@@ -121,9 +128,9 @@ function CommunityPostDetailPage() {
 
     try {
       setIsLiking(true);
-      
+
       // 현재 좋아요 상태에 따라 API 호출
-      const response = isLiked 
+      const response = isLiked
         ? await unlikePost(parseInt(postId))
         : await likePost(parseInt(postId));
 
@@ -134,23 +141,76 @@ function CommunityPostDetailPage() {
           ...prev,
           likeCount: response.result.likeCount
         } : null);
+
+        // 좋아요를 누르면 사용자 목록 자동 표시 (좋아요 수가 0보다 클 때만)
+        if (response.result.isLiked && response.result.likeCount > 0 && !isLikeUsersOpen) {
+          setIsLikeUsersOpen(true);
+          loadLikeUsers();
+        } else if (isLikeUsersOpen) {
+          // 이미 열려있으면 새로고침
+          loadLikeUsers();
+        }
       } else {
-        setToast({ 
-          message: response.message || '좋아요 처리에 실패했습니다.', 
-          type: 'error', 
-          isVisible: true 
+        setToast({
+          message: response.message || '좋아요 처리에 실패했습니다.',
+          type: 'error',
+          isVisible: true
         });
       }
     } catch (err) {
       console.error('좋아요 처리 실패:', err);
-      setToast({ 
-        message: '좋아요 처리 중 오류가 발생했습니다.', 
-        type: 'error', 
-        isVisible: true 
+      setToast({
+        message: '좋아요 처리 중 오류가 발생했습니다.',
+        type: 'error',
+        isVisible: true
       });
     } finally {
       setIsLiking(false);
     }
+  };
+
+  const handleLikeToggle = async () => {
+    // 좋아요/취소 처리
+    if (!isLiking && post) {
+      await handleLike();
+    }
+
+    // 좋아요 사용자 목록 토글
+    if (!isLikeUsersOpen) {
+      setIsLikeUsersOpen(true);
+      loadLikeUsers();
+    } else {
+      setIsLikeUsersOpen(false);
+    }
+  };
+
+  const loadLikeUsers = async () => {
+    if (!postId || isLoadingLikeUsers) return;
+
+    try {
+      setIsLoadingLikeUsers(true);
+      // TODO: 실제 API가 추가되면 여기에 좋아요 사용자 목록을 가져오는 API 호출
+      // const response = await getLikeUsers(parseInt(postId));
+      // if (response.isSuccess && response.result) {
+      //   setLikeUsers(response.result.users);
+      // }
+
+      // 임시 모의 데이터 (실제 API가 추가되면 제거)
+      const mockUsers = Array.from({ length: post?.likeCount || 0 }, (_, i) => ({
+        id: i + 1,
+        nickname: `사용자${i + 1}`,
+        profileImageUrl: ''
+      }));
+      setLikeUsers(mockUsers);
+    } catch (err) {
+      console.error('좋아요 사용자 목록 로드 실패:', err);
+    } finally {
+      setIsLoadingLikeUsers(false);
+    }
+  };
+
+  const handleCommentToggle = () => {
+    setIsCommentsOpen(prev => !prev);
   };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
@@ -159,7 +219,7 @@ function CommunityPostDetailPage() {
 
     try {
       setSubmittingComment(true);
-      
+
       // 일반 댓글 작성
       const response = await createComment({
         postId: parseInt(postId),
@@ -172,12 +232,10 @@ function CommunityPostDetailPage() {
         if (updatedPost.isSuccess && updatedPost.result) {
           const currentUserId = getCurrentUserId();
           const postData = updatedPost.result;
-          const isMyPost = currentUserId !== null && postData.author.id === currentUserId;
           const commentsWithIsMine = addIsMineToComments(postData.comments, currentUserId);
-          
+
           setPost({
             ...postData,
-            isMine: isMyPost,
             comments: commentsWithIsMine
           });
         }
@@ -214,12 +272,10 @@ function CommunityPostDetailPage() {
         if (updatedPost.isSuccess && updatedPost.result) {
           const currentUserId = getCurrentUserId();
           const postData = updatedPost.result;
-          const isMyPost = currentUserId !== null && postData.author.id === currentUserId;
           const commentsWithIsMine = addIsMineToComments(postData.comments, currentUserId);
-          
+
           setPost({
             ...postData,
-            isMine: isMyPost,
             comments: commentsWithIsMine
           });
         }
@@ -251,12 +307,10 @@ function CommunityPostDetailPage() {
         if (updatedPost.isSuccess && updatedPost.result) {
           const currentUserId = getCurrentUserId();
           const postData = updatedPost.result;
-          const isMyPost = currentUserId !== null && postData.author.id === currentUserId;
           const commentsWithIsMine = addIsMineToComments(postData.comments, currentUserId);
-          
+
           setPost({
             ...postData,
-            isMine: isMyPost,
             comments: commentsWithIsMine
           });
         }
@@ -295,12 +349,10 @@ function CommunityPostDetailPage() {
         if (updatedPost.isSuccess && updatedPost.result) {
           const currentUserId = getCurrentUserId();
           const postData = updatedPost.result;
-          const isMyPost = currentUserId !== null && postData.author.id === currentUserId;
           const commentsWithIsMine = addIsMineToComments(postData.comments, currentUserId);
-          
+
           setPost({
             ...postData,
-            isMine: isMyPost,
             comments: commentsWithIsMine
           });
         }
@@ -349,13 +401,67 @@ function CommunityPostDetailPage() {
     }
   };
 
-  // 게시글 수정 핸들러 (추후 구현)
+  // 게시글 수정 핸들러 (미구현)
   const handleEditPost = () => {
     if (!post) return;
     setMenuOpen(false);
     setToast({ message: '게시글 수정 기능은 준비 중입니다.', type: 'info', isVisible: true });
-    // TODO: 게시글 수정 페이지로 이동
-    // navigate(`/edit-post/${post.postId}`);
+  };
+
+  // 게시글 공개/비공개 토글 핸들러
+  const handleToggleVisibility = async () => {
+    if (!post || !post.postId || isUpdatingVisibility || isProcessing) {
+      return;
+    }
+
+    // 현재 공개 상태를 명확히 확인하고 반대로 토글
+    const currentIsPublic = isPublic === true;
+    const newVisibility = !currentIsPublic;
+    
+    setIsUpdatingVisibility(true);
+
+    try {
+      const response = newVisibility 
+        ? await publishPost(post.postId)
+        : await unpublishPost(post.postId);
+      
+      if (response.isSuccess) {
+        // 공개/비공개 성공 후 상태 업데이트
+        setIsPublic(newVisibility);
+        setToast({ 
+          message: newVisibility ? '게시글이 공개되었습니다.' : '게시글이 비공개되었습니다.', 
+          type: 'success', 
+          isVisible: true 
+        });
+      } else {
+        // 에러 코드에 따른 메시지 처리
+        let errorMessage = response.message || '게시글 공개 여부 변경에 실패했습니다.';
+        if (response.code === 'C1005') {
+          errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
+        }
+        setToast({ 
+          message: errorMessage, 
+          type: 'error', 
+          isVisible: true 
+        });
+      }
+    } catch (err: any) {
+      console.error('게시글 공개 여부 변경 중 오류 발생:', err);
+      
+      // 에러 코드에 따른 메시지 처리
+      let errorMessage = err.message || '게시글 공개 여부 변경 중 오류가 발생했습니다.';
+      if (err.code === 'C1005') {
+        errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
+      }
+      
+      setToast({ 
+        message: errorMessage, 
+        type: 'error', 
+        isVisible: true 
+      });
+    } finally {
+      setIsUpdatingVisibility(false);
+    }
   };
 
   // 날짜 포맷팅 함수
@@ -371,13 +477,13 @@ function CommunityPostDetailPage() {
   // 이미지 스와이프 핸들러
   const handleImageSwipe = (direction: 'left' | 'right') => {
     if (!post?.images || post.images.length <= 1) return;
-    
+
     if (direction === 'left') {
-      setCurrentImageIndex((prev) => 
+      setCurrentImageIndex((prev) =>
         prev === post.images.length - 1 ? 0 : prev + 1
       );
     } else {
-      setCurrentImageIndex((prev) => 
+      setCurrentImageIndex((prev) =>
         prev === 0 ? post.images.length - 1 : prev - 1
       );
     }
@@ -387,20 +493,20 @@ function CommunityPostDetailPage() {
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
     if (!touch) return;
-    
+
     const startX = touch.clientX;
     const startY = touch.clientY;
-    
+
     const handleTouchEnd = (e: TouchEvent) => {
       const touch = e.changedTouches[0];
       if (!touch) return;
-      
+
       const endX = touch.clientX;
       const endY = touch.clientY;
-      
+
       const deltaX = endX - startX;
       const deltaY = endY - startY;
-      
+
       // 수직 스크롤과 구분하기 위해 수평 이동이 더 클 때만 스와이프 처리
       if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
         if (deltaX > 0) {
@@ -409,19 +515,19 @@ function CommunityPostDetailPage() {
           handleImageSwipe('left'); // 왼쪽으로 스와이프 (다음 이미지)
         }
       }
-      
+
       document.removeEventListener('touchend', handleTouchEnd);
     };
-    
+
     document.addEventListener('touchend', handleTouchEnd);
   };
 
   if (loading || isProcessing) {
     return (
       <div className="loading-page-container">
-          <div className="loading-spinner"></div>
+        <div className="loading-spinner"></div>
       </div>
-  );
+    );
   }
 
   if (error || !post) {
@@ -430,7 +536,7 @@ function CommunityPostDetailPage() {
         <div className="detail-header">
           <button className="back-button" onClick={handleBack}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
           <h1 className="header-title">오류</h1>
@@ -456,30 +562,34 @@ function CommunityPostDetailPage() {
         </button>
         <h3>{post.author.nickname} 님의 글</h3>
         <div className="header-right-wrapper">
-          {post.isMine && (
-            <>
-              <button
-                className="header-menu-button"
-                onClick={() => setMenuOpen((prev) => !prev)}
-                disabled={isProcessing}
-              >
-                <BsThreeDotsVertical size={20} color="#333" />
-              </button>
+          {(() => {
+            const currentUserId = getCurrentUserId();
+            const isMyPost = currentUserId !== null && post.author.id === currentUserId;
+            return isMyPost ? (
+              <>
+                <button
+                  className="header-menu-button"
+                  onClick={() => setMenuOpen((prev) => !prev)}
+                  disabled={isProcessing}
+                >
+                  <BsThreeDotsVertical size={20} color="#333" />
+                </button>
 
-              {menuOpen && (
-                <div className="header-dropdown-menu" ref={menuRef}>
-                  <div className="menu-item" onClick={handleEditPost}>
-                    <FiEdit2 size={16} />
-                    <span>수정하기</span>
+                {menuOpen && (
+                  <div className="header-dropdown-menu" ref={menuRef}>
+                    <div className="menu-item disabled" onClick={handleEditPost}>
+                      <FiEdit2 size={16} />
+                      <span>수정하기</span>
+                    </div>
+                    <div className="menu-item" onClick={handleDeletePost}>
+                      <FiTrash2 size={16} />
+                      <span>삭제하기</span>
+                    </div>
                   </div>
-                  <div className="menu-item" onClick={handleDeletePost}>
-                    <FiTrash2 size={16} />
-                    <span>삭제하기</span>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
+                )}
+              </>
+            ) : null;
+          })()}
         </div>
       </header>
 
@@ -490,12 +600,29 @@ function CommunityPostDetailPage() {
         <div className="main-image-container">
           {post.images && post.images.length > 0 ? (
             <>
-              <img 
-                src={post.images[currentImageIndex]} 
-                alt="게시물 이미지" 
+              <img
+                src={post.images[currentImageIndex]}
+                alt="게시물 이미지"
                 className="main-image"
                 onTouchStart={handleTouchStart}
               />
+              {(() => {
+                const currentUserId = getCurrentUserId();
+                const isMyPost = currentUserId !== null && post.author.id === currentUserId;
+                return isMyPost && isPublic !== null ? (
+                  <button 
+                    className={`post-visibility-toggle ${isPublic === true ? 'public' : 'private'}`}
+                    onClick={handleToggleVisibility}
+                    disabled={isUpdatingVisibility || isProcessing}
+                    aria-label={isPublic === true ? '공개된 게시글' : '비공개된 게시글'}
+                  >
+                    <span className={isPublic === true ? 'mgc_unlock_fill' : 'mgc_lock_fill'}></span>
+                    <span className="visibility-text">
+                      {isPublic === true ? '공개된 게시글' : '비공개된 게시글'}
+                    </span>
+                  </button>
+                ) : null;
+              })()}
             </>
           ) : (
             <div className="no-image-placeholder-detail">
@@ -508,8 +635,8 @@ function CommunityPostDetailPage() {
         {post.images && post.images.length > 1 && (
           <div className="image-dots">
             {post.images.map((_, index) => (
-              <span 
-                key={index} 
+              <span
+                key={index}
                 className={`post-detail-dot ${index === currentImageIndex ? 'active' : ''}`}
                 onClick={() => setCurrentImageIndex(index)}
               ></span>
@@ -518,76 +645,89 @@ function CommunityPostDetailPage() {
         )}
 
         {/* 프로필 및 액션 */}
-        <div className="post-info">
-          <div className="author-section">
-            <div className="author-avatar">
+        <div className="detail-post-info">
+          <div className="detail-author-section">
+            <div className="detail-author-avatar">
               <img src={post.author.profileImageUrl} alt="프로필" />
             </div>
-            <div className="author-details">
+            <div className="detail-author-details">
               <div className="author-name-detail">{post.author.nickname}</div>
-            </div>
-            <div className="post-actions">
-              <button 
-                className={`like-button ${isLiked ? 'liked' : ''}`} 
-                onClick={handleLike}
-                disabled={isLiking}
-              >
-                <span className="mgc_heart_line"></span>
-                <span>{post.likeCount}</span>
-              </button>
-              <button className="comment-button">
-                <span className="mgc_chat_3_line"></span>
-                <span>{post.commentCount}</span>
-              </button>
             </div>
           </div>
 
           {/* 게시물 내용 */}
-          <div className="post-content">
-            <p className="post-summary">{post.content}</p>
+          <div className="detail-post-content">
+            <p className="detail-post-summary">{post.content}</p>
           </div>
 
           {/* 책 정보 */}
           {post.book && (
-            <div className="book-info">
-              <img src={post.book.imageUrl} alt="책 표지" className="book-cover" />
-              <div className="book-details">
+            <div className="detail-book-info">
+              <img src={post.book.imageUrl} alt="책 표지" className="detail-book-cover" />
+              <div className="detail-book-details">
                 <div className="community-detail-book-title">{post.book.title}</div>
                 <div className="community-detail-book-author">{post.book.author}</div>
               </div>
             </div>
           )}
 
-          <div className="post-date">{formatDate(post.createdAt)}</div>
+          <div className="detail-post-footer">
+            <div className="detail-post-actions">
+              <PostActionToggle
+                type="like"
+                count={post.likeCount}
+                isActive={isLiked}
+                isOpen={isLikeUsersOpen}
+                onClick={handleLikeToggle}
+                disabled={isLiking}
+              />
+              <PostActionToggle
+                type="comment"
+                count={post.commentCount}
+                isOpen={isCommentsOpen}
+                onClick={handleCommentToggle}
+              />
+            </div>
+            <div className="detail-post-date">{formatDate(post.createdAt)}</div>
+          </div>
         </div>
 
-        {/* 댓글 섹션 */}
-        <CommentList
-          comments={post.comments}
-          editingCommentId={editingCommentId}
-          editingContent={editingContent}
-          onEditContentChange={setEditingContent}
-          onEditComment={handleEditComment}
-          onDeleteComment={handleDeleteComment}
-          onUpdateComment={handleUpdateComment}
-          onCancelEdit={handleCancelEdit}
-          formatDate={formatDate}
-          onReply={handleReply}
-          replyingToCommentId={replyingToCommentId}
-          replyContent={replyContent}
-          onReplyContentChange={setReplyContent}
-          onSubmitReply={handleSubmitReply}
-          onCancelReply={handleCancelReply}
-        />
-      </div>
+        {/* 좋아요 사용자 목록 */}
+        {isLikeUsersOpen && (
+          <LikeUsersList users={likeUsers} />
+        )}
 
-      {/* 댓글 입력 */}
-      <CommentInput
-        value={newComment}
-        onChange={setNewComment}
-        onSubmit={handleCommentSubmit}
-        isSubmitting={submittingComment}
-      />
+        {/* 댓글 섹션 */}
+        {isCommentsOpen && (
+          <CommentList
+            comments={post.comments}
+            editingCommentId={editingCommentId}
+            editingContent={editingContent}
+            onEditContentChange={setEditingContent}
+            onEditComment={handleEditComment}
+            onDeleteComment={handleDeleteComment}
+            onUpdateComment={handleUpdateComment}
+            onCancelEdit={handleCancelEdit}
+            formatDate={formatDate}
+            onReply={handleReply}
+            replyingToCommentId={replyingToCommentId}
+            replyContent={replyContent}
+            onReplyContentChange={setReplyContent}
+            onSubmitReply={handleSubmitReply}
+            onCancelReply={handleCancelReply}
+          />
+        )}
+
+        {/* 댓글 입력 */}
+        {isCommentsOpen && (
+          <CommentInput
+            value={newComment}
+            onChange={setNewComment}
+            onSubmit={handleCommentSubmit}
+            isSubmitting={submittingComment}
+          />
+        )}
+      </div>
 
       {/* Toast 알림 */}
       <Toast
@@ -603,6 +743,8 @@ function CommunityPostDetailPage() {
         onClose={() => setIsDeleteConfirmModalOpen(false)}
         onConfirm={confirmDeletePost}
         isLoading={isProcessing}
+        question="게시글을 삭제하시겠어요?"
+        info="삭제된 게시글은 복구할 수 없어요"
       />
     </div>
   );

@@ -63,7 +63,7 @@ interface TabItem {
 
 const currentTabs: TabItem[] = [
     { id: 'home', name: '홈', icon: HomeIcon, path: '/' },
-    { id: 'library', name: '서재', icon: LibraryIcon, path: '/library' },
+    { id: 'library', name: '책장', icon: LibraryIcon, path: '/library' },
     { id: 'camera', name: '', icon: () => null, path: '', isDummy: true },
     { id: 'readingCard', name: '독서카드', icon: ReadingCardIcon, path: '/reading-card' },
     { id: 'community', name: '커뮤니티', icon: CommunityIcon, path: '/community' },

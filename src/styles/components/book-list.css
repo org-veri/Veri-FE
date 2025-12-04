@@ -10,8 +10,6 @@
 
 .book-item {
   height: auto;
-  min-height: 250px;
-  max-height: 250px;
   width: auto;
   min-width: 110px;
   display: flex;
@@ -28,8 +26,8 @@
 }
 
 .book-cover-thumbnail {
-  height: 220px;
   width: 100%;
+  aspect-ratio: 1 / 1.5; /* 가로 1:세로 1.5 비율 자동 조정 */
   position: relative;
   background-color: #f0f0f0;
   border-radius: 4px;

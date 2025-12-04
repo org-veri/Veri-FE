@@ -103,6 +103,10 @@ export type CreateBookResponse = BaseApiResponse<{
 } | null>;
 export type DeleteBookResponse = BaseApiResponse<Record<string, never>>;
 export type UpdateBookStatusResponse = BaseApiResponse<Record<string, never>>;
+export type UpdateBookVisibilityResponse = BaseApiResponse<{
+  id: number;
+  idPublic: boolean;
+}>;
 export type GetMyBooksCountResponse = BaseApiResponse<number>;
 export type SearchMyBookResponse = BaseApiResponse<number>;
 
@@ -431,4 +435,55 @@ export const searchMyBook = async (
   url.searchParams.append('author', params.author);
   
   return makeApiRequest<SearchMyBookResponse>(url.pathname + url.search);
+};
+
+/**
+ * 독서 공개 여부 수정
+ * 비공개시 해당 독서에 대한 모든 독서카드도 비공개로 설정됩니다.
+ * 
+ * @param readingId - 독서 기록 ID (memberBookId)
+ * @param isPublic - 공개 여부 (true: 공개, false: 비공개)
+ * @returns 수정 결과
+ */
+export const updateBookVisibility = async (
+  readingId: number,
+  isPublic: boolean
+): Promise<UpdateBookVisibilityResponse> => {
+  if (USE_MOCK_DATA) {
+    await mockDelay();
+    const book = mockBooks.find(b => b.memberBookId === readingId);
+    if (book) {
+      // Mock 데이터에서는 isPublic 필드가 없으므로 그대로 반환
+      return createMockResponse({
+        id: readingId,
+        idPublic: isPublic,
+      }, '목 독서 공개 여부 수정 성공');
+    }
+    return createMockResponse({
+      id: readingId,
+      idPublic: isPublic,
+    }, '목 독서 공개 여부 수정 성공');
+  }
+
+  const url = new URL(`/api/v2/bookshelf/${readingId}/visibility`, BASE_URL);
+  url.searchParams.append('isPublic', String(isPublic));
+
+  try {
+    const response = await fetchWithAuth(url.toString(), {
+      method: 'PATCH',
+    });
+
+    const data: UpdateBookVisibilityResponse = await response.json();
+    if (!data.isSuccess) {
+      // 에러 객체에 code와 message를 포함하여 throw
+      const error: any = new Error(data.message || '독서 공개 여부 수정에 실패했습니다.');
+      error.code = data.code;
+      error.message = data.message;
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error('독서 공개 여부 수정 중 오류:', error);
+    throw error;
+  }
 };

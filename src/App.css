@@ -76,6 +76,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   line-height: 140%;
   transition: color 0.3s ease;
   position: relative;
+  gap: 5px;
 }
 
 .tab-item.active {

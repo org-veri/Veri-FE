@@ -8,7 +8,7 @@ import { getAllBooks, type GetAllBooksQueryParams } from '../../api/bookApi';
 import { SkeletonHeroSection } from '../../components/SkeletonUI';
 
 // 아이콘 import
-import unionIcon from '../../assets/icons/TopBar/union_fill.svg';
+import unionIcon from '../../assets/icons/TopBar/union.svg';
 import profileIcon from '../../assets/icons/TopBar/profile.svg';
 
 // 이미지 import

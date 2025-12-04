@@ -96,7 +96,7 @@
   align-items: center;
   justify-content: center;
   width: 60px;
-  height: 15px;
+  height: 20px;
   display: flex;
   padding: 5px;
   gap: 4px;
@@ -131,11 +131,11 @@
   height: 34px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 16px; /* 모바일 자동 줌인 방지를 위해 16px로 변경 */
   background-color: white;
   transition: border-color 0.2s ease;
   padding-left: 12px;
-  padding-right: 40px; /* 아이콘 공간 확보 */
+  padding-right: 40px;
 }
 
 .book-search-input:focus {

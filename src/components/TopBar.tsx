@@ -110,7 +110,7 @@ const TopBar: React.FC<TopBarProps> = ({
             onClick={handleProfileClick}
           >
             {profileImage ? (
-              <img src={profileImage} alt="프로필" className="profile-image" />
+              <img src={profileImage} alt="프로필" className="top-bar-profile-image" />
             ) : (
               <img src={profileIcon} alt="프로필" />
             )}

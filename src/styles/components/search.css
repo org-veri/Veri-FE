@@ -1,7 +1,200 @@
-/* 검색 관련 스타일 */
+/* 검색 관련 공통 스타일 */
 
-.search-input-container {
-  position: relative;
-  width: 100%;
+/* 검색 헤더 */
+.search-header {
+    display: flex;
+    align-items: center;
+    padding: 30px 20px 0px 20px;
+    background-color: #fff;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
+.header-left-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* 검색 입력 폼 */
+.search-input-form {
+    flex-grow: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    color: #999;
+    transition: opacity 0.3s ease;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 10px 10px 40px;
+    background: var(--Grey_2, #E7E9EF);
+    border-radius: 10px;
+    font-size: 16px; /* 모바일 자동 줌인 방지를 위해 16px로 변경 */
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+    color: var(--Grey_1, #9BA2B1);
+    font-family: Pretendard;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: -0.56px;
+    transition: padding-left 0.3s ease;
+}
+
+.search-input:focus {
+    border: 1px solid var(--Grey_2, #E7E9EF);
+    background: #FFF;
+    padding-left: 10px;
+}
+
+.clear-search-button {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    z-index: 10;
+    color: #999;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* 최근 검색어 섹션 */
+.recent-searches-section {
+    padding: 15px;
+    background-color: #fff;
+}
+
+.recent-search-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.search-tag {
+    display: flex;
+    align-items: center;
+    background-color: #e0e0e0;
+    border-radius: 15px;
+    padding: 5px 10px;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.search-tag span:first-child {
+    margin-right: 5px;
+}
+
+.delete-tag-button {
+    font-weight: bold;
+    cursor: pointer;
+    color: #777;
+    margin-left: 5px;
+}
+
+/* 검색 결과 영역 */
+.search-results-area {
+    padding: 15px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* 메시지 스타일 */
+.loading-message,
+.error-message,
+.no-results-message,
+.initial-message {
+    text-align: center;
+    color: #666;
+    font-size: 15px;
+    margin-top: 20px;
+}
+
+.error-message {
+    color: #d9534f;
+}
+
+/* 책 상세 정보 */
+.book-details {
+    width: 100%;
+}
+
+.book-details p {
+    margin: 0;
+    font-size: 13px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.book-title {
+    text-align: start;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: #222;
+}
+
+.book-author {
+    text-align: start;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.book-publisher {
+    color: #888;
+}
+
+/* 페이지네이션 컨트롤 */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding-bottom: 20px;
+}
+
+.pagination-controls button {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+}
+
+.pagination-controls button:disabled {
+    background-color: #f0f0f0;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.pagination-controls span {
+    font-size: 15px;
+    color: #555;
+    font-weight: bold;
+}

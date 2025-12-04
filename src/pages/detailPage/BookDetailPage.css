@@ -1,23 +1,10 @@
-/* src/pages/BookDetailPage.css */
-.book-detail-page-container {
-    width: 100%;
-    margin: 0 auto;
-    background-color: #f8f8f8;
-    min-height: 100vh;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 20px;
-    /* 하단 여백 (버튼 등을 고려) */
-    position: relative;
-    /* 자식 요소의 absolute 위치를 위해 */
-}
+/* src/pages/detailPage/BookDetailPage.css */
+/* 공통 스타일은 src/styles/components/book-detail.css에서 import됨 */
 
 .back-icon {
     width: 18px;
     height: 18px;
 }
-
 
 .white-header-left-arrow {
     background: none;
@@ -38,81 +25,9 @@
     color: #fff !important;
 }
 
-.book-detail-page-container.loading-state,
-.book-detail-page-container.error-state,
-.book-detail-page-container.no-data-state {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-size: 16px;
-    color: #666;
-}
-
-.book-info-section {
-    background-color: #fff;
-    text-align: center;
-}
-
-.book-cover-detail-container {
-    width: 100%;
-    height: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 20px;
-    background-color: #f0f0f0;
-    /* 그림자: 위쪽에 자연스러운 그림자 */
-    box-shadow: 0 -8px 15px -5px rgba(0, 0, 0, 0.3);
-    overflow: visible; /* 그림자가 잘리면 visible로 설정 */
-}
-
-.book-cover-detail {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.top-shadow-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100px; /* 원하는 그림자 높이 */
-    pointer-events: none; /* 클릭 무시 */
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.5),
-      transparent
-    );
-  }
-
+/* BookDetailPage 전용: 흰색 텍스트 */
 .book-detail-title {
-    text-align: start;
     color: var(--white, #FFF);
-    font-family: Pretendard;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    letter-spacing: -0.64px;
-    margin-inline: 20px;
-    line-height: 1.4;
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-.book-detail-author-translator {
-    text-align: start;
-    color: rgba(26, 26, 26, 0.80);
-    font-family: Pretendard;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    margin-inline: 20px;
-    margin-top: 0;
-    margin-bottom: 16;
 }
 
 .setting-sections {
@@ -307,4 +222,61 @@
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+/* 독서 기록 공개/비공개 토글 버튼 */
+.book-visibility-toggle {
+    position: absolute;
+    top: 92px; /* 헤더 높이(80px) + 여백(12px) */
+    left: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.book-visibility-toggle:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.book-visibility-toggle:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.book-visibility-toggle:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.book-visibility-toggle.public {
+    color: #666;
+}
+
+.book-visibility-toggle.private {
+    color: #666;
+}
+
+.book-visibility-toggle .mgc_unlock_fill::before,
+.book-visibility-toggle .mgc_lock_fill::before {
+    font-size: 16px;
+    color: inherit;
+}
+
+.book-visibility-toggle .visibility-text {
+    white-space: nowrap;
+    user-select: none;
 }

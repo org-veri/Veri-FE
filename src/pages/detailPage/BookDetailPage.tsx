@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './BookDetailPage.css';
-import DeleteConfirmationModal from '../../components/BookDetailPage/DeleteConfirmationModal';
+import DeleteConfirmationModal from '../../components/DeleteConfirmationModal';
 import BottomEditModal from '../../components/BottomEditModal'; // ✨ 경로 확인
 import Toast from '../../components/Toast';
 import { MdKeyboardArrowRight } from 'react-icons/md';
@@ -10,6 +10,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import {
     getBookById,
     deleteBook,
+    updateBookVisibility,
     type Book,
     type CardSummary
 } from '../../api/bookApi';
@@ -76,6 +77,8 @@ function BookDetailPage() {
     const menuRef = useRef<HTMLDivElement>(null);
     const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
+    const [isPublic, setIsPublic] = useState<boolean | null>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info'; isVisible: boolean }>({
         message: '',
         type: 'info',
@@ -115,6 +118,8 @@ function BookDetailPage() {
                     ...fetchedBook,
                     cardSummaries: response.result.cardSummaries
                 } as Book & { cardSummaries: CardSummary[] });
+                const responseResult = response.result as any;
+                setIsPublic(responseResult.isPublic !== undefined ? responseResult.isPublic : true);
             } else {
                 setError(response.message || "책 상세 정보를 가져오는데 실패했습니다.");
             }
@@ -182,6 +187,60 @@ function BookDetailPage() {
             fetchBookDetails(Number(id)); // 책 정보 업데이트 후 다시 불러오기
         }
     }, [id, fetchBookDetails]);
+
+    // 독서 공개 여부 토글 핸들러
+    const handleToggleVisibility = useCallback(async () => {
+        if (!book || !book.memberBookId || isUpdatingVisibility || isSavingChanges) {
+            return;
+        }
+
+        // 현재 공개 상태를 명확히 확인하고 반대로 토글
+        const currentIsPublic = isPublic === true;
+        const newVisibility = !currentIsPublic;
+        
+        setIsUpdatingVisibility(true);
+
+        try {
+            const response = await updateBookVisibility(book.memberBookId, newVisibility);
+            if (response.isSuccess && response.result) {
+                // API 응답의 결과로 상태 업데이트
+                const updatedIsPublic = response.result.idPublic;
+                setIsPublic(updatedIsPublic);
+                setToast({ 
+                    message: updatedIsPublic ? '독서 기록이 공개되었습니다.' : '독서 기록이 비공개되었습니다.', 
+                    type: 'success', 
+                    isVisible: true 
+                });
+            } else {
+                // 에러 코드에 따른 메시지 처리
+                let errorMessage = response.message || '독서 공개 여부 변경에 실패했습니다.';
+                if (response.code === 'C1005') {
+                    errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
+                }
+                setToast({ 
+                    message: errorMessage, 
+                    type: 'error', 
+                    isVisible: true 
+                });
+            }
+        } catch (err: any) {
+            console.error('독서 공개 여부 변경 중 오류 발생:', err);
+            
+            // 에러 코드에 따른 메시지 처리
+            let errorMessage = err.message || '독서 공개 여부 변경 중 오류가 발생했습니다.';
+            if (err.code === 'C1005') {
+                errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
+            }
+            
+            setToast({ 
+                message: errorMessage, 
+                type: 'error', 
+                isVisible: true 
+            });
+        } finally {
+            setIsUpdatingVisibility(false);
+        }
+    }, [book, isPublic, isUpdatingVisibility, isSavingChanges]);
 
 
     if (isLoading || isSavingChanges) {
@@ -255,6 +314,19 @@ function BookDetailPage() {
                         className="book-cover-detail"
                     />
                     <div className="top-shadow-overlay" />
+                    {isPublic !== null && (
+                        <button 
+                            className={`book-visibility-toggle ${isPublic ? 'public' : 'private'}`}
+                            onClick={handleToggleVisibility}
+                            disabled={isUpdatingVisibility || isSavingChanges}
+                            aria-label={isPublic ? '공개된 독서 기록' : '비공개된 독서 기록'}
+                        >
+                            <span className={isPublic ? 'mgc_unlock_fill' : 'mgc_lock_fill'}></span>
+                            <span className="visibility-text">
+                                {isPublic ? '공개된 독서 기록' : '비공개된 독서 기록'}
+                            </span>
+                        </button>
+                    )}
                 </div>
 
                 <h2 className="book-detail-title">{book.title}</h2>
@@ -295,6 +367,8 @@ function BookDetailPage() {
                 onClose={() => setIsDeleteConfirmModalOpen(false)}
                 onConfirm={confirmDeleteBook}
                 isLoading={isSavingChanges}
+                question="내 책장에서 제거하시겠어요?"
+                info="책장에서 제거된 책의 독서카드는 독서카드 페이지에 그대로 남아있어요 :)"
             />
 
             {/* ✨ BottomEditModal에 책 제목과 작가 props 추가 */}

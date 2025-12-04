@@ -156,6 +156,26 @@ export interface GetMyCardsCountResponse {
   result: number;
 }
 
+export interface UpdateCardVisibilityResponse {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: {
+    id: number;
+    idPublic: boolean; // API 응답에서 실제로 사용하는 필드명
+    memberProfileResponse?: {
+      id: number;
+      nickname: string;
+      profileImageUrl: string;
+    };
+    content?: string;
+    imageUrl?: string;
+    createdAt?: string;
+    book?: any;
+    isPublic?: boolean; // 호환성을 위해 유지
+  };
+}
+
 export async function getMyCards(params: GetMyCardsQueryParams = {}): Promise<GetMyCardsResponse> {
   if (USE_MOCK_DATA) {
     await mockDelay();
@@ -407,6 +427,42 @@ export async function updateCard(cardId: number, body: UpdateCardRequest): Promi
     return data;
   } catch (error) {
     console.error('카드 수정 중 오류:', error);
+    throw error;
+  }
+}
+
+export async function updateCardVisibility(cardId: number, isPublic: boolean): Promise<UpdateCardVisibilityResponse> {
+  if (USE_MOCK_DATA) {
+    await mockDelay();
+    const card = mockCards.find(c => c.cardId === cardId);
+    if (card) {
+      card.isPublic = isPublic;
+    }
+    return createMockResponse({
+      id: cardId,
+      isPublic: isPublic,
+    }, '목 카드 공개 여부 수정 성공');
+  }
+
+  const url = new URL(`${BASE_URL}/api/v1/cards/${cardId}/visibility`);
+  url.searchParams.append('isPublic', String(isPublic));
+
+  try {
+    const response = await fetchWithAuth(url.toString(), {
+      method: 'PATCH',
+    });
+
+    const data: UpdateCardVisibilityResponse = await response.json();
+    if (!data.isSuccess) {
+      // 에러 객체에 code와 message를 포함하여 throw
+      const error: any = new Error(data.message || '카드 공개 여부 수정에 실패했습니다.');
+      error.code = data.code;
+      error.message = data.message;
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error('카드 공개 여부 수정 중 오류:', error);
     throw error;
   }
 }

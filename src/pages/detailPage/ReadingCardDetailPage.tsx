@@ -6,9 +6,9 @@ import { FiDownload, FiShare2 } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
-import { getCardDetailById, deleteCard, type Card } from '../../api/cardApi';
+import { getCardDetailById, deleteCard, updateCardVisibility, type Card } from '../../api/cardApi';
 import ReadingCardEditModal from '../../components/ReadingCardEditModal';
-import DeleteConfirmationModal from '../../components/ReadingCardDetailPage/DeleteConfirmationModal';
+import DeleteConfirmationModal from '../../components/DeleteConfirmationModal';
 import Toast from '../../components/Toast';
 import './ReadingCardDetailPage.css';
 
@@ -24,6 +24,7 @@ function ReadingCardDetailPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] = useState(false);
+  const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info'; isVisible: boolean }>({
     message: '',
     type: 'info',
@@ -171,6 +172,67 @@ function ReadingCardDetailPage() {
     }
   };
 
+  const handleToggleVisibility = useCallback(async () => {
+    if (!cardDetail || !cardDetail.cardId || isUpdatingVisibility || isProcessing) {
+      return;
+    }
+
+    // 현재 공개 상태를 명확히 확인하고 반대로 토글
+    const currentIsPublic = cardDetail.isPublic === true;
+    const newVisibility = !currentIsPublic;
+    
+    setIsUpdatingVisibility(true);
+
+    try {
+      const response = await updateCardVisibility(cardDetail.cardId, newVisibility);
+      
+      if (response.isSuccess && response.result) {
+        // API 응답의 결과로 상태 업데이트
+        // 실제 API 응답 구조: result.idPublic (isPublic이 아님!)
+        const result = response.result as any;
+        const updatedIsPublic = result.idPublic === true || result.isPublic === true;
+        
+        setCardDetail(prev => {
+          if (!prev) return null;
+          return { ...prev, isPublic: updatedIsPublic };
+        });
+        
+        setToast({ 
+          message: updatedIsPublic ? '카드가 공개되었습니다.' : '카드가 비공개되었습니다.', 
+          type: 'success', 
+          isVisible: true 
+        });
+      } else {
+        // 에러 코드에 따른 메시지 처리
+        let errorMessage = response.message || '카드 공개 여부 변경에 실패했습니다.';
+        if (response.code === 'C1005') {
+          errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
+        }
+        setToast({ 
+          message: errorMessage, 
+          type: 'error', 
+          isVisible: true 
+        });
+      }
+    } catch (err: any) {
+      console.error('카드 공개 여부 변경 중 오류 발생:', err);
+      
+      // 에러 코드에 따른 메시지 처리
+      let errorMessage = err.message || '카드 공개 여부 변경 중 오류가 발생했습니다.';
+      if (err.code === 'C1005') {
+        errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
+      }
+      
+      setToast({ 
+        message: errorMessage, 
+        type: 'error', 
+        isVisible: true 
+      });
+    } finally {
+      setIsUpdatingVisibility(false);
+    }
+  }, [cardDetail, isProcessing]);
+
   const formatDateTime = (isoDate: string | null | undefined) => {
     if (!isoDate) {
       return null;
@@ -276,6 +338,17 @@ function ReadingCardDetailPage() {
               e.currentTarget.alt = "이미지 로드 실패";
             }}
           />
+          <button 
+            className={`card-visibility-toggle ${cardDetail.isPublic === true ? 'public' : 'private'}`}
+            onClick={handleToggleVisibility}
+            disabled={isUpdatingVisibility || isProcessing}
+            aria-label={cardDetail.isPublic === true ? '공개된 카드' : '비공개된 카드'}
+          >
+            <span className={cardDetail.isPublic === true ? 'mgc_unlock_fill' : 'mgc_lock_fill'}></span>
+            <span className="visibility-text">
+              {cardDetail.isPublic === true ? '공개된 카드' : '비공개된 카드'}
+            </span>
+          </button>
         </div>
 
         <div className="card-text-info">
@@ -328,6 +401,8 @@ function ReadingCardDetailPage() {
         onClose={() => setIsDeleteConfirmModalOpen(false)}
         onConfirm={confirmDeleteCard}
         isLoading={isProcessing}
+        question="독서카드를 삭제하시겠어요?"
+        info="삭제된 독서카드는 복구할 수 없어요"
       />
 
       {/* Toast 알림 */}

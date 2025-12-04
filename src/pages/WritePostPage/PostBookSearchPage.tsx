@@ -2,6 +2,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBackIosNew } from 'react-icons/md';
 
+import '../../styles/components/search.css';
+import '../../styles/components/book-list.css';
 import './PostBookSearchPage.css';
 import { removeAccessToken } from '../../api/auth';
 import { getAllBooks, type Book } from '../../api/bookApi';

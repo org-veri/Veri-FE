@@ -1,0 +1,51 @@
+/* PostActionToggle 스타일 */
+.post-action-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 20px;
+  padding: 5px;
+  gap: 4px;
+  border-radius: 15px;
+  border: 0.5px solid var(--border-light, #E7E9EF);
+  background: none;
+  color: var(--text-dark, #333);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.post-action-toggle:hover:not(:disabled) {
+  background-color: #eee;
+}
+
+.post-action-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.post-action-toggle.active {
+  color: #e91e63;
+}
+
+.post-action-toggle .mgc_heart_fill::before,
+.post-action-toggle .mgc_heart_line::before,
+.post-action-toggle .mgc_chat_3_line::before {
+  font-size: 15px;
+  color: inherit;
+}
+
+.post-action-toggle .mgc_up_fill::before,
+.post-action-toggle .mgc_down_fill::before {
+  font-size: 10px;
+  color: #9BA2B1;
+}
+
+.action-count {
+  font-size: 12px;
+  font-weight: 500;
+}
+

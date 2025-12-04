@@ -1,0 +1,100 @@
+/* 책 상세 페이지 공통 스타일 */
+
+/* 페이지 컨테이너 */
+.book-detail-page-container {
+    width: 100%;
+    margin: 0 auto;
+    background-color: #f8f8f8;
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 20px;
+    position: relative;
+    /* 자식 요소의 absolute 위치를 위해 */
+}
+
+/* 로딩/에러/데이터 없음 상태 */
+.book-detail-page-container.loading-state,
+.book-detail-page-container.error-state,
+.book-detail-page-container.no-data-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 16px;
+    color: #666;
+}
+
+/* 책 정보 섹션 */
+.book-info-section {
+    background-color: #fff;
+    text-align: center;
+    gap: 5px;
+}
+
+/* 책 표지 컨테이너 */
+.book-cover-detail-container {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* 1:1 비율로 고정 */
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    background-color: #f0f0f0;
+    position: relative; /* top-shadow-overlay와 visibility-toggle을 위한 relative 위치 */
+    box-shadow: 0 -8px 50px -5px rgba(0, 0, 0, 0.3),
+                inset 0 25px 120px -15px rgba(0, 0, 0, 0.8); /* 안쪽 위 박스 쉐도우 크기 및 강도 증가 */
+    overflow: visible; /* 그림자가 잘리면 visible로 설정 */
+}
+
+.book-cover-detail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.top-shadow-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px; /* 그림자 높이 더 증가 (150px → 200px) */
+    pointer-events: none; /* 클릭 무시 */
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.75),
+      transparent
+    );
+    z-index: 1; /* 이미지 위에 오버레이 표시 */
+}
+
+/* 책 제목 스타일 */
+.book-detail-title {
+    text-align: start;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.64px;
+    margin-inline: 20px;
+    line-height: 1.4;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+/* 책 작가/역자 스타일 */
+.book-detail-author-translator {
+    text-align: start;
+    color: rgba(26, 26, 26, 0.80);
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-inline: 20px;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+

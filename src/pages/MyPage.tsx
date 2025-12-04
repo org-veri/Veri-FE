@@ -183,14 +183,19 @@ const MyPage: React.FC = () => {
         </div>
       </div>
 
+      <div className="line-divider"> </div>
+
       {/* 내 게시글 목록 섹션 */}
       <div className="my-posts-section">
         <div className="my-posts-header">
+          <div className="my-posts-title-container">
           <h3 className="my-posts-title">
-            전체 독서기록 {myPosts.length}
+            전체 독서기록
           </h3>
+          <span className="my-posts-count">{myPosts.length}</span>
+          </div>
           <button className="new-record-button" onClick={handleWritePost}>
-            <span className="plus-icon">+</span>
+            <span className="mgc_add_fill"></span>
             <span>새로 기록하기</span>
           </button>
         </div>

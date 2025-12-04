@@ -187,13 +187,20 @@ export const removeAccessToken = (): void => {
 // 현재 로그인한 사용자 ID 추출
 export const getCurrentUserId = (): number | null => {
   const token = getAccessToken();
-  if (!token) return null;
+  if (!token) {
+    console.warn('[getCurrentUserId] Access token not found');
+    return null;
+  }
 
   const payload = decodeJwt(token);
-  if (!payload) return null;
+  if (!payload) {
+    console.warn('[getCurrentUserId] Failed to decode JWT payload');
+    return null;
+  }
 
-  // JWT 페이로드에서 사용자 ID 추출 (일반적인 필드명들 시도)
-  const userId = payload.sub || payload.memberId || payload.userId || payload.id;
+  // JWT 페이로드에서 사용자 ID 추출
+  // 실제 백엔드 JWT 페이로드 구조: { sub: 'veri', id: 4, email: '...', nickName: '...', ... }
+  const userId = payload.id || payload.memberId || payload.userId || payload.member_id;
 
   if (typeof userId === 'number') {
     return userId;
@@ -204,6 +211,11 @@ export const getCurrentUserId = (): number | null => {
     if (!isNaN(parsed)) {
       return parsed;
     }
+  }
+
+  // 디버깅: 어떤 필드들이 있는지 확인
+  if (import.meta.env.DEV) {
+    console.warn('[getCurrentUserId] User ID not found in payload. Available keys:', Object.keys(payload));
   }
 
   return null;

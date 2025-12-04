@@ -147,6 +147,14 @@ function CommunityPage() {
   const handleCardClick = (cardId: number) => {
     navigate(`/reading-card-detail/${cardId}`);
   };
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}.${month}.${day}`;
+  };
   
   return (
     <div className="page-container">
@@ -168,18 +176,32 @@ function CommunityPage() {
           ) : (
             <>
               <div className="community-reading-cards-grid">
-                {cards.map((card) => (
-                  <div 
-                    key={card.cardId} 
-                    className="community-reading-card-item"
-                    onClick={() => handleCardClick(card.cardId)}
-                  >
-                    <div 
-                      className="community-reading-card-image"
-                      style={{ backgroundImage: `url(${card.image})` }}
-                    />
-                  </div>
-                ))}
+                {Array.from({ length: 6 }).map((_, index) => {
+                  const card = cards[index];
+                  if (card) {
+                    return (
+                      <div 
+                        key={card.cardId} 
+                        className="community-reading-card-item"
+                        onClick={() => handleCardClick(card.cardId)}
+                      >
+                        <div 
+                          className="community-reading-card-image"
+                          style={{ backgroundImage: `url(${card.image})` }}
+                        />
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div 
+                        key={`empty-${index}`}
+                        className="community-reading-card-item community-reading-card-empty"
+                      >
+                        <div className="community-reading-card-image" />
+                      </div>
+                    );
+                  }
+                })}
               </div>
               
               <button className="more-cards-button" onClick={handleMoreCardsClick}>
@@ -240,8 +262,9 @@ function CommunityPage() {
                         <div className="author-name">
                           {post.author.nickname}
                         </div>
-                        <div className="author-book-title">
-                          {post.book?.title || '책 정보 없음'}
+                        <div className="card-book">
+                          <span className="mgc_book_6_fill"></span>
+                          <span className="community-more-book-title">{post.book?.title || '책 정보 없음'}</span>
                         </div>
                       </div>
                     </div>
@@ -284,6 +307,7 @@ function CommunityPage() {
                   
                   <div className="recommendation-content">
                     <p className="post-content">{post.content}</p>
+                    <div className="post-date">{formatDate(post.createdAt)}</div>
                   </div>
                 </div>
               );

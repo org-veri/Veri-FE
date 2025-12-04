@@ -32,7 +32,7 @@ const ReadingCardGridItem: React.FC<ReadingCardItemType> = ({ id, title, thumbna
                 />
                 {!isPublic && (
                     <div className="private-badge">
-                        <span className="mgc_unlock_fill"></span>
+                        <span className="mgc_lock_fill"></span>
                     </div>
                 )}
             </div>

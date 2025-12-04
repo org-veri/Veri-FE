@@ -29,7 +29,7 @@
   padding: 12px 55px 12px 15px;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 16px; /* 모바일 자동 줌인 방지를 위해 16px로 변경 */
   outline: none;
   background-color: #f8f9fa;
 }

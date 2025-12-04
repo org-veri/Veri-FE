@@ -227,15 +227,11 @@ const CardCustomizationCompletePage: React.FC = () => {
                 <button 
                     className="header-left-arrow" 
                     onClick={() => {
-                        if (savedCardId) {
-                            navigate(`/reading-card-detail/${savedCardId}`);
-                        } else {
-                            navigate(-1);
-                        }
+                        navigate(`/reading-card`)
                     }}
                 >
                 <span
-                        className="mgc_left_fill"
+                        className="mgc_close_line"
                     ></span>
                 </button>
                 <h3>나의 독서카드</h3>

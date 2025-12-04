@@ -22,7 +22,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .header-icons button {
@@ -64,8 +64,8 @@
 }
 
 .my-page-button {
-  width: 22px !important;
-  height: 22px !important;
+  width: 24px !important;
+  height: 24px !important;
   border-radius: 50% !important;
   overflow: hidden;
   padding: 0 !important;
@@ -77,15 +77,15 @@
   object-fit: cover;
 }
 
-.profile-image {
+.top-bar-profile-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 .color-notificationl-icon {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border: none;
   background: none;
   cursor: pointer;

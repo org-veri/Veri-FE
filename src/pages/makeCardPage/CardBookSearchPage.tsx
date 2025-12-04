@@ -4,6 +4,8 @@ import { MdArrowBackIosNew } from 'react-icons/md';
 import { FiSearch } from 'react-icons/fi';
 import { AiOutlineClose } from 'react-icons/ai';
 
+import '../../styles/components/search.css';
+import '../../styles/components/book-list.css';
 import './CardBookSearchPage.css';
 import type { BookItem, BookSearchResponseResult } from '../../api/bookSearchApi';
 import { searchBooks } from '../../api/bookSearchApi';

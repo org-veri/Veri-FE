@@ -124,6 +124,8 @@ export type GetCardsResponse = BaseApiResponse<CardListResponse>;
 export type CreatePostResponse = BaseApiResponse<number>;
 export type DeletePostResponse = BaseApiResponse<Record<string, never>>;
 export type LikePostResponse = BaseApiResponse<LikeResponse>;
+export type PublishPostResponse = BaseApiResponse<Record<string, never>>;
+export type UnpublishPostResponse = BaseApiResponse<Record<string, never>>;
 
 // 쿼리 파라미터 타입들
 export interface GetPostFeedQueryParams {
@@ -530,6 +532,37 @@ export const createPost = async (
 };
 
 /**
+ * 게시글 수정
+ * 게시글을 수정합니다.
+ * 
+ * @param postId - 수정할 게시글 ID
+ * @param postData - 게시글 수정 데이터 (title, content, images)
+ * @returns 수정 결과
+ */
+export interface UpdatePostRequest {
+  title: string;
+  content: string;
+  images: string[];
+}
+
+export interface UpdatePostResponse extends BaseApiResponse<{}> {}
+
+export const updatePost = async (
+  postId: number,
+  postData: UpdatePostRequest
+): Promise<UpdatePostResponse> => {
+  if (USE_MOCK_DATA) {
+    await mockDelay();
+    return createMockResponse({}, '목 게시글 수정 성공');
+  }
+
+  return makeApiRequest<UpdatePostResponse>(`/api/v1/posts/${postId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(postData),
+  });
+};
+
+/**
  * 게시글 삭제
  * 게시글을 삭제합니다.
  * 
@@ -593,6 +626,46 @@ export const unlikePost = async (
   }
 
   return makeApiRequest<LikePostResponse>(`/api/v1/posts/unlike/${postId}`, {
+    method: 'POST',
+  });
+};
+
+/**
+ * 게시글 공개
+ * 게시글을 공개합니다.
+ * 
+ * @param postId - 공개할 게시글 ID
+ * @returns 공개 결과
+ */
+export const publishPost = async (
+  postId: number
+): Promise<PublishPostResponse> => {
+  if (USE_MOCK_DATA) {
+    await mockDelay();
+    return createMockResponse({}, '목 게시글 공개 성공');
+  }
+
+  return makeApiRequest<PublishPostResponse>(`/api/v1/posts/${postId}/publish`, {
+    method: 'POST',
+  });
+};
+
+/**
+ * 게시글 비공개
+ * 게시글을 비공개합니다.
+ * 
+ * @param postId - 비공개할 게시글 ID
+ * @returns 비공개 결과
+ */
+export const unpublishPost = async (
+  postId: number
+): Promise<UnpublishPostResponse> => {
+  if (USE_MOCK_DATA) {
+    await mockDelay();
+    return createMockResponse({}, '목 게시글 비공개 성공');
+  }
+
+  return makeApiRequest<UnpublishPostResponse>(`/api/v1/posts/${postId}/unpublish`, {
     method: 'POST',
   });
 };

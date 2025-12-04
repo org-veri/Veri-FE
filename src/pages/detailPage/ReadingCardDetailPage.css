@@ -35,6 +35,7 @@
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+    position: relative;
 }
 
 .card-main-image {
@@ -55,8 +56,8 @@
     justify-content: left;
 
     font-size: 1.1em;
-    font-weight: bold;
-    color: #555;
+    font-weight: 400;
+    color: #DBDFE4;
     margin-bottom: 8px;
 
     border: none;
@@ -73,7 +74,7 @@
 
     font-size: 14px;
     font-weight: 500;
-    color: #555;
+    color: #DBDFE4;
     margin-bottom: 8px;
 
     border: none;
@@ -94,7 +95,7 @@
 
 .card-upload-date {
     font-size: 14px;
-    color: #888;
+    color: #DBDFE4;
     text-align: left;
     font-weight: 400;
     margin-top: 20px;
@@ -104,7 +105,7 @@
 /* 날짜가 없을 때의 스타일 */
 .card-upload-date:empty::before {
     content: '일자가 없습니다';
-    color: #999;
+    color: #DBDFE4;
     font-style: italic;
 }
 
@@ -171,4 +172,61 @@
 
 .share-button-revised:hover {
     background-color: #00b066;
+}
+
+/* 카드 공개/비공개 토글 버튼 */
+.card-visibility-toggle {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-visibility-toggle:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.card-visibility-toggle:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.card-visibility-toggle:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.card-visibility-toggle.public {
+    color: #666;
+}
+
+.card-visibility-toggle.private {
+    color: #666;
+}
+
+.card-visibility-toggle .mgc_unlock_fill::before,
+.card-visibility-toggle .mgc_lock_fill::before {
+    font-size: 16px;
+    color: inherit;
+}
+
+.visibility-text {
+    white-space: nowrap;
+    user-select: none;
 }

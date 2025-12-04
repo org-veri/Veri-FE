@@ -95,10 +95,10 @@ const LoginPage: React.FC = () => {
             <span className="kakao-social-text">카카오 로그인</span>
           </button>
 
-          <button className="social-login-button naver" onClick={handleNaverLogin}>
+          {/* <button className="social-login-button naver" onClick={handleNaverLogin}>
             <img src={naverIcon} alt="naver-logo" className="naver-social-icon" />
             <span className="naver-social-text">네이버 로그인</span>
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

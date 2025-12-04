@@ -10,6 +10,7 @@
 @import './styles/components/buttons.css';
 @import './styles/components/tabs.css';
 @import './styles/components/book-list.css';
+@import './styles/components/book-detail.css';
 @import './styles/components/selection-area.css';
 @import './styles/components/sort.css';
 @import './styles/components/search.css';

@@ -41,7 +41,7 @@
     z-index: 1;
 }
 
-.private-badge .mgc_unlock_fill::before {
+.private-badge .mgc_lock_fill::before {
     color: #ffffff !important;
     font-size: 20px;
     filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.8));

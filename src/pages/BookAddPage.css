@@ -1,60 +1,10 @@
-/* src/pages/BookDetailPage.css */
-.book-detail-page-container {
-    width: 100%;
-    margin: 0 auto;
-    background-color: #f8f8f8;
-    min-height: 100vh;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 20px;
-    position: relative;
-    /* 자식 요소의 absolute 위치를 위해 */
-}
+/* src/pages/BookAddPage.css */
+/* 공통 스타일은 src/styles/components/book-detail.css에서 import됨 */
 
-.book-detail-page-container.loading-state,
-.book-detail-page-container.error-state,
-.book-detail-page-container.no-data-state {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-size: 16px;
-    color: #666;
-}
-
-.book-info-section {
-    background-color: #fff;
-    text-align: center;
-    /* 전체 섹션 중앙 정렬 */
-}
-
+/* BookAddPage 전용: 검은색 텍스트, 20px */
 .book-detail-title {
-    text-align: start;
     color: var(--Black, #1A1A1A);
-    font-family: Pretendard;
     font-size: 20px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    margin-inline: 20px;
-    line-height: 1.4;
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-.book-detail-author-translator {
-    text-align: start;
-    color: rgba(26, 26, 26, 0.80);
-    font-family: Pretendard;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    margin-inline: 20px;
-    margin-top: 0;
-    margin-bottom: 16px;
-    /* 16으로 되어 있어 px 추가 */
 }
 
 .book-info-detail-container {
@@ -62,7 +12,7 @@
     flex-direction: column;
     align-items: start;
     margin: 20px;
-    gap: 10px;
+    gap: 5px;
 }
 
 .book-title-display {
