@@ -105,6 +105,14 @@ function MyCommunityPostDetailPage() {
           // API 응답에서 isPublic 가져오기 (응답에 포함되어 있다면)
           const responseResult = postData as any;
           setIsPublic(responseResult.isPublic !== undefined ? responseResult.isPublic : true);
+          // likedMembers가 있으면 바로 설정
+          if (postData.likedMembers && postData.likedMembers.length > 0) {
+            setLikeUsers(postData.likedMembers.map(member => ({
+              id: member.id,
+              nickname: member.nickname,
+              profileImageUrl: member.profileImageUrl
+            })));
+          }
         } else {
           throw new Error(response.message || '게시글을 불러오는데 실패했습니다.');
         }
@@ -140,19 +148,30 @@ function MyCommunityPostDetailPage() {
 
     try {
       setIsLoadingLikeUsers(true);
-      // TODO: 실제 API가 추가되면 여기에 좋아요 사용자 목록을 가져오는 API 호출
-      // const response = await getLikeUsers(parseInt(postId));
-      // if (response.isSuccess && response.result) {
-      //   setLikeUsers(response.result.users);
-      // }
-
-      // 임시 모의 데이터 (실제 API가 추가되면 제거)
-      const mockUsers = Array.from({ length: post?.likeCount || 0 }, (_, i) => ({
-        id: i + 1,
-        nickname: `사용자${i + 1}`,
-        profileImageUrl: ''
-      }));
-      setLikeUsers(mockUsers);
+      
+      // post에 likedMembers가 있으면 사용, 없으면 API에서 다시 가져오기
+      if (post?.likedMembers && post.likedMembers.length > 0) {
+        setLikeUsers(post.likedMembers.map(member => ({
+          id: member.id,
+          nickname: member.nickname,
+          profileImageUrl: member.profileImageUrl
+        })));
+      } else {
+        // likedMembers가 없으면 게시글 다시 로드
+        const response = await getPostDetail(parseInt(postId));
+        if (response.isSuccess && response.result) {
+          const postData = response.result;
+          if (postData.likedMembers && postData.likedMembers.length > 0) {
+            setLikeUsers(postData.likedMembers.map(member => ({
+              id: member.id,
+              nickname: member.nickname,
+              profileImageUrl: member.profileImageUrl
+            })));
+          } else {
+            setLikeUsers([]);
+          }
+        }
+      }
     } catch (err) {
       console.error('좋아요 사용자 목록 로드 실패:', err);
     } finally {
@@ -195,6 +214,14 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
+          // likedMembers 업데이트
+          if (postData.likedMembers && postData.likedMembers.length > 0) {
+            setLikeUsers(postData.likedMembers.map(member => ({
+              id: member.id,
+              nickname: member.nickname,
+              profileImageUrl: member.profileImageUrl
+            })));
+          }
         }
       } else {
         setToast({ message: response.message || '댓글 작성에 실패했습니다.', type: 'error', isVisible: true });
@@ -235,6 +262,14 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
+          // likedMembers 업데이트
+          if (postData.likedMembers && postData.likedMembers.length > 0) {
+            setLikeUsers(postData.likedMembers.map(member => ({
+              id: member.id,
+              nickname: member.nickname,
+              profileImageUrl: member.profileImageUrl
+            })));
+          }
         }
       } else {
         setToast({ message: response.message || '답글 작성에 실패했습니다.', type: 'error', isVisible: true });
@@ -270,6 +305,14 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
+          // likedMembers 업데이트
+          if (postData.likedMembers && postData.likedMembers.length > 0) {
+            setLikeUsers(postData.likedMembers.map(member => ({
+              id: member.id,
+              nickname: member.nickname,
+              profileImageUrl: member.profileImageUrl
+            })));
+          }
         }
       } else {
         setToast({ message: response.message || '댓글 삭제에 실패했습니다.', type: 'error', isVisible: true });
@@ -312,6 +355,14 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
+          // likedMembers 업데이트
+          if (postData.likedMembers && postData.likedMembers.length > 0) {
+            setLikeUsers(postData.likedMembers.map(member => ({
+              id: member.id,
+              nickname: member.nickname,
+              profileImageUrl: member.profileImageUrl
+            })));
+          }
         }
       } else {
         setToast({ message: response.message || '댓글 수정에 실패했습니다.', type: 'error', isVisible: true });

@@ -59,6 +59,7 @@ export interface PostDetail {
   book?: BookInfo;
   likeCount: number;
   isLiked: boolean;
+  likedMembers?: AuthorInfo[]; // 좋아요를 누른 사용자 목록
   comments: Comment[];
   commentCount: number;
   createdAt: string;
