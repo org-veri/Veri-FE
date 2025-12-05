@@ -16,6 +16,7 @@ import LibraryPage from './pages/mainPage/LibraryPage';
 import BookDetailPage from './pages/detailPage/BookDetailPage';
 import ReadingCardDetailPage from './pages/detailPage/ReadingCardDetailPage';
 import CommunityPostDetailPage from './pages/detailPage/CommunityPostDetailPage';
+import MyCommunityPostDetailPage from './pages/MyCommunityPostDetailPage';
 import LoginPage from './pages/LoginPage';
 import MakeCardPage from './pages/makeCardPage/MakeCardPage';
 import TextExtractionLoadingPage from './pages/makeCardPage/TextExtractionLoadingPage';
@@ -87,6 +88,7 @@ function App() {
         <Route path="/book-detail/:id" element={<BookDetailPage />} />
         <Route path="/reading-card-detail/:id" element={<ReadingCardDetailPage />} />
         <Route path="/community/post/:postId" element={<CommunityPostDetailPage />} />
+        <Route path="/my-community/post/:postId" element={<MyCommunityPostDetailPage />} />
         <Route path="/make-card" element={<MakeCardPage />} />
         <Route path="/text-extraction-loading" element={<TextExtractionLoadingPage />} />
         <Route path="/text-extraction-result" element={<TextExtractionResultPage />} />

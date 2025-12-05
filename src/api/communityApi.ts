@@ -34,6 +34,7 @@ export interface Post {
   commentCount: number;
   createdAt: string;
   isPublic: boolean;
+  isLiked?: boolean; // 좋아요 여부
 }
 
 // 댓글 타입

@@ -94,14 +94,6 @@ const MyPage: React.FC = () => {
     console.log('프로필 상세 페이지로 이동');
   };
 
-  // const handleNoticeClick = () => {
-  //   console.log('공지사항 페이지로 이동');
-  // };
-
-  // const handleEventClick = () => {
-  //   console.log('이벤트 페이지로 이동');
-  // };
-
   const goToEditMyName = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigate('/edit-my-name');
@@ -112,7 +104,7 @@ const MyPage: React.FC = () => {
   };
 
   const handlePostClick = (postId: number) => {
-    navigate(`/community/post/${postId}`);
+    navigate(`/my-community/post/${postId}`);
   };
 
   const formatDate = (dateString: string): string => {

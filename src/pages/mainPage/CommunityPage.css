@@ -146,7 +146,7 @@
 .recommendations-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 .recommendation-item {
@@ -275,6 +275,15 @@
 
 .action-button:hover {
   color: #333;
+}
+
+.action-button.liked {
+  color: #e53e3e;
+}
+
+.action-button.liked .mgc_heart_fill::before,
+.action-button.liked .mgc_heart_fill {
+  color: #e53e3e !important;
 }
 
 .heart-icon,

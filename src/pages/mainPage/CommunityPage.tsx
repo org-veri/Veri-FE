@@ -283,13 +283,13 @@ function CommunityPage() {
                   <div className="recommendation-actions">
                     <div className="action-buttons">
                       <button 
-                        className="action-button"
+                        className={`action-button ${post.isLiked ? 'liked' : ''}`}
                         onClick={(e) => {
                           e.stopPropagation();
                           // TODO: 좋아요 API 호출
                         }}
                       >
-                        <span className="mgc_heart_line"></span>
+                        <span className={post.isLiked ? 'mgc_heart_fill' : 'mgc_heart_line'}></span>
                         <span>{post.likeCount}</span>
                       </button>
                       <button 
