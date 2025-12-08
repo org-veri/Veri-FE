@@ -22,12 +22,8 @@ const LoginPage: React.FC = () => {
       const containerRect = buttonsContainerRef.current.getBoundingClientRect();
       const containerHeight = containerRect.height;
       const containerTop = containerRect.top;
-
-      // 버튼 컨테이너가 화면 하단에서 얼마나 떨어져 있는지 계산
       const distanceFromBottom = viewportHeight - (containerTop + containerHeight);
-
-      // 최소 여백을 보장하면서 버튼이 잘리지 않도록 조정
-      const minSafeMargin = 20; // 최소 안전 여백
+      const minSafeMargin = 20;
       const desiredPadding = Math.max(minSafeMargin, distanceFromBottom + minSafeMargin);
 
       setBottomPadding(desiredPadding);
