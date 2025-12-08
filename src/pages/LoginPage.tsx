@@ -5,6 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import {handleSocialLoginCallback, setAccessToken} from '../api/auth';
 import {USE_MOCK_DATA} from '../api/mock';
 import kakaoIcon from '../assets/icons/login/kakao_icon.svg';
+import veriLogo from '../assets/icons/union.svg';
 import './LoginPage.css';
 
 const LoginPage: React.FC = () => {
@@ -68,6 +69,10 @@ const LoginPage: React.FC = () => {
   return (
     <div className="page-container">
       <div className="login-content-wrapper">
+        <div className="login-logo-container">
+          <p className="login-tagline">나만의 문장을 수확하다,</p>
+          <img src={veriLogo} alt="VERi Logo" className="login-logo" />
+        </div>
         <div 
           className="login-buttons-container"
           ref={buttonsContainerRef}

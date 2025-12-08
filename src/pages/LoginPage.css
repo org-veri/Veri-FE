@@ -3,12 +3,38 @@
 .login-content-wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
     height: 100vh;
     overflow: hidden;
     box-sizing: border-box;
+    padding: 60px 0;
+}
+
+.login-logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.login-tagline {
+    color: #0C0F14;
+    font-family: "Pretendard", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 150%;
+    margin: 0;
+    opacity: 0.8;
+}
+
+.login-logo {
+    width: 170px;
+    height: auto;
 }
 
 .login-buttons-container {
