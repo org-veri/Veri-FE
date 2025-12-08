@@ -1,0 +1,65 @@
+/* 폰트 파일 로드 - 실제 폰트 파일이 있는 것만 */
+@font-face {
+    font-family: 'Noto Sans KR';
+    src: url('../assets/fonts/NotoSansKR.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    src: url('../assets/fonts/PretendardVariable.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Nanum Pen Script';
+    src: url('../assets/fonts/NanumPen.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Gungsuh';
+    src: url('../assets/fonts/ChosunGs.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Nanum Gothic';
+    src: url('../assets/fonts/NanumSquareR.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cafe24 Ssurround';
+    src: url('../assets/fonts/GmarketSansTTFMedium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Galmuri';
+    src: url('../assets/fonts/Galmuri9.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Jalnan';
+    src: url('../assets/fonts/Jalnan2TTF.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+

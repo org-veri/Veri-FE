@@ -1,6 +1,9 @@
 /* src/index.css */
 @import 'mingcute_icon/font/Mingcute.css';
 
+/* 폰트 로드 */
+@import './styles/fonts.css';
+
 /* 공통 스타일 import */
 @import './styles/variables.css';
 @import './styles/base.css';

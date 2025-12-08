@@ -104,33 +104,21 @@ const CardCustomizationPage: React.FC = () => {
     };
 
 
-    // 폰트 카테고리별 데이터
-    const fontCategories = {
-        'myeongjo': [
-            { label: 'Noto', value: '"Noto Serif KR", serif', id: 'noto-serif' },
-            { label: '궁서체', value: '"Gungsuh", serif', id: 'gungsuh' },
-            { label: '바탕체', value: '"Batang", serif', id: 'batang' },
-            { label: '함초롱', value: '"Nanum Myeongjo", serif', id: 'nanum-myeongjo' },
-            { label: '본명조', value: '"Noto Serif KR", serif', id: 'bon-myeongjo' },
-        ],
-        'gothic': [
-            { label: 'Pretendard', value: 'Pretendard, sans-serif', id: 'pretendard' },
-            { label: '나눔고딕', value: '"Nanum Gothic", sans-serif', id: 'nanum-gothic' },
-            { label: '노토산스', value: '"Noto Sans KR", sans-serif', id: 'noto-sans' },
-            { label: '맑은고딕', value: '"Malgun Gothic", sans-serif', id: 'malgun-gothic' },
-            { label: '돋움', value: 'Dotum, sans-serif', id: 'dotum' },
-        ],
-        'handwriting': [
-            { label: '나눔펜', value: '"Nanum Pen Script", cursive', id: 'nanum-pen' },
-            { label: '나눔손글씨', value: '"Nanum Brush Script", cursive', id: 'nanum-brush' },
-            { label: 'KyoboHand', value: '"KyoboHand", cursive', id: 'kyobo-hand' },
-            { label: 'Cafe24', value: '"Cafe24 Ssurround", cursive', id: 'cafe24' },
-        ],
-    };
+    // 폰트 목록 - fonts 폴더의 모든 폰트
+    const fonts = [
+        { label: 'Pretendard', value: 'Pretendard, sans-serif', id: 'pretendard' },
+        { label: 'Noto Sans KR', value: '"Noto Sans KR", sans-serif', id: 'noto-sans' },
+        { label: 'Nanum Gothic', value: '"Nanum Gothic", sans-serif', id: 'nanum-gothic' },
+        { label: 'Nanum Pen Script', value: '"Nanum Pen Script", cursive', id: 'nanum-pen' },
+        { label: 'Gungsuh', value: '"Gungsuh", serif', id: 'gungsuh' },
+        { label: 'Cafe24 Ssurround', value: '"Cafe24 Ssurround", sans-serif', id: 'cafe24' },
+        { label: 'Galmuri', value: 'Galmuri, sans-serif', id: 'galmuri' },
+        { label: 'Jalnan', value: 'Jalnan, sans-serif', id: 'jalnan' },
+    ];
 
     const [selectedBackgroundCategory, setSelectedBackgroundCategory] = useState<'my-photo' | 'pattern' | 'landscape' | 'book' | 'cafe'>('my-photo');
     const [selectedBackground, setSelectedBackground] = useState<'uploaded' | string>('uploaded');
-    const [selectedFontId, setSelectedFontId] = useState<string>(fontCategories.myeongjo[0]?.id || 'noto-serif');
+    const [selectedFontId, setSelectedFontId] = useState<string>(fonts[0]?.id || 'pretendard');
     
     // 효과 관련 상태
     const [selectedEffect, setSelectedEffect] = useState<'none' | 'blur' | 'darkness'>('none');
@@ -294,12 +282,7 @@ const CardCustomizationPage: React.FC = () => {
     };
 
     const getSelectedFontValue = () => {
-        const allFonts = [
-            ...fontCategories.myeongjo,
-            ...fontCategories.gothic,
-            ...fontCategories.handwriting,
-        ];
-        const selectedFont = allFonts.find(font => font.id === selectedFontId);
+        const selectedFont = fonts.find(font => font.id === selectedFontId);
         return selectedFont?.value || 'inherit';
     };
 
@@ -636,11 +619,7 @@ const CardCustomizationPage: React.FC = () => {
                             <div className="category-tabs"></div>
                             <div className="options-scroll">
                                 <div className="option-icons">
-                                    {[
-                                        ...fontCategories.myeongjo,
-                                        ...fontCategories.gothic,
-                                        ...fontCategories.handwriting,
-                                    ].map((font) => (
+                                    {fonts.map((font) => (
                                         <div key={font.id}>
                                             <div
                                                 className={`option ${selectedFontId === font.id ? 'active' : ''}`}
