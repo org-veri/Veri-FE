@@ -107,9 +107,7 @@ const CardCustomizationPage: React.FC = () => {
     // 폰트 목록 - fonts 폴더의 모든 폰트
     const fonts = [
         { label: 'Pretendard', value: 'Pretendard, sans-serif', id: 'pretendard' },
-        { label: 'Noto Sans KR', value: '"Noto Sans KR", sans-serif', id: 'noto-sans' },
         { label: 'Nanum Gothic', value: '"Nanum Gothic", sans-serif', id: 'nanum-gothic' },
-        { label: 'Nanum Pen Script', value: '"Nanum Pen Script", cursive', id: 'nanum-pen' },
         { label: 'Gungsuh', value: '"Gungsuh", serif', id: 'gungsuh' },
         { label: 'Cafe24 Ssurround', value: '"Cafe24 Ssurround", sans-serif', id: 'cafe24' },
         { label: 'Galmuri', value: 'Galmuri, sans-serif', id: 'galmuri' },
