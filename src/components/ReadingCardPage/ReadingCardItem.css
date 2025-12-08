@@ -64,7 +64,7 @@
 .card-book-info {
     display: flex;
     flex-direction: row;
-    gap: 8px;
+    gap: 4px;
     align-items: center;
     min-width: 0; /* flex 아이템이 줄어들 수 있도록 */
 }
@@ -88,8 +88,7 @@
     line-clamp: 1;
     font-size: 15px;
     text-align: left;
-    margin-top: 0px;
-    margin-bottom: 4px;
+    margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
