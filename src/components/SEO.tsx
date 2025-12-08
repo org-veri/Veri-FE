@@ -22,7 +22,7 @@ interface SEOProps {
 const SEO = ({
   title = '나만의 문장을 수확하다, Veri',
   description = '책 속 문장을 기록하고 나만의 읽기 기록을 만들어보세요',
-  image = 'https://3-veri-s3-bucket.s3.ap-northeast-2.amazonaws.com/assets/union_fill.svg',
+  image = 'https://3-veri-s3-bucket.s3.ap-northeast-2.amazonaws.com/assets/union.png',
   url,
   type = 'website',
   siteName = 'Veri',
