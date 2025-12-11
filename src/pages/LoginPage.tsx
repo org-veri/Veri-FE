@@ -92,6 +92,7 @@ const LoginPage: React.FC = () => {
         <div 
           className="login-buttons-container"
           ref={buttonsContainerRef}
+          style={{ paddingBottom: `${bottomPadding}px` }}
         >
           <button className="social-login-button kakao" onClick={handleKakaoLogin}>
             <img src={kakaoIcon} alt="kakao-logo" className="kakao-social-icon" />
