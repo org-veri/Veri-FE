@@ -316,7 +316,7 @@ function CommunityPage() {
               {/* 로딩 인디케이터 */}
               {loadingMore && (
                 <div className="loading-more">
-                  <p>더 많은 게시글을 불러오는 중...</p>
+                  <p className="loading-message">더 많은 게시글을 불러오는 중...</p>
                 </div>
               )}
               

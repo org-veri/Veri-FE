@@ -79,6 +79,11 @@ export interface GetCardDetailByIdResponse {
   message: string;
   result: {
     id: number;
+    memberProfileResponse?: {
+      id: number;
+      nickname: string;
+      profileImageUrl: string;
+    };
     content: string;
     imageUrl: string;
     createdAt: string;

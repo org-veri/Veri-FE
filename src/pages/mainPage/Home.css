@@ -191,7 +191,7 @@ section {
     text-align: center;
     color: #777;
     margin: 20px 0;
-    font-size: 14px;
+    font-size: 8px;
     min-height: 100px; /* 메시지 영역 최소 높이 */
     display: flex;
     align-items: center;

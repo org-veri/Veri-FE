@@ -117,13 +117,65 @@ const makeApiRequest = async (endpoint: string, options: RequestInit = {}): Prom
   }
 };
 
+// 토큰 재발급 응답 타입
+interface ReissueResponse {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: {
+    accessToken: string;
+  };
+}
+
+const handleReissueResponse = async (response: Response): Promise<ReissueResponse> => {
+  if (!response.ok) {
+    let errorData: ApiError = {};
+    try {
+      errorData = await response.json();
+    } catch {
+      // JSON 파싱 실패 시 무시
+    }
+    throw new Error(errorData.message || `HTTP ${response.status} 오류`);
+  }
+
+  const data: ReissueResponse = await response.json();
+
+  if (!data.isSuccess || !data.result?.accessToken) {
+    throw new Error('유효하지 않은 응답: 액세스 토큰이 없습니다.');
+  }
+
+  return data;
+};
+
 // 공개 API 함수들
-export const handleSocialLoginCallback = async (provider: string, code: string, state: string): Promise<string> => {
+export const handleSocialLoginCallback = async (provider: string, code: string, state: string): Promise<{ accessToken: string; refreshToken: string }> => {
   if (USE_MOCK_DATA) {
     await mockDelay();
-    return mockTokens.accessToken;
+    return {
+      accessToken: mockTokens.accessToken,
+      refreshToken: mockTokens.refreshToken
+    };
   }
-  return makeApiRequest(`/api/v1/oauth2/${provider}?code=${code}&state=${state}`);
+
+  try {
+    const response = await fetch(`${BASE_URL}/api/v1/oauth2/${provider}?code=${code}&state=${state}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
+    });
+
+    const data = await handleApiResponse(response);
+    return {
+      accessToken: data.result.accessToken,
+      refreshToken: data.result.refreshToken
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
+    console.error('소셜 로그인 콜백 처리 실패:', errorMessage);
+    throw error;
+  }
 };
 
 export const fetchTestToken = async (): Promise<string> => {
@@ -143,6 +195,7 @@ export const getAccessToken = (): string | null => {
     if (!token) {
       // 목업 토큰이 없으면 기본 목업 토큰 설정
       setAccessToken(mockTokens.accessToken);
+      setRefreshToken(mockTokens.refreshToken);
       return mockTokens.accessToken;
     }
     return token;
@@ -155,7 +208,55 @@ export const getAccessToken = (): string | null => {
     if (isTokenExpired(token)) {
       console.warn('액세스 토큰이 만료되었습니다.');
       removeAccessToken();
-      throw new Error('TOKEN_EXPIRED');
+      return null;
+    }
+
+    return token;
+  } catch (error) {
+    console.error('토큰 검증 중 오류:', error);
+    removeAccessToken();
+    return null;
+  }
+};
+
+// 자동 재발급을 지원하는 비동기 버전
+export const getAccessTokenAsync = async (autoReissue: boolean = true): Promise<string | null> => {
+  if (typeof window === 'undefined') return null;
+
+  // 목업 모드에서는 기본 토큰 반환
+  if (USE_MOCK_DATA) {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      setAccessToken(mockTokens.accessToken);
+      setRefreshToken(mockTokens.refreshToken);
+      return mockTokens.accessToken;
+    }
+    return token;
+  }
+
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return null;
+
+    if (isTokenExpired(token)) {
+      console.warn('액세스 토큰이 만료되었습니다.');
+      
+      // 자동 재발급이 활성화되어 있고 refreshToken이 있으면 재발급 시도
+      if (autoReissue && getRefreshToken()) {
+        try {
+          console.log('토큰을 자동으로 재발급합니다.');
+          const newToken = await reissueToken();
+          return newToken;
+        } catch (reissueError) {
+          console.error('토큰 자동 재발급 실패:', reissueError);
+          removeAccessToken();
+          removeRefreshToken();
+          return null;
+        }
+      } else {
+        removeAccessToken();
+        return null;
+      }
     }
 
     return token;
@@ -179,9 +280,76 @@ export const setAccessToken = (token: string): void => {
     console.error('토큰 저장 중 오류:', error);
   }
 };
+
 export const removeAccessToken = (): void => {
   if (typeof window === 'undefined') return;
   localStorage.removeItem('accessToken');
+};
+
+// RefreshToken 관리 함수들
+export const getRefreshToken = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('refreshToken');
+};
+
+export const setRefreshToken = (token: string): void => {
+  if (typeof window === 'undefined') return;
+
+  try {
+    if (token) {
+      localStorage.setItem('refreshToken', token);
+    } else {
+      localStorage.removeItem('refreshToken');
+    }
+  } catch (error) {
+    console.error('리프레시 토큰 저장 중 오류:', error);
+  }
+};
+
+export const removeRefreshToken = (): void => {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem('refreshToken');
+};
+
+// 토큰 재발급 함수
+export const reissueToken = async (): Promise<string> => {
+  if (USE_MOCK_DATA) {
+    await mockDelay();
+    const newToken = mockTokens.accessToken;
+    setAccessToken(newToken);
+    return newToken;
+  }
+
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) {
+    throw new Error('리프레시 토큰이 없습니다. 다시 로그인해주세요.');
+  }
+
+  try {
+    const response = await fetch(`${BASE_URL}/api/v1/auth/reissue`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        refreshToken: refreshToken
+      })
+    });
+
+    const data = await handleReissueResponse(response);
+    const newAccessToken = data.result.accessToken;
+    setAccessToken(newAccessToken);
+    return newAccessToken;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
+    console.error('토큰 재발급 실패:', errorMessage);
+    
+    // 재발급 실패 시 토큰 삭제
+    removeAccessToken();
+    removeRefreshToken();
+    throw error;
+  }
 };
 
 // 현재 로그인한 사용자 ID 추출

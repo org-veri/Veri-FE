@@ -2,7 +2,7 @@
 
 import React, {useEffect, useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {handleSocialLoginCallback, setAccessToken} from '../api/auth';
+import {handleSocialLoginCallback, setAccessToken, setRefreshToken, getAccessToken} from '../api/auth';
 import {USE_MOCK_DATA} from '../api/mock';
 import kakaoIcon from '../assets/icons/login/kakao_icon.svg';
 import veriLogo from '../assets/icons/union.svg';
@@ -13,6 +13,25 @@ const LoginPage: React.FC = () => {
   const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
   const buttonsContainerRef = useRef<HTMLDivElement>(null);
   const [bottomPadding, setBottomPadding] = useState(50);
+
+  // 저장된 토큰 확인 및 자동 로그인 처리
+  useEffect(() => {
+    const checkExistingToken = () => {
+      try {
+        const token = getAccessToken();
+        if (token) {
+          // 유효한 토큰이 있으면 홈으로 리다이렉트
+          console.log('저장된 로그인 정보가 있습니다. 자동으로 로그인합니다.');
+          navigate('/', { replace: true });
+        }
+      } catch (error) {
+        // 토큰이 만료되었거나 유효하지 않은 경우 로그인 페이지 유지
+        console.log('저장된 토큰이 없거나 만료되었습니다.');
+      }
+    };
+
+    checkExistingToken();
+  }, [navigate]);
 
   useEffect(() => {
     const calculateBottomPadding = () => {
@@ -47,8 +66,9 @@ const LoginPage: React.FC = () => {
     if (USE_MOCK_DATA) {
       try {
         console.log('목업 모드: 카카오 로그인 시뮬레이션');
-        const accessToken = await handleSocialLoginCallback('kakao', 'mock-code', 'mock-state');
+        const { accessToken, refreshToken } = await handleSocialLoginCallback('kakao', 'mock-code', 'mock-state');
         setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
         navigate('/');
       } catch (error) {
         console.error('목업 로그인 실패:', error);
@@ -72,7 +92,6 @@ const LoginPage: React.FC = () => {
         <div 
           className="login-buttons-container"
           ref={buttonsContainerRef}
-          style={{paddingBottom: `${bottomPadding}px`}}
         >
           <button className="social-login-button kakao" onClick={handleKakaoLogin}>
             <img src={kakaoIcon} alt="kakao-logo" className="kakao-social-icon" />

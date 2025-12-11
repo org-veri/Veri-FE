@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { handleSocialLoginCallback, setAccessToken } from '../api/auth';
+import { handleSocialLoginCallback, setAccessToken, setRefreshToken } from '../api/auth';
 import { USE_MOCK_DATA } from '../api/mock';
 
 const OAuthCallbackPage: React.FC = () => {
@@ -27,8 +27,9 @@ const OAuthCallbackPage: React.FC = () => {
 
       if (code) {
         try {
-          const accessToken = await handleSocialLoginCallback('kakao', code, state);
+          const { accessToken, refreshToken } = await handleSocialLoginCallback('kakao', code, state);
           setAccessToken(accessToken);
+          setRefreshToken(refreshToken);
           navigate('/');
         } catch (error) {
           console.error('로그인 실패:', error);

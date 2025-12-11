@@ -14,6 +14,7 @@ import {
     type Book,
     type CardSummary
 } from '../../api/bookApi';
+import { getCurrentUserId } from '../../api/auth';
 import { StarRatingFullPage } from '../mainPage/LibraryPage';
 
 interface MyReadingCardSectionProps {
@@ -79,6 +80,7 @@ function BookDetailPage() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
     const [isPublic, setIsPublic] = useState<boolean | null>(null);
+    const [isMyBook, setIsMyBook] = useState<boolean>(true); // 기본값은 true (내 책으로 가정)
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info'; isVisible: boolean }>({
         message: '',
         type: 'info',
@@ -103,13 +105,21 @@ function BookDetailPage() {
         try {
             const response = await getBookById(memberBookId);
             if (response.isSuccess && response.result) {
+                const currentUserId = getCurrentUserId();
+                const bookOwnerId = response.result.member?.id;
+                
+                // 현재 사용자 ID와 책 소유자 ID를 비교하여 내 책인지 판단
+                // ReadingCardDetailPage와 동일한 로직: member 정보가 있어야만 비교
+                const isMyBookValue = currentUserId !== null && bookOwnerId !== undefined && currentUserId === bookOwnerId;
+                setIsMyBook(isMyBookValue);
+                
                 const fetchedBook: Book = {
-                    bookId: response.result.bookId,
+                    bookId: response.result.memberBookId, // API 응답에 bookId가 없으므로 memberBookId 사용
                     memberBookId: response.result.memberBookId,
                     title: response.result.title,
                     author: response.result.author,
                     imageUrl: response.result.imageUrl,
-                    score: response.result.score,
+                    score: response.result.score ?? 0,
                     status: response.result.status,
                     startedAt: response.result.startedAt || null,
                     endedAt: response.result.endedAt || null,
@@ -314,7 +324,7 @@ function BookDetailPage() {
                         className="book-cover-detail"
                     />
                     <div className="top-shadow-overlay" />
-                    {isPublic !== null && (
+                    {isMyBook && isPublic !== null && (
                         <button 
                             className={`book-visibility-toggle ${isPublic ? 'public' : 'private'}`}
                             onClick={handleToggleVisibility}

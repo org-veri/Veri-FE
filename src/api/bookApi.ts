@@ -83,13 +83,17 @@ interface BaseApiResponse<T> {
 // 구체적인 응답 타입들
 export type GetAllBooksResponse = BaseApiResponse<BooksResult>;
 export type GetBookByIdResponse = BaseApiResponse<{
-  bookId: number;
   memberBookId: number;
+  member?: {
+    id: number;
+    nickname: string;
+    profileImageUrl: string;
+  };
   title: string;
   author: string;
   imageUrl: string;
   status: BookStatus;
-  score: number;
+  score: number | null;
   startedAt: string | null;
   endedAt: string | null;
   cardSummaries: CardSummary[];

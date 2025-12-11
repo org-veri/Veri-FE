@@ -7,6 +7,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
 import { getCardDetailById, deleteCard, updateCardVisibility, type Card } from '../../api/cardApi';
+import { getCurrentUserId } from '../../api/auth';
 import ReadingCardEditModal from '../../components/ReadingCardEditModal';
 import DeleteConfirmationModal from '../../components/DeleteConfirmationModal';
 import Toast from '../../components/Toast';
@@ -20,6 +21,7 @@ function ReadingCardDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isMyCard, setIsMyCard] = useState<boolean>(true); // 기본값은 true (내 카드로 가정)
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -53,6 +55,13 @@ function ReadingCardDetailPage() {
 
         if (response.isSuccess && response.result) {
           const bookData = response.result.book;
+          const currentUserId = getCurrentUserId();
+          const cardOwnerId = response.result.memberProfileResponse?.id;
+          
+          // 현재 사용자 ID와 카드 소유자 ID를 비교하여 내 카드인지 판단
+          const isMyCardValue = currentUserId !== null && cardOwnerId !== undefined && currentUserId === cardOwnerId;
+          setIsMyCard(isMyCardValue);
+          
           setCardDetail({
             cardId: response.result.id,
             content: response.result.content,
@@ -338,17 +347,19 @@ function ReadingCardDetailPage() {
               e.currentTarget.alt = "이미지 로드 실패";
             }}
           />
-          <button 
-            className={`card-visibility-toggle ${cardDetail.isPublic === true ? 'public' : 'private'}`}
-            onClick={handleToggleVisibility}
-            disabled={isUpdatingVisibility || isProcessing}
-            aria-label={cardDetail.isPublic === true ? '공개된 카드' : '비공개된 카드'}
-          >
-            <span className={cardDetail.isPublic === true ? 'mgc_unlock_fill' : 'mgc_lock_fill'}></span>
-            <span className="visibility-text">
-              {cardDetail.isPublic === true ? '공개된 카드' : '비공개된 카드'}
-            </span>
-          </button>
+          {isMyCard && (
+            <button 
+              className={`card-visibility-toggle ${cardDetail.isPublic === true ? 'public' : 'private'}`}
+              onClick={handleToggleVisibility}
+              disabled={isUpdatingVisibility || isProcessing}
+              aria-label={cardDetail.isPublic === true ? '공개된 카드' : '비공개된 카드'}
+            >
+              <span className={cardDetail.isPublic === true ? 'mgc_unlock_fill' : 'mgc_lock_fill'}></span>
+              <span className="visibility-text">
+                {cardDetail.isPublic === true ? '공개된 카드' : '비공개된 카드'}
+              </span>
+            </button>
+          )}
         </div>
 
         <div className="card-text-info">
