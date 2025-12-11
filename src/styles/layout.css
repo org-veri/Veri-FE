@@ -1,6 +1,8 @@
 /* 페이지 레이아웃 관련 */
 
 .page-container {
+  position: relative;
+  /* Ensure absolute children are relative to this container */
   max-width: 100%;
   width: 100%;
   height: auto;
@@ -113,7 +115,7 @@
   background-color: #fff;
 }
 
-.line-divider{
+.line-divider {
   margin: 20px 0;
   width: 100%;
   height: 10px;

@@ -3,6 +3,7 @@
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import TabBar from './components/TabBar';
+import Sidebar from './components/Sidebar';
 import FloatingCameraButton from './components/FloatingCameraButton';
 import './App.css';
 
@@ -75,8 +76,14 @@ function App() {
   ].includes(location.pathname);
 
 
+  const showSidebar = ![
+    '/login',
+    '/oauth/callback/kakao'
+  ].includes(location.pathname);
+
   return (
-    <div className="App">
+    <div className={`App ${showSidebar ? 'has-sidebar' : ''}`}>
+      {showSidebar && <Sidebar />}
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<HomePage />} />
