@@ -24,17 +24,3 @@
   --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
-@font-face {
-  font-family: Pretendard;
-  src: url('/fonts/NanumPen.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: Pretendard;
-  src: url('/fonts/NotoSansKR.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
