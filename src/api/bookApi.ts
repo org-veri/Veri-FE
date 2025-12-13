@@ -1,14 +1,5 @@
 // src/api/bookApi.ts
 import { getAccessToken } from './auth';
-import { 
-  USE_MOCK_DATA, 
-  mockDelay, 
-  createMockResponse, 
-  mockBooks, 
-  mockSearchResults, 
-  mockPopularBooks, 
-  mockTodaysRecommendation 
-} from './mock';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
@@ -168,7 +159,7 @@ const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Re
 
   if (accessToken) {
     headers['Authorization'] = `Bearer ${accessToken}`;
-  } else if (!USE_MOCK_DATA) {
+  } else {
     console.warn(`[fetchWithAuth] Access token is missing for URL: ${url}`);
   }
 
@@ -220,20 +211,6 @@ const makeApiRequest = async <T>(
 export const getAllBooks = async (
   params: GetAllBooksQueryParams
 ): Promise<GetAllBooksResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({
-      memberBooks: mockBooks.map(book => ({
-        ...book,
-        bookId: book.memberBookId
-      })),
-      page: params.page || 1,
-      size: params.size || 10,
-      totalElements: mockBooks.length,
-      totalPages: Math.ceil(mockBooks.length / (params.size || 10)),
-    }, '목 책장 조회 성공');
-  }
-
   const url = new URL('/api/v2/bookshelf/my', BASE_URL);
   if (params.page !== undefined) url.searchParams.append('page', String(params.page));
   if (params.size !== undefined) url.searchParams.append('size', String(params.size));
@@ -243,39 +220,10 @@ export const getAllBooks = async (
 };
 
 export const getBookById = async (memberBookId: number): Promise<GetBookByIdResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const book = mockBooks.find(b => b.memberBookId === memberBookId);
-    if (book) {
-      return createMockResponse({
-        bookId: book.bookId || book.memberBookId,
-        memberBookId: book.memberBookId,
-        title: book.title,
-        author: book.author,
-        imageUrl: book.imageUrl,
-        status: book.status,
-        score: book.score,
-        startedAt: book.startedAt,
-        endedAt: book.endedAt,
-        cardSummaries: book.cardSummaries || []
-      }, '목 책 상세 조회 성공');
-    }
-    return createMockResponse(null, '책을 찾을 수 없습니다.');
-  }
-
   return makeApiRequest<GetBookByIdResponse>(`/api/v2/bookshelf/${memberBookId}`);
 };
 
 export const searchBooksByTitle = async (query: string): Promise<SearchBooksResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const result = mockSearchResults.filter(book => 
-      book.title.toLowerCase().includes(query.toLowerCase()) ||
-      book.author.toLowerCase().includes(query.toLowerCase())
-    );
-    return createMockResponse(result, '목 검색 결과');
-  }
-
   const url = new URL('/api/v2/bookshelf/search', BASE_URL);
   url.searchParams.append('title', query);
   return makeApiRequest<SearchBooksResponse>(url.pathname + url.search);
@@ -284,17 +232,6 @@ export const searchBooksByTitle = async (query: string): Promise<SearchBooksResp
 export const getPopularBooks = async (
   params: GetPopularBooksQueryParams
 ): Promise<GetPopularBooksResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({
-      books: mockPopularBooks,
-      page: params.page || 1,
-      size: params.size || 10,
-      totalElements: mockPopularBooks.length,
-      totalPages: Math.ceil(mockPopularBooks.length / (params.size || 10)),
-    }, '목 인기 도서 조회 성공');
-  }
-
   const url = new URL('/api/v2/bookshelf/popular', BASE_URL);
   if (params.page !== undefined) url.searchParams.append('page', String(params.page));
   if (params.size !== undefined) url.searchParams.append('size', String(params.size));
@@ -302,24 +239,10 @@ export const getPopularBooks = async (
 };
 
 export const getTodaysRecommendation = async (): Promise<GetTodaysRecommendationResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse(mockTodaysRecommendation, '목 오늘의 추천 도서 조회 성공');
-  }
-
   return makeApiRequest<GetTodaysRecommendationResponse>('/api/v2/bookshelf/recommendation/today');
 };
 
 export const createBook = async (bookData: CreateBookRequest): Promise<CreateBookResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const newBookId = Math.max(...mockBooks.map(b => b.memberBookId)) + 1;
-    return createMockResponse({
-      memberBookId: newBookId,
-      createdAt: new Date().toISOString(),
-    }, '목 책 등록 성공');
-  }
-
   return makeApiRequest<CreateBookResponse>('/api/v2/bookshelf', {
     method: 'POST',
     body: JSON.stringify(bookData),
@@ -327,44 +250,24 @@ export const createBook = async (bookData: CreateBookRequest): Promise<CreateBoo
 };
 
 export const deleteBook = async (memberBookId: number): Promise<DeleteBookResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, '목 책 삭제 성공');
-  }
-
   return makeApiRequest<DeleteBookResponse>(`/api/v2/bookshelf/${memberBookId}`, {
     method: 'DELETE'
   });
 };
 
 export const updateBookStatusToStart = async (memberBookId: number): Promise<UpdateBookStatusResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, '목 책 읽기 시작 성공');
-  }
-
   return makeApiRequest<UpdateBookStatusResponse>(`/api/v2/bookshelf/${memberBookId}/status/start`, {
     method: 'PATCH'
   });
 };
 
 export const updateBookStatusToOver = async (memberBookId: number): Promise<UpdateBookStatusResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, '목 책 읽기 완료 성공');
-  }
-
   return makeApiRequest<UpdateBookStatusResponse>(`/api/v2/bookshelf/${memberBookId}/status/over`, {
     method: 'PATCH'
   });
 };
 
 export const rateBook = async (memberBookId: number, score: number): Promise<UpdateBookStatusResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, '목 책 평점 주기 성공');
-  }
-
   return makeApiRequest<UpdateBookStatusResponse>(`/api/v2/bookshelf/${memberBookId}/rate`, {
     method: 'PATCH',
     body: JSON.stringify({ score }),
@@ -378,11 +281,6 @@ export const updateBookStatus = async (
   memberBookId: number, // API 명세의 readingId에 해당
   data: UpdateBookStatusRequest
 ): Promise<UpdateBookStatusResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, 'Mock 책 상태 수정 성공');
-  }
-
   return makeApiRequest<UpdateBookStatusResponse>(`/api/v2/bookshelf/${memberBookId}/modify`, {
     method: 'PATCH',
     body: JSON.stringify(data),
@@ -395,11 +293,6 @@ export const updateBookContent = async (
   memberBookId: number, 
   bookData: UpdateBookContentRequest
 ): Promise<UpdateBookStatusResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, '목 책 내용 수정 성공');
-  }
-
   // 주의: 이 함수는 책 메타데이터 수정용이므로 별도 엔드포인트가 필요할 수 있습니다
   // 현재는 같은 엔드포인트를 사용하지만, 실제 API에서는 다를 수 있습니다
   return makeApiRequest<UpdateBookStatusResponse>(`/api/v2/bookshelf/${memberBookId}/modify`, {
@@ -409,31 +302,12 @@ export const updateBookContent = async (
 };
 
 export const getMyBooksCount = async (): Promise<GetMyBooksCountResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse(mockBooks.length, '목 내 책 개수 조회 성공');
-  }
-
   return makeApiRequest<GetMyBooksCountResponse>('/api/v2/bookshelf/my/count');
 };
 
 export const searchMyBook = async (
   params: SearchMyBookQueryParams
 ): Promise<SearchMyBookResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    // Mock 데이터에서 제목과 저자로 검색
-    const foundBook = mockBooks.find(book => 
-      book.title.toLowerCase().includes(params.title.toLowerCase()) &&
-      book.author.toLowerCase().includes(params.author.toLowerCase())
-    );
-    
-    if (foundBook) {
-      return createMockResponse(foundBook.memberBookId, '목 내 책장 검색 성공');
-    }
-    return createMockResponse(0, '검색 결과가 없습니다.', 'BOOK404');
-  }
-
   const url = new URL('/api/v2/bookshelf/my/search', BASE_URL);
   url.searchParams.append('title', params.title);
   url.searchParams.append('author', params.author);
@@ -453,22 +327,6 @@ export const updateBookVisibility = async (
   readingId: number,
   isPublic: boolean
 ): Promise<UpdateBookVisibilityResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const book = mockBooks.find(b => b.memberBookId === readingId);
-    if (book) {
-      // Mock 데이터에서는 isPublic 필드가 없으므로 그대로 반환
-      return createMockResponse({
-        id: readingId,
-        idPublic: isPublic,
-      }, '목 독서 공개 여부 수정 성공');
-    }
-    return createMockResponse({
-      id: readingId,
-      idPublic: isPublic,
-    }, '목 독서 공개 여부 수정 성공');
-  }
-
   const url = new URL(`/api/v2/bookshelf/${readingId}/visibility`, BASE_URL);
   url.searchParams.append('isPublic', String(isPublic));
 

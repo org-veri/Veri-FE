@@ -1,10 +1,5 @@
 // src/api/communityApi.ts
 import { getAccessToken } from './auth';
-import { 
-  USE_MOCK_DATA, 
-  mockDelay, 
-  createMockResponse
-} from './mock';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || 'https://api.veri.me.kr';
 
@@ -161,7 +156,7 @@ const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Re
 
   if (accessToken) {
     headers['Authorization'] = `Bearer ${accessToken}`;
-  } else if (!USE_MOCK_DATA) {
+  } else {
     console.warn(`[fetchWithAuth] Access token is missing for URL: ${url}`);
   }
 
@@ -221,119 +216,6 @@ const makeApiRequest = async <T>(
   return response.json();
 };
 
-// Mock 데이터 생성
-const createMockPosts = (): Post[] => [
-  {
-    postId: 1,
-    title: "오늘 읽은 책에 대한 감상",
-    content: "정말 좋은 책이었습니다. 특히 마지막 장면이 인상적이었어요.",
-    author: {
-      id: 1,
-      nickname: "독서왕",
-      profileImageUrl: "/images/profileSample/sample_user.png",
-    },
-    book: {
-      title: "오늘 읽은 책",
-      author: "작가A",
-      imageUrl: "/images/cardSample/forest.jpg",
-      publisher: "출판사A",
-      isbn: "1234567890123",
-    },
-    likeCount: 15,
-    commentCount: 3,
-    createdAt: "2024-01-15T10:30:00Z",
-    isPublic: true,
-    thumbnail: "/images/cardSample/forest.jpg",
-  },
-  {
-    postId: 2,
-    title: "새로 발견한 작가의 작품들",
-    content: "이번에 새로 알게 된 작가인데, 작품 스타일이 정말 독특해요.",
-    author: {
-      id: 2,
-      nickname: "책벌레",
-      profileImageUrl: "/images/profileSample/sample_user.png",
-    },
-    book: {
-      title: "새로운 작품",
-      author: "작가B",
-      imageUrl: "/images/cardSample/sea.jpg",
-      publisher: "출판사B",
-      isbn: "9876543210987",
-    },
-    likeCount: 8,
-    commentCount: 1,
-    createdAt: "2024-01-14T15:20:00Z",
-    isPublic: true,
-    thumbnail: "/images/cardSample/sea.jpg",
-  },
-  {
-    postId: 3,
-    title: "독서 모임 후기",
-    content: "이번 주 독서 모임에서 정말 좋은 이야기들을 나눴어요.",
-    author: {
-      id: 3,
-      nickname: "독서모임장",
-      profileImageUrl: "/images/profileSample/sample_user.png",
-    },
-    book: {
-      title: "독서 모임 후기",
-      author: "작가C",
-      imageUrl: "/images/cardSample/sky.jpg",
-      publisher: "출판사C",
-      isbn: "1122334455667",
-    },
-    likeCount: 22,
-    commentCount: 7,
-    createdAt: "2024-01-13T20:45:00Z",
-    isPublic: true,
-    thumbnail: "/images/cardSample/sky.jpg",
-  }
-];
-
-// Mock 카드 데이터 생성
-const createMockCards = (): Card[] => [
-  {
-    cardId: 1,
-    member: {
-      id: 1,
-      nickname: "독서왕",
-      profileImageUrl: "/images/profileSample/sample_user.png"
-    },
-    bookTitle: "오늘 읽은 책",
-    content: "정말 좋은 책이었습니다. 특히 마지막 장면이 인상적이었어요.",
-    image: "/images/cardSample/forest.jpg",
-    created: "2024-01-15T10:30:00Z",
-    isPublic: true
-  },
-  {
-    cardId: 2,
-    member: {
-      id: 2,
-      nickname: "책벌레",
-      profileImageUrl: "/images/profileSample/sample_user.png"
-    },
-    bookTitle: "새로운 작품",
-    content: "이번에 새로 알게 된 작가인데, 작품 스타일이 정말 독특해요.",
-    image: "/images/cardSample/sea.jpg",
-    created: "2024-01-14T15:20:00Z",
-    isPublic: true
-  },
-  {
-    cardId: 3,
-    member: {
-      id: 3,
-      nickname: "독서모임장",
-      profileImageUrl: "/images/profileSample/sample_user.png"
-    },
-    bookTitle: "독서 모임 후기",
-    content: "이번 주 독서 모임에서 정말 좋은 이야기들을 나눴어요.",
-    image: "/images/cardSample/sky.jpg",
-    created: "2024-01-13T20:45:00Z",
-    isPublic: true
-  }
-];
-
 // API 함수들
 
 /**
@@ -346,24 +228,6 @@ const createMockCards = (): Card[] => [
 export const getPostFeed = async (
   params: GetPostFeedQueryParams = {}
 ): Promise<GetPostFeedResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const mockPosts = createMockPosts();
-    const page = params.page || 1;
-    const size = params.size || 10;
-    const startIndex = (page - 1) * size;
-    const endIndex = startIndex + size;
-    const paginatedPosts = mockPosts.slice(startIndex, endIndex);
-    
-    return createMockResponse({
-      posts: paginatedPosts,
-      page: page,
-      size: size,
-      totalElements: mockPosts.length,
-      totalPages: Math.ceil(mockPosts.length / size),
-    }, '목 전체 게시글 조회 성공');
-  }
-
   const url = new URL('/api/v1/posts', BASE_URL);
   if (params.page !== undefined) url.searchParams.append('page', String(params.page));
   if (params.size !== undefined) url.searchParams.append('size', String(params.size));
@@ -382,24 +246,6 @@ export const getPostFeed = async (
 export const getCards = async (
   params: GetCardsQueryParams = {}
 ): Promise<GetCardsResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const mockCards = createMockCards();
-    const page = params.page || 1;
-    const size = params.size || 10;
-    const startIndex = (page - 1) * size;
-    const endIndex = startIndex + size;
-    const paginatedCards = mockCards.slice(startIndex, endIndex);
-    
-    return createMockResponse({
-      cards: paginatedCards,
-      page: page,
-      size: size,
-      totalElements: mockCards.length,
-      totalPages: Math.ceil(mockCards.length / size),
-    }, '목 전체 카드 조회 성공');
-  }
-
   const url = new URL('/api/v1/cards', BASE_URL);
   if (params.page !== undefined) url.searchParams.append('page', String(params.page));
   if (params.size !== undefined) url.searchParams.append('size', String(params.size));
@@ -418,76 +264,6 @@ export const getCards = async (
 export const getPostDetail = async (
   postId: number
 ): Promise<GetPostDetailResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const mockPosts = createMockPosts();
-    const post = mockPosts.find(p => p.postId === postId);
-    
-    if (!post) {
-      throw new Error('게시글을 찾을 수 없습니다.');
-    }
-    
-    // Post를 PostDetail로 변환
-    const postDetail: PostDetail = {
-      ...post,
-      images: post.thumbnail ? [post.thumbnail] : [],
-      isLiked: false, // Mock 데이터에서는 false로 설정
-      comments: [
-        {
-          commentId: 1,
-          content: "정말 좋은 글이네요!",
-          author: {
-            id: 10,
-            nickname: "댓글러",
-            profileImageUrl: "/images/profileSample/sample_user.png"
-          },
-          createdAt: "2024-01-16T09:15:00Z",
-          isDeleted: false,
-          replies: [
-            {
-              commentId: 3,
-              content: "저도 그렇게 생각해요!",
-              author: {
-                id: 12,
-                nickname: "독서광",
-                profileImageUrl: "/images/profileSample/sample_user.png"
-              },
-              createdAt: "2024-01-16T09:30:00Z",
-              isDeleted: false,
-              parentCommentId: 1
-            },
-            {
-              commentId: 4,
-              content: "동의합니다 ㅎㅎ",
-              author: {
-                id: 13,
-                nickname: "책읽는사람",
-                profileImageUrl: "/images/profileSample/sample_user.png"
-              },
-              createdAt: "2024-01-16T09:45:00Z",
-              isDeleted: false,
-              parentCommentId: 1
-            }
-          ]
-        },
-        {
-          commentId: 2,
-          content: "저도 이 책 읽어보고 싶어요.",
-          author: {
-            id: 11,
-            nickname: "독서러버",
-            profileImageUrl: "/images/profileSample/sample_user.png"
-          },
-          createdAt: "2024-01-16T10:30:00Z",
-          isDeleted: false,
-          replies: []
-        }
-      ]
-    };
-    
-    return createMockResponse(postDetail, '목 게시글 상세 조회 성공');
-  }
-
   return makeApiRequest<GetPostDetailResponse>(`/api/v1/posts/${postId}`);
 };
 
@@ -498,16 +274,6 @@ export const getPostDetail = async (
  * @returns 내 게시글 목록과 개수
  */
 export const getMyPosts = async (): Promise<GetMyPostsResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const mockPosts = createMockPosts().slice(0, 2); // 내 게시글은 2개만 있다고 가정
-    
-    return createMockResponse({
-      posts: mockPosts,
-      count: mockPosts.length,
-    }, '내 게시글 조회 성공');
-  }
-
   return makeApiRequest<GetMyPostsResponse>('/api/v1/posts/my');
 };
 
@@ -521,12 +287,6 @@ export const getMyPosts = async (): Promise<GetMyPostsResponse> => {
 export const createPost = async (
   postData: CreatePostRequest
 ): Promise<CreatePostResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const newPostId = Math.floor(Math.random() * 1000) + 100; // Mock 게시글 ID
-    return createMockResponse(newPostId, '목 게시글 작성 성공');
-  }
-
   return makeApiRequest<CreatePostResponse>('/api/v1/posts', {
     method: 'POST',
     body: JSON.stringify(postData),
@@ -553,11 +313,6 @@ export const updatePost = async (
   postId: number,
   postData: UpdatePostRequest
 ): Promise<UpdatePostResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, '목 게시글 수정 성공');
-  }
-
   return makeApiRequest<UpdatePostResponse>(`/api/v1/posts/${postId}`, {
     method: 'PATCH',
     body: JSON.stringify(postData),
@@ -574,11 +329,6 @@ export const updatePost = async (
 export const deletePost = async (
   postId: number
 ): Promise<DeletePostResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, '목 게시글 삭제 성공');
-  }
-
   return makeApiRequest<DeletePostResponse>(`/api/v1/posts/${postId}`, {
     method: 'DELETE',
   });
@@ -594,15 +344,6 @@ export const deletePost = async (
 export const likePost = async (
   postId: number
 ): Promise<LikePostResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const randomLikeCount = Math.floor(Math.random() * 50) + 1;
-    return createMockResponse({
-      likeCount: randomLikeCount,
-      isLiked: true
-    }, '목 게시글 좋아요 성공');
-  }
-
   return makeApiRequest<LikePostResponse>(`/api/v1/posts/like/${postId}`, {
     method: 'POST',
   });
@@ -618,15 +359,6 @@ export const likePost = async (
 export const unlikePost = async (
   postId: number
 ): Promise<LikePostResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const randomLikeCount = Math.floor(Math.random() * 50);
-    return createMockResponse({
-      likeCount: randomLikeCount,
-      isLiked: false
-    }, '목 게시글 좋아요 취소 성공');
-  }
-
   return makeApiRequest<LikePostResponse>(`/api/v1/posts/unlike/${postId}`, {
     method: 'POST',
   });
@@ -642,11 +374,6 @@ export const unlikePost = async (
 export const publishPost = async (
   postId: number
 ): Promise<PublishPostResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, '목 게시글 공개 성공');
-  }
-
   return makeApiRequest<PublishPostResponse>(`/api/v1/posts/${postId}/publish`, {
     method: 'POST',
   });
@@ -662,11 +389,6 @@ export const publishPost = async (
 export const unpublishPost = async (
   postId: number
 ): Promise<UnpublishPostResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, '목 게시글 비공개 성공');
-  }
-
   return makeApiRequest<UnpublishPostResponse>(`/api/v1/posts/${postId}/unpublish`, {
     method: 'POST',
   });

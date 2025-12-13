@@ -1,7 +1,5 @@
 // src/api/auth.ts
 
-import {mockDelay, mockTokens, USE_MOCK_DATA} from './mock';
-
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 // 타입 정의
@@ -65,11 +63,6 @@ const decodeJwt = (token: string): JwtPayload | null => {
 };
 
 const isTokenExpired = (token: string): boolean => {
-  // 목업 모드에서는 토큰 만료 검사 건너뛰기
-  if (USE_MOCK_DATA) {
-    return false;
-  }
-
   const payload = decodeJwt(token);
   if (!payload?.exp || typeof payload.exp !== 'number') {
     return true; // exp가 없으면 만료된 것으로 간주
@@ -149,14 +142,6 @@ const handleReissueResponse = async (response: Response): Promise<ReissueRespons
 
 // 공개 API 함수들
 export const handleSocialLoginCallback = async (provider: string, code: string, state: string): Promise<{ accessToken: string; refreshToken: string }> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return {
-      accessToken: mockTokens.accessToken,
-      refreshToken: mockTokens.refreshToken
-    };
-  }
-
   try {
     const response = await fetch(`${BASE_URL}/api/v1/oauth2/${provider}?code=${code}&state=${state}`, {
       method: 'GET',
@@ -179,27 +164,11 @@ export const handleSocialLoginCallback = async (provider: string, code: string, 
 };
 
 export const fetchTestToken = async (): Promise<string> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return mockTokens.accessToken;
-  }
   return makeApiRequest('/api/v1/oauth2/test-token');
 };
 
 export const getAccessToken = (): string | null => {
   if (typeof window === 'undefined') return null;
-
-  // 목업 모드에서는 기본 토큰 반환
-  if (USE_MOCK_DATA) {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      // 목업 토큰이 없으면 기본 목업 토큰 설정
-      setAccessToken(mockTokens.accessToken);
-      setRefreshToken(mockTokens.refreshToken);
-      return mockTokens.accessToken;
-    }
-    return token;
-  }
 
   try {
     const token = localStorage.getItem('accessToken');
@@ -222,17 +191,6 @@ export const getAccessToken = (): string | null => {
 // 자동 재발급을 지원하는 비동기 버전
 export const getAccessTokenAsync = async (autoReissue: boolean = true): Promise<string | null> => {
   if (typeof window === 'undefined') return null;
-
-  // 목업 모드에서는 기본 토큰 반환
-  if (USE_MOCK_DATA) {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      setAccessToken(mockTokens.accessToken);
-      setRefreshToken(mockTokens.refreshToken);
-      return mockTokens.accessToken;
-    }
-    return token;
-  }
 
   try {
     const token = localStorage.getItem('accessToken');
@@ -313,13 +271,6 @@ export const removeRefreshToken = (): void => {
 
 // 토큰 재발급 함수
 export const reissueToken = async (): Promise<string> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const newToken = mockTokens.accessToken;
-    setAccessToken(newToken);
-    return newToken;
-  }
-
   const refreshToken = getRefreshToken();
   if (!refreshToken) {
     throw new Error('리프레시 토큰이 없습니다. 다시 로그인해주세요.');
@@ -388,4 +339,3 @@ export const getCurrentUserId = (): number | null => {
 
   return null;
 };
-

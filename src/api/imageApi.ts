@@ -1,5 +1,4 @@
 import { fetchWithAuth } from './cardApi';
-import { USE_MOCK_DATA, mockDelay, mockImageUrl, mockOcrResult } from './mock';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
@@ -38,19 +37,7 @@ export interface OcrResponse {
     result: string;
 }
 
-const mockOcrResponse: OcrResponse = {
-    isSuccess: true,
-    code: '1000',
-    message: 'Mock OCR successful.',
-    result: mockOcrResult,
-};
-
 export async function uploadImage(file: File): Promise<string> {
-    if (USE_MOCK_DATA) {
-        await mockDelay();
-        return mockImageUrl;
-    }
-
     try {
         const presignedRequestData = {
             contentType: file.type,
@@ -99,11 +86,6 @@ export async function uploadImage(file: File): Promise<string> {
 }
 
 export async function extractTextFromImage(imageUrl: string): Promise<OcrResponse> {
-    if (USE_MOCK_DATA) {
-        await mockDelay();
-        return mockOcrResponse;
-    }
-
     const url = new URL(`${BASE_URL}/api/v0/images/ocr`);
     url.searchParams.append('imageUrl', imageUrl);
 

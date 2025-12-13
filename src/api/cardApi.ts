@@ -1,5 +1,4 @@
 import { getAccessToken } from './auth';
-import { USE_MOCK_DATA, mockDelay, createMockResponse, mockCards } from './mock';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
@@ -13,7 +12,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
 
   if (accessToken) {
     headers['Authorization'] = `Bearer ${accessToken}`;
-  } else if (!USE_MOCK_DATA) {
+  } else {
     console.warn(`[fetchWithAuth] Access token is missing for URL: ${url}. This API call might fail if authentication is required.`);
   }
 
@@ -182,18 +181,6 @@ export interface UpdateCardVisibilityResponse {
 }
 
 export async function getMyCards(params: GetMyCardsQueryParams = {}): Promise<GetMyCardsResponse> {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({
-      cards: mockCards,
-      page: params.page || 1,
-      size: params.size || 10,
-      totalElements: mockCards.length,
-      totalPages: Math.ceil(mockCards.length / (params.size || 10)),
-      isPublic: mockCards.map(card => card.isPublic),
-    }, '목 내 독서카드 조회 성공');
-  }
-
   const url = new URL(`${BASE_URL}/api/v1/cards/my`);
   if (params.page !== undefined) url.searchParams.append('page', String(params.page));
   if (params.size !== undefined) url.searchParams.append('size', String(params.size));
@@ -213,27 +200,6 @@ export async function getMyCards(params: GetMyCardsQueryParams = {}): Promise<Ge
 }
 
 export async function getCardDetailById(cardId: number): Promise<GetCardDetailByIdResponse> {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const card = mockCards.find(c => c.cardId === cardId);
-    if (card) {
-      return createMockResponse({
-        id: card.cardId,
-        content: card.content,
-        imageUrl: card.image,
-        createdAt: card.created,
-        isPublic: card.isPublic,
-        book: {
-          id: 1,
-          title: '해리포터와 마법사의 돌',
-          coverImageUrl: 'https://placehold.co/100x150?text=BookCover',
-          author: 'J.K. 롤링',
-        },
-      }, '목 독서카드 상세 조회 성공');
-    }
-    return createMockResponse(null, '독서 카드를 찾을 수 없습니다.', 'CARD404');
-  }
-
   const url = `${BASE_URL}/api/v1/cards/${cardId}`;
 
   try {
@@ -250,13 +216,6 @@ export async function getCardDetailById(cardId: number): Promise<GetCardDetailBy
 }
 
 export async function createCard(body: CreateCardRequest): Promise<CreateCardResponse> {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({
-      cardId: Math.floor(Math.random() * 1000) + 1 // 랜덤 카드 ID 생성
-    }, '목 독서카드 생성 성공');
-  }
-
   const url = `${BASE_URL}/api/v1/cards`;
 
   try {
@@ -280,18 +239,6 @@ export async function createCard(body: CreateCardRequest): Promise<CreateCardRes
 export async function getPresignedUrlForImageUpload(body: GetPresignedUrlRequest): Promise<GetPresignedUrlResponse> {
   const url = `${BASE_URL}/api/v1/cards/image`;
 
-  if (USE_MOCK_DATA) {
-    return new Promise(resolve => setTimeout(() => resolve({
-      isSuccess: true,
-      code: '1000',
-      message: 'Mock presigned URL generated successfully.',
-      result: {
-        presignedUrl: 'https://mock-presigned-url.example.com/upload/mock-image.jpg?AWSAccessKeyId=MOCKKEY&Expires=MOCKEXP&Signature=MOCKSIG',
-        publicUrl: 'https://mock-public-url.example.com/mock-image.jpg',
-      }
-    }), 500));
-  }
-
   try {
     const response = await fetchWithAuth(url, {
       method: 'POST',
@@ -311,10 +258,6 @@ export async function getPresignedUrlForImageUpload(body: GetPresignedUrlRequest
 }
 
 export async function uploadImageAndGetUrl(file: File): Promise<string> {
-  if (USE_MOCK_DATA) {
-    return new Promise(resolve => setTimeout(() => resolve('https://mock-public-url.example.com/mock-image.jpg'), 500));
-  }
-
   try {
     const presignedRequestData: GetPresignedUrlRequest = {
       contentType: file.type,
@@ -347,15 +290,6 @@ export async function uploadImageAndGetUrl(file: File): Promise<string> {
 }
 
 export async function deleteCard(cardId: number): Promise<DeleteCardResponse> {
-  if (USE_MOCK_DATA) {
-    return new Promise(resolve => setTimeout(() => resolve({
-      isSuccess: true,
-      code: '1000',
-      message: '목 독서카드 삭제 성공',
-      result: {}
-    }), 500));
-  }
-
   const url = `${BASE_URL}/api/v1/cards/${cardId}`;
 
   try {
@@ -379,11 +313,6 @@ export async function deleteCard(cardId: number): Promise<DeleteCardResponse> {
 }
 
 export async function getMyCardsCount(): Promise<GetMyCardsCountResponse> {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse(mockCards.length, '목 내 독서카드 개수 조회 성공');
-  }
-
   const url = `${BASE_URL}/api/v1/cards/my/count`;
   try {
     const response = await fetchWithAuth(url, { method: 'GET' });
@@ -399,23 +328,6 @@ export async function getMyCardsCount(): Promise<GetMyCardsCountResponse> {
 }
 
 export async function updateCard(cardId: number, body: UpdateCardRequest): Promise<UpdateCardResponse> {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({
-      id: cardId,
-      content: body.content,
-      imageUrl: body.imageUrl,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      book: {
-        id: 1,
-        title: '해리포터와 마법사의 돌',
-        coverImageUrl: 'https://placehold.co/100x150?text=BookCover',
-        author: 'J.K. 롤링',
-      },
-    }, '목 독서카드 수정 성공');
-  }
-
   const url = `${BASE_URL}/api/v1/cards/${cardId}`;
 
   try {
@@ -437,19 +349,6 @@ export async function updateCard(cardId: number, body: UpdateCardRequest): Promi
 }
 
 export async function updateCardVisibility(cardId: number, isPublic: boolean): Promise<UpdateCardVisibilityResponse> {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const card = mockCards.find(c => c.cardId === cardId);
-    if (card) {
-      card.isPublic = isPublic;
-    }
-    return createMockResponse({
-      id: cardId,
-      idPublic: isPublic,
-      isPublic: isPublic, // 호환성을 위해 유지
-    }, '목 카드 공개 여부 수정 성공');
-  }
-
   const url = new URL(`${BASE_URL}/api/v1/cards/${cardId}/visibility`);
   url.searchParams.append('isPublic', String(isPublic));
 

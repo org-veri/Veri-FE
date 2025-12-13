@@ -5,18 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { MdArrowBackIosNew, MdBookmark, MdBookmarkBorder } from 'react-icons/md';
 import { FiSearch } from 'react-icons/fi';
 import './bookmarkPage.css';
-
-interface Bookmark {
-  id: number;
-  bookId: number;
-  bookTitle: string;
-  bookAuthor: string;
-  bookCoverUrl: string;
-  pageNumber?: number;
-  note?: string;
-  createdAt: string;
-  isBookmarked: boolean;
-}
+import type { Bookmark } from '../api/bookmarkApi';
+import { getBookmarks } from '../api/bookmarkApi';
 
 function BookmarkPage() {
   const navigate = useNavigate();
@@ -26,58 +16,35 @@ function BookmarkPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<'all' | 'recent' | 'oldest'>('all');
 
-  // Mock 데이터 (실제로는 API에서 가져올 데이터)
   useEffect(() => {
-    const mockBookmarks: Bookmark[] = [
-      {
-        id: 1,
-        bookId: 1,
-        bookTitle: '해리포터와 마법사의 돌',
-        bookAuthor: 'J.K. 롤링',
-        bookCoverUrl: 'https://placehold.co/100x150?text=HP1',
-        pageNumber: 45,
-        note: '마법의 세계에 대한 첫 번째 인상',
-        createdAt: '2024-01-15T10:30:00Z',
-        isBookmarked: true,
-      },
-      {
-        id: 2,
-        bookId: 2,
-        bookTitle: '1984',
-        bookAuthor: '조지 오웰',
-        bookCoverUrl: 'https://placehold.co/100x150?text=1984',
-        pageNumber: 123,
-        note: '빅브라더가 지켜보고 있다',
-        createdAt: '2024-01-10T14:20:00Z',
-        isBookmarked: true,
-      },
-      {
-        id: 3,
-        bookId: 3,
-        bookTitle: '어린 왕자',
-        bookAuthor: '생텍쥐페리',
-        bookCoverUrl: 'https://placehold.co/100x150?text=Prince',
-        pageNumber: 67,
-        note: '가장 중요한 것은 눈에 보이지 않는다',
-        createdAt: '2024-01-05T09:15:00Z',
-        isBookmarked: true,
-      },
-      {
-        id: 4,
-        bookId: 4,
-        bookTitle: '데미안',
-        bookAuthor: '헤르만 헤세',
-        bookCoverUrl: 'https://placehold.co/100x150?text=Demian',
-        pageNumber: 89,
-        note: '자아 발견의 여정',
-        createdAt: '2023-12-28T16:45:00Z',
-        isBookmarked: true,
-      },
-    ];
+    let isMounted = true;
 
-    setBookmarks(mockBookmarks);
-    setFilteredBookmarks(mockBookmarks);
-    setIsLoading(false);
+    const fetchBookmarks = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getBookmarks();
+        if (!response.isSuccess || !Array.isArray(response.result)) {
+          throw new Error(response.message || '북마크 데이터를 불러오지 못했습니다.');
+        }
+
+        if (isMounted) {
+          setBookmarks(response.result);
+          setFilteredBookmarks(response.result);
+        }
+      } catch (error) {
+        console.error('북마크 데이터를 불러오는 중 오류 발생:', error);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchBookmarks();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // 검색 및 필터링

@@ -1,5 +1,4 @@
 import { fetchWithAuth } from './cardApi';
-import { USE_MOCK_DATA, mockDelay, createMockResponse, mockUser } from './mock';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
@@ -51,11 +50,6 @@ export interface CheckNicknameExistsResponse {
 }
 
 export async function getMemberProfile(): Promise<GetMemberProfileResponse> {
-    if (USE_MOCK_DATA) {
-        await mockDelay();
-        return createMockResponse(mockUser, '목 사용자 프로필 조회 성공');
-    }
-
     const url = `${BASE_URL}/api/v1/members/me`;
 
     try {
@@ -85,18 +79,6 @@ export async function getMemberProfile(): Promise<GetMemberProfileResponse> {
 export async function updateMemberInfo(
     updateData: UpdateMemberInfoRequest
 ): Promise<GetMemberInfoUpdateResponse> {
-    if (USE_MOCK_DATA) {
-        await mockDelay();
-        return createMockResponse(
-            {
-                id: 1,
-                nickname: updateData.nickname || mockUser.nickname,
-                image: updateData.profileImageUrl || mockUser.image,
-            },
-            '목 내 정보 수정 성공'
-        );
-    }
-
     const url = `${BASE_URL}/api/v1/members/me/info`;
 
     try {
@@ -130,12 +112,6 @@ export async function updateMemberInfo(
 export async function checkNicknameExists(
     nickname: string
 ): Promise<CheckNicknameExistsResponse> {
-    if (USE_MOCK_DATA) {
-        await mockDelay();
-        // Mock 데이터에서는 항상 false 반환 (사용 가능)
-        return createMockResponse(false, '목 닉네임 중복 확인 성공');
-    }
-
     const url = new URL(`${BASE_URL}/api/v1/members/nickname/exists`);
     url.searchParams.append('nickname', nickname);
 

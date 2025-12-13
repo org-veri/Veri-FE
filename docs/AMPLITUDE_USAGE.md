@@ -32,12 +32,7 @@ import { trackEvent } from '../utils/amplitude';
 const handleKakaoLogin = async () => {
   // 로그인 버튼 클릭 추적
   trackEvent('Login Button Clicked', { method: 'kakao' });
-  
-  if (USE_MOCK_DATA) {
-    // ... 로그인 로직
-  } else {
-    // ... 로그인 로직
-  }
+  // ... 로그인 로직
 };
 ```
 

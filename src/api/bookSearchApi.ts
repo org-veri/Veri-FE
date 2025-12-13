@@ -1,6 +1,5 @@
 // src/api/bookSearchApi.ts
 import { getAccessToken } from './auth';
-import { USE_MOCK_DATA, mockDelay, createMockResponse, mockSearchResults } from './mock';
 
 export type BookItem = {
     title: string;
@@ -33,26 +32,6 @@ export type ApiResponse<T> = {
  * @returns 검색 결과 책 목록과 페이징 정보 또는 오류 메시지
  */
 export const searchBooks = async (query: string, page: number = 1, size: number = 10): Promise<ApiResponse<BookSearchResponseResult>> => {
-    if (USE_MOCK_DATA) {
-        await mockDelay();
-        const filteredResults = mockSearchResults.filter(book => 
-            book.title.toLowerCase().includes(query.toLowerCase()) ||
-            book.author.toLowerCase().includes(query.toLowerCase())
-        );
-        
-        const startIndex = (page - 1) * size;
-        const endIndex = startIndex + size;
-        const paginatedResults = filteredResults.slice(startIndex, endIndex);
-        
-        return createMockResponse({
-            books: paginatedResults,
-            page,
-            size,
-            totalElements: filteredResults.length,
-            totalPages: Math.ceil(filteredResults.length / size),
-        }, '목 검색 결과');
-    }
-
     try {
         const accessToken = getAccessToken();
         if (!accessToken) {

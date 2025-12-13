@@ -2,8 +2,7 @@
 
 import React, {useEffect, useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {handleSocialLoginCallback, setAccessToken, setRefreshToken, getAccessToken} from '../api/auth';
-import {USE_MOCK_DATA} from '../api/mock';
+import { getAccessToken } from '../api/auth';
 import kakaoIcon from '../assets/icons/login/kakao_icon.svg';
 import veriLogo from '../assets/icons/union.svg';
 import './LoginPage.css';
@@ -63,22 +62,9 @@ const LoginPage: React.FC = () => {
   }, []);
 
   const handleKakaoLogin = async () => {
-    if (USE_MOCK_DATA) {
-      try {
-        console.log('목업 모드: 카카오 로그인 시뮬레이션');
-        const { accessToken, refreshToken } = await handleSocialLoginCallback('kakao', 'mock-code', 'mock-state');
-        setAccessToken(accessToken);
-        setRefreshToken(refreshToken);
-        navigate('/');
-      } catch (error) {
-        console.error('목업 로그인 실패:', error);
-        alert(`로그인 처리 중 오류가 발생했습니다.\n\n${(error as Error).message}`);
-      }
-    } else {
-      const kakaoAuthUrl = `${BASE_URL}/oauth2/authorization/kakao`;
-      console.log('Redirecting to backend for Kakao login:', kakaoAuthUrl);
-      window.location.href = kakaoAuthUrl;
-    }
+    const kakaoAuthUrl = `${BASE_URL}/oauth2/authorization/kakao`;
+    console.log('Redirecting to backend for Kakao login:', kakaoAuthUrl);
+    window.location.href = kakaoAuthUrl;
   };
 
 

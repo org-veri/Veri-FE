@@ -1,10 +1,5 @@
 // src/api/communityCommentsApi.ts
 import { getAccessToken } from './auth';
-import { 
-  USE_MOCK_DATA, 
-  mockDelay, 
-  createMockResponse
-} from './mock';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || 'https://api.veri.me.kr';
 
@@ -51,7 +46,7 @@ const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Re
 
   if (accessToken) {
     headers['Authorization'] = `Bearer ${accessToken}`;
-  } else if (!USE_MOCK_DATA) {
+  } else {
     console.warn(`[fetchWithAuth] Access token is missing for URL: ${url}`);
   }
 
@@ -123,12 +118,6 @@ const makeApiRequest = async <T>(
 export const createComment = async (
   commentData: CreateCommentRequest
 ): Promise<CreateCommentResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const newCommentId = Math.floor(Math.random() * 1000) + 100; // Mock 댓글 ID
-    return createMockResponse(newCommentId, '목 댓글 작성 성공');
-  }
-
   return makeApiRequest<CreateCommentResponse>('/api/v1/comments', {
     method: 'POST',
     body: JSON.stringify(commentData),
@@ -145,11 +134,6 @@ export const createComment = async (
 export const deleteComment = async (
   commentId: number
 ): Promise<DeleteCommentResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, '목 댓글 삭제 성공');
-  }
-
   return makeApiRequest<DeleteCommentResponse>(`/api/v1/comments/${commentId}`, {
     method: 'DELETE',
   });
@@ -167,11 +151,6 @@ export const updateComment = async (
   commentId: number,
   commentData: UpdateCommentRequest
 ): Promise<UpdateCommentResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    return createMockResponse({}, '목 댓글 수정 성공');
-  }
-
   return makeApiRequest<UpdateCommentResponse>(`/api/v1/comments/${commentId}`, {
     method: 'PATCH',
     body: JSON.stringify(commentData),
@@ -188,12 +167,6 @@ export const updateComment = async (
 export const createReply = async (
   replyData: CreateReplyRequest
 ): Promise<CreateReplyResponse> => {
-  if (USE_MOCK_DATA) {
-    await mockDelay();
-    const newReplyId = Math.floor(Math.random() * 1000) + 100; // Mock 대댓글 ID
-    return createMockResponse(newReplyId, '목 대댓글 작성 성공');
-  }
-
   return makeApiRequest<CreateReplyResponse>('/api/v1/comments/reply', {
     method: 'POST',
     body: JSON.stringify(replyData),
