@@ -12,24 +12,24 @@ import CameraIcon from '../../assets/icons/camera.svg';
 import GalleryIcon from '../../assets/icons/gallery.svg';
 
 // Book images
-import Book1 from '../../assets/images/cardSample/Book/book1.png';
-import Book2 from '../../assets/images/cardSample/Book/book2.png';
+import Book1 from '../../assets/images/cardSample/Book/book1.jpg';
+import Book2 from '../../assets/images/cardSample/Book/book2.jpg';
 
 // Cafe images
-import Cafe1 from '../../assets/images/cardSample/Cafe/cafe1.png';
-import Cafe2 from '../../assets/images/cardSample/Cafe/cafe2.png';
-import Cafe3 from '../../assets/images/cardSample/Cafe/cafe3.png';
+import Cafe1 from '../../assets/images/cardSample/Cafe/cafe1.jpg';
+import Cafe2 from '../../assets/images/cardSample/Cafe/cafe2.jpg';
+import Cafe3 from '../../assets/images/cardSample/Cafe/cafe3.jpg';
 
 // Landscape images
-import Landscape1 from '../../assets/images/cardSample/Landscape/landscape1.png';
-import Landscape2 from '../../assets/images/cardSample/Landscape/landscape2.png';
-import Landscape3 from '../../assets/images/cardSample/Landscape/landscape3.png';
-import Landscape4 from '../../assets/images/cardSample/Landscape/landscape4.png';
-import Landscape5 from '../../assets/images/cardSample/Landscape/landscape5.png';
-import Landscape6 from '../../assets/images/cardSample/Landscape/landscape6.png';
-import Landscape7 from '../../assets/images/cardSample/Landscape/landscape7.png';
-import Landscape8 from '../../assets/images/cardSample/Landscape/landscape8.png';
-import Landscape9 from '../../assets/images/cardSample/Landscape/landscape9.png';
+import Landscape1 from '../../assets/images/cardSample/Landscape/landscape1.jpg';
+import Landscape2 from '../../assets/images/cardSample/Landscape/landscape2.jpg';
+import Landscape3 from '../../assets/images/cardSample/Landscape/landscape3.jpg';
+import Landscape4 from '../../assets/images/cardSample/Landscape/landscape4.jpg';
+import Landscape5 from '../../assets/images/cardSample/Landscape/landscape5.jpg';
+import Landscape6 from '../../assets/images/cardSample/Landscape/landscape6.jpg';
+import Landscape7 from '../../assets/images/cardSample/Landscape/landscape7.jpg';
+import Landscape8 from '../../assets/images/cardSample/Landscape/landscape8.jpg';
+import Landscape9 from '../../assets/images/cardSample/Landscape/landscape9.jpg';
 
 // SolidColor images
 import SolidColor1 from '../../assets/images/cardSample/SolidColor/solidcolor1.png';

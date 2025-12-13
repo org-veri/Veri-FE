@@ -12,8 +12,8 @@ import unionIcon from '../../assets/icons/TopBar/union.svg';
 import profileIcon from '../../assets/icons/TopBar/profile.svg';
 
 // 이미지 import
-import sampleBookBackground from '../../assets/images/profileSample/sample_book_background.png';
-import sampleBook from '../../assets/images/profileSample/sample_book.png';
+import sampleBookBackground from '../../assets/images/profileSample/sample_book_background.jpg';
+import sampleBook from '../../assets/images/profileSample/sample_book.jpg';
 import sampleUser from '../../assets/images/profileSample/sample_user.png';
 
 interface UserData {
