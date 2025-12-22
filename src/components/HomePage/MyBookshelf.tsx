@@ -59,18 +59,13 @@ const MyBookshelfSection: React.FC = () => {
 
       try {
         const queryParams: GetAllBooksQueryParams = {
-          // API 스펙에 맞춰 page, size, sort를 사용하는 것이 좋습니다.
           page: 1,
-          size: 5, // 최대 5개만 표시할 것이므로 size를 5로 설정 (API 호출 최적화)
-          // offset은 API 스펙에 없으므로 제거하는 것이 좋습니다.
-          // sort: 'newest', // 필요하다면 추가
+          size: 5,
         };
         
         const response = await getAllBooks(queryParams);
 
         if (response.isSuccess) {
-          // ✨ 이 부분을 수정합니다: response.result && Array.isArray(response.result.memberBooks) 체크
-          // ✨ 그리고 .books 대신 .memberBooks를 사용합니다.
           if (response.result && Array.isArray(response.result.memberBooks)) {
             const mappedBooks: BookshelfItemType[] = response.result.memberBooks.map((book: Book) => ({
               id: String(book.memberBookId),
@@ -78,16 +73,13 @@ const MyBookshelfSection: React.FC = () => {
               title: book.title,
               author: book.author,
             }));
-            // 최대 5개의 책만 표시하도록 제한 (UI 일관성을 위해)
             setBookshelfItems(mappedBooks.slice(0, 5));
           } else {
-            // isSuccess는 true지만, memberBooks 배열이 없거나 비어있는 경우
             console.warn("API는 성공을 반환했지만, 책 데이터(result.memberBooks)가 없거나 형식이 잘못되었습니다:", response);
-            setBookshelfItems([]); // 빈 배열로 설정하여 오류 없이 "등록된 책이 없습니다." 메시지 표시
+            setBookshelfItems([]);
             setError("책장 데이터를 불러왔으나, 표시할 내용이 없습니다.");
           }
         } else {
-          // API 호출이 isSuccess: false로 실패한 경우 (예: 인증 오류)
           setError(response.message || "책장 데이터를 가져오는데 실패했습니다.");
         }
       } catch (err: any) {

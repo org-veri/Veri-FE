@@ -1,4 +1,3 @@
-// src/pages/WritePostPage/WritePostPage.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './WritePostPage.css';
@@ -7,7 +6,6 @@ import { createPost } from '../../api/communityApi';
 import { uploadImage } from '../../api/imageApi';
 import Toast from '../../components/Toast';
 
-// 선택된 책 정보 타입 (memberBookId 포함)
 interface SelectedBookInfo extends BookItem {
   bookId?: number;
 }
@@ -41,44 +39,35 @@ function WritePostPage() {
     setToast(prev => ({ ...prev, isVisible: false }));
   };
 
-  // 컴포넌트 마운트 시 데이터 복원
   useEffect(() => {
     const restoreDraft = async () => {
       try {
-        // location.state에서 책 정보 먼저 확인 (책 검색에서 돌아올 때)
         if (location.state?.selectedBook) {
           setSelectedBook(location.state.selectedBook);
         }
         
-        // localStorage에서 저장된 데이터 복원
         const savedData = localStorage.getItem('writePostDraft');
         if (savedData) {
           const draft = JSON.parse(savedData);
           
-          // 제목과 내용은 항상 복원
           setTitle(draft.title || '');
           setContent(draft.content || '');
           
-          // 선택된 책은 location.state가 없을 때만 복원
           if (!location.state?.selectedBook && draft.selectedBook) {
             setSelectedBook(draft.selectedBook);
           }
           
-          // 이미지도 항상 복원
           if (draft.images && draft.images.length > 0) {
             setImages(draft.images);
             
-            // 업로드된 URL이 있으면 복원 (새로 업로드된 이미지인 경우)
             if (draft.uploadedImageUrls && draft.uploadedImageUrls.length > 0) {
               setUploadedImageUrls(draft.uploadedImageUrls);
             } else {
-              // 기존 base64 이미지는 업로드되지 않은 상태로 간주
               setUploadedImageUrls([]);
             }
           }
         }
         
-        // 복원 완료 후 초기 로딩 플래그 해제
         setIsInitialLoad(false);
       } catch (error) {
         console.error('데이터 복원 실패:', error);
@@ -89,9 +78,6 @@ function WritePostPage() {
     restoreDraft();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // 제목, 내용, 이미지, 선택된 책이 변경될 때마다 localStorage에 저장
-  // 초기 로딩이 완료된 후에만 저장
   useEffect(() => {
     if (!isInitialLoad) {
       try {
@@ -110,16 +96,14 @@ function WritePostPage() {
   }, [title, content, images, uploadedImageUrls, selectedBook, isInitialLoad]);
 
   const handleBookSelection = () => {
-    // 책 검색 페이지로 이동
     navigate('/post-book-search');
   };
 
-  // 이미지 파일 선택 핸들러
   const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
 
-    const maxImages = 10; // 최대 10개 이미지
+    const maxImages = 10;
     const filesToProcess = Array.from(files).slice(0, maxImages - images.length);
 
     if (filesToProcess.length === 0) {
@@ -129,7 +113,6 @@ function WritePostPage() {
 
     setIsUploadingImages(true);
 
-    // 미리보기용 base64 변환 및 즉시 업로드
     const newImages: string[] = [];
     const newUploadedUrls: string[] = [];
 
@@ -137,8 +120,6 @@ function WritePostPage() {
       if (!file.type.startsWith('image/')) {
         continue;
       }
-
-      // 미리보기를 위한 base64 변환
       const reader = new FileReader();
       const base64Promise = new Promise<string>((resolve) => {
         reader.onload = (e) => {
@@ -347,7 +328,6 @@ function WritePostPage() {
               </button>
             </div>
           ) : (
-            // 책 선택 버튼
             <button className="bookshelf-button" onClick={handleBookSelection}>
               <span>책 선택하기</span>
               <span className="mgc_right_fill"></span>

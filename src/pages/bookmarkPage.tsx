@@ -1,5 +1,3 @@
-// src/pages/bookmarkPage.tsx
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBackIosNew, MdBookmark, MdBookmarkBorder } from 'react-icons/md';

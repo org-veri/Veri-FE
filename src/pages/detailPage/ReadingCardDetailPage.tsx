@@ -1,5 +1,3 @@
-// src/pages/ReadingCardDetailPage/ReadingCardDetailPage.tsx
-
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiDownload, FiShare2 } from 'react-icons/fi';
@@ -144,7 +142,6 @@ function ReadingCardDetailPage() {
   }, [cardDetail]);
 
   const handleUpdateSuccess = useCallback(() => {
-    // 카드 수정 성공 후 상세 정보를 다시 불러옴
     if (id) {
       const fetchCardDetail = async (cardId: number) => {
         try {

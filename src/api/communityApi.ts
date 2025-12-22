@@ -1,9 +1,7 @@
-// src/api/communityApi.ts
 import { getAccessToken } from './auth';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || 'https://api.veri.me.kr';
 
-// 타입 정의
 export interface AuthorInfo {
   id: number;
   nickname: string;
@@ -29,22 +27,20 @@ export interface Post {
   commentCount: number;
   createdAt: string;
   isPublic: boolean;
-  isLiked?: boolean; // 좋아요 여부
+  isLiked?: boolean;
 }
 
-// 댓글 타입
 export interface Comment {
   commentId: number | null;
   content: string;
   author: AuthorInfo | null;
   createdAt: string;
   isDeleted: boolean;
-  replies?: Comment[]; // 대댓글 목록 (선택적)
-  parentCommentId?: number | null; // 부모 댓글 ID (선택적)
-  isMine?: boolean; // 본인 댓글 여부
+  replies?: Comment[];
+  parentCommentId?: number | null;
+  isMine?: boolean;
 }
 
-// 게시글 상세 정보 타입
 export interface PostDetail {
   postId: number;
   title: string;
@@ -54,14 +50,13 @@ export interface PostDetail {
   book?: BookInfo;
   likeCount: number;
   isLiked: boolean;
-  likedMembers?: AuthorInfo[]; // 좋아요를 누른 사용자 목록
+  likedMembers?: AuthorInfo[];
   comments: Comment[];
   commentCount: number;
   createdAt: string;
-  isMine?: boolean; // 본인 게시글 여부
+  isMine?: boolean;
 }
 
-// 좋아요 응답 타입
 export interface LikeResponse {
   likeCount: number;
   isLiked: boolean;
@@ -105,7 +100,6 @@ export interface CardListResponse {
   totalPages: number;
 }
 
-// 공통 응답 타입
 interface BaseApiResponse<T> {
   isSuccess: boolean;
   code: string;
@@ -113,7 +107,6 @@ interface BaseApiResponse<T> {
   result: T;
 }
 
-// 구체적인 응답 타입들
 export type GetPostFeedResponse = BaseApiResponse<PostFeedResponse>;
 export type GetMyPostsResponse = BaseApiResponse<MyPostsResponse>;
 export type GetPostDetailResponse = BaseApiResponse<PostDetail>;
@@ -124,7 +117,6 @@ export type LikePostResponse = BaseApiResponse<LikeResponse>;
 export type PublishPostResponse = BaseApiResponse<Record<string, never>>;
 export type UnpublishPostResponse = BaseApiResponse<Record<string, never>>;
 
-// 쿼리 파라미터 타입들
 export interface GetPostFeedQueryParams {
   page?: number;
   size?: number;
@@ -146,7 +138,6 @@ export interface CreatePostRequest {
   bookId?: number;
 }
 
-// 유틸리티 함수들
 const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
   const accessToken = getAccessToken();
   const headers: Record<string, string> = {
@@ -185,9 +176,7 @@ const makeApiRequest = async <T>(
 ): Promise<T> => {
   const response = await fetchWithAuth(`${BASE_URL}${endpoint}`, options);
   
-  // 204 No Content 또는 빈 응답 본문 처리
   if (response.status === 204 || response.headers.get('content-length') === '0') {
-    // 204는 성공적인 응답이므로 BaseApiResponse 형식으로 반환
     return {
       isSuccess: true,
       code: 'SUCCESS',
@@ -196,12 +185,10 @@ const makeApiRequest = async <T>(
     } as T;
   }
   
-  // Content-Type이 JSON이 아닌 경우 처리
   const contentType = response.headers.get('content-type');
   if (!contentType || !contentType.includes('application/json')) {
     const text = await response.text();
     if (!text.trim()) {
-      // 빈 응답도 성공으로 간주
       return {
         isSuccess: true,
         code: 'SUCCESS',
@@ -209,14 +196,11 @@ const makeApiRequest = async <T>(
         result: {}
       } as T;
     }
-    // JSON이 아닌 텍스트 응답인 경우 에러로 처리하거나 적절히 변환
     throw new Error(`Expected JSON response, but got: ${contentType}`);
   }
   
   return response.json();
 };
-
-// API 함수들
 
 /**
  * 전체 게시글 목록 조회

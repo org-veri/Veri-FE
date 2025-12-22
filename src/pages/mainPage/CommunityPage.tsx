@@ -1,4 +1,3 @@
-// src/pages/CommunityPage.tsx
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TopBar from '../../components/TopBar';
@@ -286,7 +285,6 @@ function CommunityPage() {
                         className={`action-button ${post.isLiked ? 'liked' : ''}`}
                         onClick={(e) => {
                           e.stopPropagation();
-                          // TODO: 좋아요 API 호출
                         }}
                       >
                         <span className={post.isLiked ? 'mgc_heart_fill' : 'mgc_heart_line'}></span>
@@ -296,7 +294,6 @@ function CommunityPage() {
                         className="action-button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          // TODO: 댓글 모달 열기
                         }}
                       >
                         <span className="mgc_chat_3_line"></span>

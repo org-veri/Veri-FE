@@ -1,28 +1,21 @@
-// src/api/communityCommentsApi.ts
 import { getAccessToken } from './auth';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || 'https://api.veri.me.kr';
 
-// 타입 정의
-
-// 댓글 작성 요청
 export interface CreateCommentRequest {
   postId: number;
   content: string;
 }
 
-// 댓글 수정 요청
 export interface UpdateCommentRequest {
   content: string;
 }
 
-// 대댓글 작성 요청
 export interface CreateReplyRequest {
   parentCommentId: number;
   content: string;
 }
 
-// 공통 응답 타입
 interface BaseApiResponse<T> {
   isSuccess: boolean;
   code: string;
@@ -30,13 +23,11 @@ interface BaseApiResponse<T> {
   result: T;
 }
 
-// 구체적인 응답 타입들
 export type CreateCommentResponse = BaseApiResponse<number>;
 export type CreateReplyResponse = BaseApiResponse<number>;
 export type UpdateCommentResponse = BaseApiResponse<Record<string, never>>;
 export type DeleteCommentResponse = BaseApiResponse<Record<string, never>>;
 
-// 유틸리티 함수들
 const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
   const accessToken = getAccessToken();
   const headers: Record<string, string> = {
@@ -75,9 +66,7 @@ const makeApiRequest = async <T>(
 ): Promise<T> => {
   const response = await fetchWithAuth(`${BASE_URL}${endpoint}`, options);
   
-  // 204 No Content 또는 빈 응답 본문 처리 - 성공 응답으로 처리
   if (response.status === 204 || response.headers.get('content-length') === '0') {
-    // 204 No Content는 성공을 의미하므로 isSuccess: true로 반환
     return {
       isSuccess: true,
       code: 'C0000',
@@ -86,12 +75,10 @@ const makeApiRequest = async <T>(
     } as T;
   }
   
-  // Content-Type이 JSON이 아닌 경우 처리
   const contentType = response.headers.get('content-type');
   if (!contentType || !contentType.includes('application/json')) {
     const text = await response.text();
     if (!text.trim()) {
-      // 빈 텍스트도 성공으로 처리
       return {
         isSuccess: true,
         code: 'C0000',
@@ -99,14 +86,11 @@ const makeApiRequest = async <T>(
         result: {}
       } as T;
     }
-    // JSON이 아닌 텍스트 응답인 경우 에러로 처리하거나 적절히 변환
     throw new Error(`Expected JSON response, but got: ${contentType}`);
   }
   
   return response.json();
 };
-
-// API 함수들
 
 /**
  * 댓글 작성

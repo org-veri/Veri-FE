@@ -166,7 +166,7 @@ export interface UpdateCardVisibilityResponse {
   message: string;
   result: {
     id: number;
-    idPublic: boolean; // API 응답에서 실제로 사용하는 필드명
+    idPublic: boolean;
     memberProfileResponse?: {
       id: number;
       nickname: string;
@@ -176,7 +176,7 @@ export interface UpdateCardVisibilityResponse {
     imageUrl?: string;
     createdAt?: string;
     book?: any;
-    isPublic?: boolean; // 호환성을 위해 유지
+    isPublic?: boolean;
   };
 }
 
@@ -359,7 +359,6 @@ export async function updateCardVisibility(cardId: number, isPublic: boolean): P
 
     const data: UpdateCardVisibilityResponse = await response.json();
     if (!data.isSuccess) {
-      // 에러 객체에 code와 message를 포함하여 throw
       const error: any = new Error(data.message || '카드 공개 여부 수정에 실패했습니다.');
       error.code = data.code;
       error.message = data.message;

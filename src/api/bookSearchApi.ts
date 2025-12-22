@@ -1,4 +1,3 @@
-// src/api/bookSearchApi.ts
 import { getAccessToken } from './auth';
 
 export type BookItem = {

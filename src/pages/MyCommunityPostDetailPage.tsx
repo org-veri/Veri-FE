@@ -518,9 +518,9 @@ function MyCommunityPostDetailPage() {
       // 수직 스크롤과 구분하기 위해 수평 이동이 더 클 때만 스와이프 처리
       if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
         if (deltaX > 0) {
-          handleImageSwipe('right'); // 오른쪽으로 스와이프 (이전 이미지)
+          handleImageSwipe('right');
         } else {
-          handleImageSwipe('left'); // 왼쪽으로 스와이프 (다음 이미지)
+          handleImageSwipe('left');
         }
       }
 

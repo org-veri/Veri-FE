@@ -32,7 +32,6 @@ const UsePhotoPage: React.FC = () => {
 
         if (errorMessage) {
             showToast(errorMessage, errorType || 'error');
-            // 에러 메시지를 표시한 후 state를 정리
             navigate(location.pathname, { replace: true, state: { image } });
         }
     }, [location.state, navigate, image]);

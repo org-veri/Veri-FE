@@ -1,4 +1,3 @@
-// src/pages/mainPage/CommunityMoreReadingCard.tsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCards } from '../api/communityApi';

@@ -68,7 +68,6 @@ const TextExtractionLoadingPage: React.FC = () => {
                 return;
             }
 
-            // 처리 시작 표시
             sessionStorage.setItem(processingKey, 'true');
 
             setIsLoadingText(true);
@@ -90,7 +89,6 @@ const TextExtractionLoadingPage: React.FC = () => {
                     return;
                 }
 
-                // 결과를 세션스토리지에 저장
                 sessionStorage.setItem(`ocr_result_${image}`, JSON.stringify({
                     success: true,
                     text: extractedText
@@ -109,17 +107,13 @@ const TextExtractionLoadingPage: React.FC = () => {
                 const errorMessage = `텍스트 추출 중 오류가 발생했습니다: ${err.message || '알 수 없는 오류'}.`;
                 setOcrError(errorMessage);
 
-                // 에러 결과를 세션스토리지에 저장
                 sessionStorage.setItem(`ocr_result_${image}`, JSON.stringify({
                     success: false,
                     error: errorMessage
                 }));
 
-                // alert 제거 - UI에서 에러 메시지 표시
-                // navigate('/make-card', { replace: true }); // 자동 리디렉션 제거
             } finally {
                 setIsLoadingText(false);
-                // 처리 완료 표시 제거
                 sessionStorage.removeItem(processingKey);
             }
         };

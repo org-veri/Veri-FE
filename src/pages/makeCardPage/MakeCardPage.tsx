@@ -49,7 +49,6 @@ const MakeCardPage: React.FC = () => {
 
     if (errorMessage) {
       showToast(errorMessage, errorType || 'warning');
-      // 에러 메시지를 표시한 후 state를 정리
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state, navigate]);

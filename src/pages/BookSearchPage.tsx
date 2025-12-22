@@ -84,22 +84,20 @@ const BookSearchPage: React.FC = () => {
         if (e.relatedTarget && (e.relatedTarget as HTMLElement).classList.contains('clear-search-button')) {
             return;
         }
-        // 그 외의 경우에는 무조건 포커스 상태 해제 (돋보기 아이콘이 다시 나타나게 함)
         setIsInputFocused(false);
     }, []);
 
     const handleClearSearch = useCallback(() => {
-        setSearchTerm(''); // 검색어 지우기
-        setSearchResults([]); // 검색 결과 지우기
-        setSearchedQuery(''); // 검색 쿼리 지우기
-        setSearchError(null); // 에러 메시지 지우기
+        setSearchTerm('');
+        setSearchResults([]);
+        setSearchedQuery('');
+        setSearchError(null);
         setCurrentPage(1);
         setHasMore(false);
-        inputRef.current?.focus(); // 입력 필드에 다시 포커스
-        setIsInputFocused(true); // 입력 필드가 비어있어도 잠시 포커스된 상태로 시작하도록
+        inputRef.current?.focus();
+        setIsInputFocused(true);
     }, []);
 
-    // fetchData 함수의 반환 타입을 BookSearchResponseResult로 명시
     const fetchData = useCallback(async (query: string, page: number, size: number): Promise<BookSearchResponseResult> => {
         setSearchError(null);
         try {
@@ -124,7 +122,6 @@ const BookSearchPage: React.FC = () => {
         }
     }, [navigate]);
 
-    // pageToFetch 매개변수 제거
     const handleSearch = useCallback(async (event: React.FormEvent | null, currentSearchTerm: string = searchTerm) => {
         event?.preventDefault();
 
@@ -152,8 +149,7 @@ const BookSearchPage: React.FC = () => {
         setSearchResults(resultData.books);
         setHasMore(resultData.page < resultData.totalPages);
 
-        inputRef.current?.focus(); // 검색 완료 후에도 포커스 유지
-        // setIsInputFocused(false); // 검색 완료 후 포커스 해제하여 검색 결과만 보이게
+        inputRef.current?.focus();
 
         if (resultData.books.length > 0) {
             setRecentSearches(prevSearches => {
@@ -164,22 +160,18 @@ const BookSearchPage: React.FC = () => {
     }, [searchTerm, pageSize, fetchData]);
 
     const loadMoreBooks = useCallback(async () => {
-        // 이미 로딩 중이거나, 검색 중이거나, 더 이상 데이터가 없거나, 검색 쿼리가 없으면 중단
         if (loadingMore || isSearching || !hasMore || !searchedQuery) return;
 
         setLoadingMore(true);
 
-        // 현재 페이지 + 1로 다음 페이지 데이터를 요청
         const resultData = await fetchData(searchedQuery, currentPage, pageSize);
 
         setLoadingMore(false);
 
         if (resultData.books.length > 0) {
             setSearchResults(prevResults => [...prevResults, ...resultData.books]);
-            // 다음 페이지가 총 페이지보다 작으면 hasMore를 true로 유지
             setHasMore(resultData.page < resultData.totalPages);
         } else {
-            // 불러온 책이 없으면 더 이상 데이터가 없다고 판단
             setHasMore(false);
         }
     }, [searchedQuery, currentPage, pageSize, loadingMore, isSearching, hasMore, fetchData]);

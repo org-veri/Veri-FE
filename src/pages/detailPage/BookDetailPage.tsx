@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './BookDetailPage.css';
 import DeleteConfirmationModal from '../../components/DeleteConfirmationModal';
-import BottomEditModal from '../../components/BottomEditModal'; // ✨ 경로 확인
+import BottomEditModal from '../../components/BottomEditModal';
 import Toast from '../../components/Toast';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
@@ -194,7 +194,7 @@ function BookDetailPage() {
     const handleEditModalClose = useCallback(() => {
         setIsEditModalOpen(false);
         if (id) {
-            fetchBookDetails(Number(id)); // 책 정보 업데이트 후 다시 불러오기
+            fetchBookDetails(Number(id));
         }
     }, [id, fetchBookDetails]);
 
