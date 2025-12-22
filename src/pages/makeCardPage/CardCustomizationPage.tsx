@@ -377,25 +377,37 @@ const CardCustomizationPage: React.FC = () => {
                 const textX = textPosition.x * scale + padding;
                 const textY = textPosition.y * scale + padding;
                 
-                // 텍스트 줄바꿈 처리
+                // 텍스트 줄바꿈 처리 (줄바꿈 문자와 공백 모두 처리)
                 const maxWidth = (cardWidth - textPosition.x - 16) * scale - (padding * 2);
-                const words = extractedText.split(' ');
-                let line = '';
+                const lines = extractedText.split('\n');
                 let y = textY;
                 
-                for (let i = 0; i < words.length; i++) {
-                    const testLine = line + words[i] + ' ';
-                    const metrics = ctx.measureText(testLine);
+                for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+                    const lineText = lines[lineIndex] || '';
+                    const words = lineText.split(' ');
+                    let line = '';
                     
-                    if (metrics.width > maxWidth && i > 0) {
-                        ctx.fillText(line, textX, y);
-                        line = words[i] + ' ';
+                    for (let i = 0; i < words.length; i++) {
+                        const testLine = line + words[i] + ' ';
+                        const metrics = ctx.measureText(testLine);
+                        
+                        if (metrics.width > maxWidth && i > 0) {
+                            ctx.fillText(line.trim(), textX, y);
+                            line = words[i] + ' ';
+                            y += lineHeight;
+                        } else {
+                            line = testLine;
+                        }
+                    }
+                    if (line.trim()) {
+                        ctx.fillText(line.trim(), textX, y);
                         y += lineHeight;
-                    } else {
-                        line = testLine;
+                    }
+                    // 줄바꿈 문자로 인한 빈 줄 처리
+                    if (lineIndex < lines.length - 1 && lines[lineIndex + 1] === '') {
+                        y += lineHeight;
                     }
                 }
-                ctx.fillText(line, textX, y);
                 
                 ctx.restore();
             }

@@ -88,6 +88,7 @@ export type GetBookByIdResponse = BaseApiResponse<{
   startedAt: string | null;
   endedAt: string | null;
   cardSummaries: CardSummary[];
+  isPublic?: boolean;
 } | null>;
 export type SearchBooksResponse = BaseApiResponse<BookSearchResult[]>;
 export type GetTodaysRecommendationResponse = BaseApiResponse<TodaysRecommendationBook[]>;
