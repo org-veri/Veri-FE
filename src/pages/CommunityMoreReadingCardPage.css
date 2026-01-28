@@ -1,20 +1,14 @@
-/* CommunityMoreReadingCard 페이지 스타일 */
-
 .reading-cards-page {
   padding: 20px;
   min-height: calc(100vh - 120px);
   background-color: #fff;
 }
-
-/* 독서카드 그리드 */
 .community-more-reading-card-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-bottom: 20px;
 }
-
-/* 개별 독서카드 아이템 */
 .community-more-reading-card-item {
   background-color: #fff;
   overflow: hidden;
@@ -58,8 +52,6 @@
   flex-direction: column;
   gap: 5px;
 }
-
-/* 사용자 정보 */
 .card-user {
   display: flex;
   align-items: center;
@@ -87,8 +79,6 @@
   color: var(--text-dark);
   line-height: 1.2;
 }
-
-/* 인용구 */
 .card-quote {
   font-size: 11px;
   color: var(--text-light);
@@ -102,8 +92,6 @@
   min-height: 1.4em;
   text-align: left;
 }
-
-/* 책 정보 */
 .card-book {
   display: flex;
   align-items: center;
@@ -127,8 +115,6 @@
   text-align: left;
   flex: 1;
 }
-
-/* 더 보기 로딩 메시지 */
 .loading-more-container {
   display: flex;
   justify-content: center;
@@ -141,8 +127,6 @@
   color: var(--text-light);
   margin: 0;
 }
-
-/* 로딩 상태 */
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -171,8 +155,6 @@
   color: var(--text-light);
   margin: 0;
 }
-
-/* 에러 상태 */
 .error-container {
   display: flex;
   flex-direction: column;
@@ -202,10 +184,8 @@
 }
 
 .retry-button:hover {
-  background-color: #c82333;
+  background-  color: #c82333;
 }
-
-/* 데이터 없음 상태 */
 .no-cards {
   display: flex;
   flex-direction: column;
@@ -226,8 +206,6 @@
   font-weight: 500;
   color: var(--text-dark);
 }
-
-/* 반응형 디자인 */
 @media (max-width: 480px) {
   .reading-cards-page {
     padding: 16px;

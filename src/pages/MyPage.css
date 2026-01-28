@@ -1,8 +1,3 @@
-/* MyPage 스타일 */
-
-/* 간격/반경은 일반 픽셀 값 사용 */
-
-/* 프로필 섹션 */
 .my-page-profile-section {
   display: flex;
   align-items: center;
@@ -82,8 +77,6 @@
   font-size: 16px;
   color: #6A717B !important;
 }
-
-/* 프로필 내부 배지 그룹 */
 .profile-stats {
   display: flex;
   gap: 5px;
@@ -122,8 +115,6 @@
   margin-left: 10px;
   filter: invert(50%);
 }
-
-/* 통계 카드 섹션 (이전) */
 .my-page-stats-cards {
   padding: 0 5px;
   margin: 10px;
@@ -267,8 +258,6 @@
 .my-post-item:hover {
   background-color: #f8f9fa;
 }
-
-/* 게시글 이미지 */
 .my-post-image {
   width: 100%;
   margin-bottom: 12px;
@@ -315,8 +304,6 @@
   background-color: #f0f0f0;
   color: #666;
 }
-
-/* 게시글 내용 */
 .my-post-content {
   margin-bottom: 12px;
 }
@@ -335,7 +322,6 @@
   text-overflow: ellipsis;
 }
 
-/* 게시글 메타 정보 (날짜 + 책) */
 .my-post-meta {
   display: flex;
   align-items: start;
@@ -382,8 +368,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-/* 게시글 액션 (좋아요/댓글) */
 .my-post-actions {
   display: flex;
   gap: 15px;

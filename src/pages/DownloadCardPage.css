@@ -1,4 +1,3 @@
-/* src/pages/DownloadCardPage/DownloadCardPage.css */
 
 .page-container.download-page {
     display: flex;
@@ -203,7 +202,6 @@
     background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
 }
 
-/* ReadingCardDetailPage와 동일한 버튼 스타일 */
 .action-buttons-container-revised {
     display: flex;
     gap: 10px;

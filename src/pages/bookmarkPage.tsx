@@ -45,7 +45,6 @@ function BookmarkPage() {
     };
   }, []);
 
-  // 검색 및 필터링
   useEffect(() => {
     let filtered = bookmarks.filter(bookmark =>
       bookmark.bookTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -53,7 +52,6 @@ function BookmarkPage() {
       bookmark.note?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // 정렬 필터 적용
     switch (activeFilter) {
       case 'recent':
         filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -62,7 +60,6 @@ function BookmarkPage() {
         filtered.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         break;
       default:
-        // 기본 정렬 (최신순)
         filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }
 
@@ -108,7 +105,6 @@ function BookmarkPage() {
 
   return (
     <div className="bookmark-page-container">
-      {/* 헤더 */}
       <header className="bookmark-header">
         <button className="header-back-button" onClick={() => navigate(-1)}>
           <MdArrowBackIosNew size={24} color="#333" />
@@ -117,7 +113,6 @@ function BookmarkPage() {
         <div className="header-placeholder"></div>
       </header>
 
-      {/* 검색 및 필터 섹션 */}
       <div className="search-filter-section">
         <div className="search-container">
           <FiSearch className="search-icon" size={20} />
@@ -152,7 +147,6 @@ function BookmarkPage() {
         </div>
       </div>
 
-      {/* 북마크 목록 */}
       <div className="bookmarks-content">
         {filteredBookmarks.length === 0 ? (
           <div className="empty-state">

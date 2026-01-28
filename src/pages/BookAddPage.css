@@ -1,7 +1,5 @@
 /* src/pages/BookAddPage.css */
 /* 공통 스타일은 src/styles/components/book-detail.css에서 import됨 */
-
-/* BookAddPage 전용: 검은색 텍스트, 20px */
 .book-detail-title {
     color: var(--Black, #1A1A1A);
     font-size: 20px;

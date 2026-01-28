@@ -3,14 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './MyPage.css';
 import { getMemberProfile, type GetMemberProfileResponse, type MemberProfile } from '../api/memberApi';
 import { getMyPosts, type Post } from '../api/communityApi';
-
-// 아이콘 import
-// import rightLineIcon from '../assets/icons/right_line.svg';
-// import scheduleFillIcon from '../assets/icons/schedule_fill.svg';
-// import saleFillIcon from '../assets/icons/sale_fill.svg';
 import TopBar from '../components/TopBar';
-
-// 이미지 import
 import sampleUser from '../assets/images/profileSample/sample_user.png';
 
 interface UserData {
@@ -126,7 +119,6 @@ const MyPage: React.FC = () => {
     </div>;
   }
 
-  // 에러 상태 처리
   if (error) {
     return <div className="loading-page-container" style={{ color: 'red' }}>{error}</div>;
   }
@@ -176,7 +168,6 @@ const MyPage: React.FC = () => {
 
       <div className="line-divider"> </div>
 
-      {/* 내 게시글 목록 섹션 */}
       <div className="my-posts-section">
         <div className="my-posts-header">
           <div className="my-posts-title-container">
@@ -208,14 +199,12 @@ const MyPage: React.FC = () => {
                 className="my-post-item"
                 onClick={() => handlePostClick(post.postId)}
               >
-                {/* 게시글 이미지 */}
                 {post.thumbnail && (
                   <div className="my-post-image">
                     <img src={post.thumbnail} alt="게시글 이미지" />
                   </div>
                 )}
 
-                {/* 게시글 제목과 공개/비공개 태그 */}
                 <div className="my-post-header">
                   <h4 className="my-post-title">{post.title}</h4>
                   <span className={`my-post-visibility ${post.isPublic ? 'public' : 'private'}`}>
@@ -223,12 +212,10 @@ const MyPage: React.FC = () => {
                   </span>
                 </div>
 
-                {/* 게시글 내용 */}
                 <div className="my-post-content">
                   <p>{truncateContent(post.content)}</p>
                 </div>
 
-                {/* 날짜와 책 정보 */}
                 <div className="my-post-meta">
                   <span className="my-post-date">{formatDate(post.createdAt)}</span>
                   {post.book && (
@@ -239,7 +226,6 @@ const MyPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* 좋아요/댓글 수 (공개인 경우만) */}
                 {post.isPublic && (
                   <div className="my-post-actions">
                     <div className="my-post-action-item">

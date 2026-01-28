@@ -46,7 +46,6 @@ function MyCommunityPostDetailPage() {
   const [isPublic, setIsPublic] = useState<boolean | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // 메뉴 외부 클릭 감지
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -57,7 +56,6 @@ function MyCommunityPostDetailPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 댓글에 isMine 필드 추가하는 함수
   const addIsMineToComments = (comments: Comment[], currentUserId: number | null): Comment[] => {
     if (!currentUserId) return comments;
 
@@ -94,7 +92,6 @@ function MyCommunityPostDetailPage() {
           const currentUserId = getCurrentUserId();
           const postData = response.result;
 
-          // 댓글들에 isMine 추가
           const commentsWithIsMine = addIsMineToComments(postData.comments, currentUserId);
 
           setPost({
@@ -102,10 +99,8 @@ function MyCommunityPostDetailPage() {
             comments: commentsWithIsMine
           });
           setIsLiked(postData.isLiked);
-          // API 응답에서 isPublic 가져오기 (응답에 포함되어 있다면)
           const responseResult = postData as any;
           setIsPublic(responseResult.isPublic !== undefined ? responseResult.isPublic : true);
-          // likedMembers가 있으면 바로 설정
           if (postData.likedMembers && postData.likedMembers.length > 0) {
             setLikeUsers(postData.likedMembers.map(member => ({
               id: member.id,
@@ -133,10 +128,9 @@ function MyCommunityPostDetailPage() {
   };
 
   const handleLikeToggle = () => {
-    // 좋아요 사용자 목록만 토글 (실제 좋아요 기능은 제거)
     if (!isLikeUsersOpen) {
       setIsLikeUsersOpen(true);
-      setIsCommentsOpen(false); // 댓글 창 닫기
+      setIsCommentsOpen(false);
       loadLikeUsers();
     } else {
       setIsLikeUsersOpen(false);
@@ -149,7 +143,6 @@ function MyCommunityPostDetailPage() {
     try {
       setIsLoadingLikeUsers(true);
       
-      // post에 likedMembers가 있으면 사용, 없으면 API에서 다시 가져오기
       if (post?.likedMembers && post.likedMembers.length > 0) {
         setLikeUsers(post.likedMembers.map(member => ({
           id: member.id,
@@ -196,7 +189,6 @@ function MyCommunityPostDetailPage() {
     try {
       setSubmittingComment(true);
 
-      // 일반 댓글 작성
       const response = await createComment({
         postId: parseInt(postId),
         content: newComment.trim()
@@ -294,7 +286,6 @@ function MyCommunityPostDetailPage() {
       const response = await deleteComment(commentId);
 
       if (response.isSuccess) {
-        // 댓글 삭제 성공 후 게시글 다시 로드
         const updatedPost = await getPostDetail(parseInt(postId));
         if (updatedPost.isSuccess && updatedPost.result) {
           const currentUserId = getCurrentUserId();
@@ -342,7 +333,6 @@ function MyCommunityPostDetailPage() {
       });
 
       if (response.isSuccess) {
-        // 댓글 수정 성공 후 게시글 다시 로드
         setEditingCommentId(null);
         setEditingContent('');
         const updatedPost = await getPostDetail(parseInt(postId));
@@ -373,7 +363,6 @@ function MyCommunityPostDetailPage() {
     }
   };
 
-  // 게시글 삭제 핸들러
   const handleDeletePost = () => {
     if (!post || !post.postId) {
       setToast({ message: '삭제할 게시글 정보가 없습니다.', type: 'error', isVisible: true });
@@ -383,7 +372,6 @@ function MyCommunityPostDetailPage() {
     setIsDeleteConfirmModalOpen(true);
   };
 
-  // 게시글 삭제 확인 핸들러
   const confirmDeletePost = async () => {
     if (!post || !post.postId) {
       setToast({ message: '삭제할 게시글 정보가 없습니다.', type: 'error', isVisible: true });
@@ -409,20 +397,17 @@ function MyCommunityPostDetailPage() {
     }
   };
 
-  // 게시글 수정 핸들러 (미구현)
   const handleEditPost = () => {
     if (!post) return;
     setMenuOpen(false);
     setToast({ message: '게시글 수정 기능은 준비 중입니다.', type: 'info', isVisible: true });
   };
 
-  // 게시글 공개/비공개 토글 핸들러
   const handleToggleVisibility = async () => {
     if (!post || !post.postId || isUpdatingVisibility || isProcessing) {
       return;
     }
 
-    // 현재 공개 상태를 명확히 확인하고 반대로 토글
     const currentIsPublic = isPublic === true;
     const newVisibility = !currentIsPublic;
     
@@ -434,7 +419,6 @@ function MyCommunityPostDetailPage() {
         : await unpublishPost(post.postId);
       
       if (response.isSuccess) {
-        // 공개/비공개 성공 후 상태 업데이트
         setIsPublic(newVisibility);
         setToast({ 
           message: newVisibility ? '게시글이 공개되었습니다.' : '게시글이 비공개되었습니다.', 
@@ -442,7 +426,6 @@ function MyCommunityPostDetailPage() {
           isVisible: true 
         });
       } else {
-        // 에러 코드에 따른 메시지 처리
         let errorMessage = response.message || '게시글 공개 여부 변경에 실패했습니다.';
         if (response.code === 'C1005') {
           errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -456,7 +439,6 @@ function MyCommunityPostDetailPage() {
     } catch (err: any) {
       console.error('게시글 공개 여부 변경 중 오류 발생:', err);
       
-      // 에러 코드에 따른 메시지 처리
       let errorMessage = err.message || '게시글 공개 여부 변경 중 오류가 발생했습니다.';
       if (err.code === 'C1005') {
         errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -472,7 +454,6 @@ function MyCommunityPostDetailPage() {
     }
   };
 
-  // 날짜 포맷팅 함수
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ko-KR', {
@@ -482,7 +463,6 @@ function MyCommunityPostDetailPage() {
     }).replace(/\./g, '.').replace(/\s/g, '');
   };
 
-  // 이미지 스와이프 핸들러
   const handleImageSwipe = (direction: 'left' | 'right') => {
     if (!post?.images || post.images.length <= 1) return;
 
@@ -497,7 +477,6 @@ function MyCommunityPostDetailPage() {
     }
   };
 
-  // 터치 이벤트 핸들러
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
     if (!touch) return;
@@ -515,7 +494,6 @@ function MyCommunityPostDetailPage() {
       const deltaX = endX - startX;
       const deltaY = endY - startY;
 
-      // 수직 스크롤과 구분하기 위해 수평 이동이 더 클 때만 스와이프 처리
       if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
         if (deltaX > 0) {
           handleImageSwipe('right');
@@ -561,7 +539,6 @@ function MyCommunityPostDetailPage() {
 
   return (
     <div className="page-container">
-      {/* 헤더 */}
       <header className="detail-header">
         <button className="header-left-arrow" onClick={() => navigate(-1)}>
           <span
@@ -604,7 +581,6 @@ function MyCommunityPostDetailPage() {
       <div className="header-margin"></div>
 
       <div className="detail-content">
-        {/* 메인 이미지 */}
         <div className="main-image-container">
           {post.images && post.images.length > 0 ? (
             <>
@@ -639,7 +615,6 @@ function MyCommunityPostDetailPage() {
           )}
         </div>
 
-        {/* 이미지 개수 표시 점들 */}
         {post.images && post.images.length > 1 && (
           <div className="image-dots">
             {post.images.map((_, index) => (
@@ -652,7 +627,6 @@ function MyCommunityPostDetailPage() {
           </div>
         )}
 
-        {/* 프로필 및 액션 */}
         <div className="detail-post-info">
           <div className="detail-author-section">
             <div className="detail-author-avatar">
@@ -663,12 +637,10 @@ function MyCommunityPostDetailPage() {
             </div>
           </div>
 
-          {/* 게시물 내용 */}
           <div className="detail-post-content">
             <p className="detail-post-summary">{post.content}</p>
           </div>
 
-          {/* 책 정보 */}
           {post.book && (
             <div className="detail-book-info">
               <img src={post.book.imageUrl} alt="책 표지" className="detail-book-cover" />
@@ -697,15 +669,13 @@ function MyCommunityPostDetailPage() {
               />
             </div>
             <div className="detail-post-date">{formatDate(post.createdAt)}</div>
+            </div>
           </div>
-        </div>
 
-        {/* 좋아요 사용자 목록 */}
         {isLikeUsersOpen && (
           <LikeUsersList users={likeUsers} />
         )}
 
-        {/* 댓글 섹션 */}
         {isCommentsOpen && (
           <CommentList
             comments={post.comments}
@@ -726,7 +696,6 @@ function MyCommunityPostDetailPage() {
           />
         )}
 
-        {/* 댓글 입력 */}
         {isCommentsOpen && (
           <CommentInput
             value={newComment}
@@ -737,7 +706,6 @@ function MyCommunityPostDetailPage() {
         )}
       </div>
 
-      {/* Toast 알림 */}
       <Toast
         message={toast.message}
         type={toast.type}
@@ -745,7 +713,6 @@ function MyCommunityPostDetailPage() {
         onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
       />
 
-      {/* 게시글 삭제 확인 모달 */}
       <DeleteConfirmationModal
         isOpen={isDeleteConfirmModalOpen}
         onClose={() => setIsDeleteConfirmModalOpen(false)}

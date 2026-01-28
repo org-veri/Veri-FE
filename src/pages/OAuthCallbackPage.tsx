@@ -5,7 +5,7 @@ import { handleSocialLoginCallback, setAccessToken, setRefreshToken } from '../a
 const OAuthCallbackPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const hasRun = useRef(false); // Prevent double execution
+  const hasRun = useRef(false);
 
   useEffect(() => {
     if (hasRun.current) return;

@@ -11,7 +11,6 @@ const LoginPage: React.FC = () => {
   const buttonsContainerRef = useRef<HTMLDivElement>(null);
   const [bottomPadding, setBottomPadding] = useState(50);
 
-  // 저장된 토큰 확인 및 자동 로그인 처리
   useEffect(() => {
     const checkExistingToken = () => {
       try {
@@ -21,7 +20,6 @@ const LoginPage: React.FC = () => {
           navigate('/', { replace: true });
         }
       } catch (error) {
-        // 토큰이 만료되었거나 유효하지 않은 경우 로그인 페이지 유지
         console.log('저장된 토큰이 없거나 만료되었습니다.');
       }
     };
@@ -44,14 +42,11 @@ const LoginPage: React.FC = () => {
       setBottomPadding(desiredPadding);
     };
 
-    // 초기 계산
     calculateBottomPadding();
 
-    // 리사이즈 이벤트 리스너 추가
     window.addEventListener('resize', calculateBottomPadding);
     window.addEventListener('orientationchange', calculateBottomPadding);
 
-    // 컴포넌트 언마운트 시 정리
     return () => {
       window.removeEventListener('resize', calculateBottomPadding);
       window.removeEventListener('orientationchange', calculateBottomPadding);

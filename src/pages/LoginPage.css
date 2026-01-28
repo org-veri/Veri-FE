@@ -1,4 +1,3 @@
-/* LoginPage 스타일 */
 
 .login-content-wrapper {
     display: flex;
@@ -48,7 +47,6 @@
     flex-direction: column;
     gap: 12px;
     margin-bottom: 20px;
-    /* padding-bottom은 동적으로 계산되어 인라인 스타일로 적용됨 */
 }
 
 /* 소셜 로그인 버튼 공통 스타일 */
@@ -67,16 +65,12 @@
     transition: background-color 0.2s ease;
     outline: none;
 }
-
-/* 카카오 로그인 버튼 */
 .social-login-button.kakao {
     background-color: #FEE500;
     color: #000;
     height: 45px;
     padding: 0;
 }
-
-/* 네이버 로그인 버튼 */
 .social-login-button.naver {
     display: flex;
     width: 300px;
@@ -116,8 +110,6 @@
     padding-left: 20px;
     padding-right: 20px;
 }
-
-/* 네이버 로그인 텍스트 */
 .naver-social-text {
     color: var(--naver-text, #FFF);
     font-family: "Pretendard";

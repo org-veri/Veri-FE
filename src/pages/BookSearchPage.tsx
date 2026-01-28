@@ -216,11 +216,6 @@ const BookSearchPage: React.FC = () => {
                 </form>
             </header>
 
-            {/* 최근 검색어 섹션:
-                - 입력 필드가 포커스되어 있지 않고 (즉, 돋보기 아이콘이 보이는 상태),
-                - 최근 검색어가 존재하며,
-                - 검색 결과가 없을 때 (초기 상태이거나 검색 결과가 없는 경우)
-            */}
             {!isInputFocused && recentSearches.length > 0 && searchResults.length === 0 && (
                 <div className="recent-searches-section">
                     <p className="section-title">최근 검색어</p>

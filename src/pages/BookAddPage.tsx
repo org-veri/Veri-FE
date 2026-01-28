@@ -19,7 +19,7 @@ function BookAddPage() {
     const publisher = initialBookInfo?.publisher || '';
     const isbn = initialBookInfo?.isbn || '';
 
-    const [isSubmitting, setIsSubmitting] = useState(false); // 등록 중 상태
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
     const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
 
@@ -85,7 +85,7 @@ function BookAddPage() {
                         className="mgc_left_fill"
                     ></span>
                 </button>
-                <h3 className='h3-white'>새 책 등록</h3> {/* 헤더 텍스트 유지 */}
+                <h3 className='h3-white'>새 책 등록</h3>
                 <div className="header-right-wrapper">
                     <div className="dummy-box" />
                 </div>

@@ -4,7 +4,6 @@ import { getCards } from '../api/communityApi';
 import type { Card, GetCardsQueryParams } from '../api/communityApi';
 import './CommunityMoreReadingCardPage.css';
 
-// 카드 아이템 컴포넌트
 interface CardItemProps {
   card: Card;
   onCardClick: (cardId: number) => void;
@@ -38,7 +37,6 @@ const CardItem: React.FC<CardItemProps> = ({ card, onCardClick, innerRef }) => {
       className="community-more-reading-card-item"
       onClick={() => onCardClick(card.cardId)}
     >
-      {/* 카드 이미지 */}
       <div className="community-more-card-image">
         <img 
           src={card.image || cardFallbackImageUrl}
@@ -47,9 +45,7 @@ const CardItem: React.FC<CardItemProps> = ({ card, onCardClick, innerRef }) => {
         />
       </div>
 
-      {/* 카드 정보 */}
       <div className="card-info">
-        {/* 사용자 정보 */}
         <div className="card-user">
           <div className="user-avatar">
             <img 
@@ -61,7 +57,6 @@ const CardItem: React.FC<CardItemProps> = ({ card, onCardClick, innerRef }) => {
           <div className="user-name">{card.member.nickname}</div>
         </div>
 
-        {/* 인용구 */}
         <div className="card-quote">
           {card.content.length > 50 
             ? card.content.substring(0, 50) + '...' 
@@ -69,7 +64,6 @@ const CardItem: React.FC<CardItemProps> = ({ card, onCardClick, innerRef }) => {
           }
         </div>
 
-        {/* 책 정보 */}
         <div className="card-book">
           <span className="mgc_book_6_fill"></span>
           <span className="community-more-book-title">{card.bookTitle}</span>
@@ -90,9 +84,7 @@ function CommunityMoreReadingCardPage() {
 
   const observer = useRef<IntersectionObserver | null>(null);
 
-  // 카드 데이터 로드
   const loadCards = useCallback(async (page: number = 1, reset: boolean = false) => {
-    // 이미 로딩 중이거나, 더 이상 데이터가 없으면 중단
     if (loadingMore || (!reset && !hasMore)) return;
 
     try {
@@ -105,7 +97,7 @@ function CommunityMoreReadingCardPage() {
       
       const params: GetCardsQueryParams = {
         page: page,
-        size: 12, // 2x2 그리드로 3페이지씩 표시
+        size: 12,
         sort: 'newest'
       };
       
@@ -177,8 +169,7 @@ function CommunityMoreReadingCardPage() {
     loadCards(1, true);
   };
 
-  // 날짜 포맷팅 함수
-  // const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string) => {
   //   const date = new Date(dateString);
   //   return date.toLocaleDateString('ko-KR', {
   //     year: 'numeric',
@@ -190,7 +181,6 @@ function CommunityMoreReadingCardPage() {
   if (isLoading && cards.length === 0) {
     return (
       <div className="page-container">
-        {/* 헤더 */}
         <header className="detail-header">
           <button className="header-left-arrow" onClick={handleBack}>
             <span className="mgc_left_fill"></span>
@@ -250,7 +240,6 @@ function CommunityMoreReadingCardPage() {
       <div className="header-margin"></div>
 
       <div className="reading-cards-page">
-        {/* 독서카드 그리드 */}
         <div className="community-more-reading-card-grid">
           {cards.map((card, index) => {
             const isLastElement = cards.length === index + 1;
@@ -265,14 +254,12 @@ function CommunityMoreReadingCardPage() {
           })}
         </div>
 
-        {/* 로딩 중 메시지 */}
         {loadingMore && (
           <div className="loading-more-container">
             <p className="loading-message">더 많은 독서카드를 불러오는 중...</p>
           </div>
         )}
 
-        {/* 게시글이 없는 경우 */}
         {!isLoading && !loadingMore && cards.length === 0 && !error && (
           <div className="no-cards">
             <p>아직 독서카드가 없습니다.</p>

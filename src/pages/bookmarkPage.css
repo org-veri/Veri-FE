@@ -5,8 +5,6 @@
   background-color: #f8f8f8;
   font-family: 'Pretendard';
 }
-
-/* 헤더 스타일 */
 .bookmark-header {
   display: flex;
   align-items: center;
@@ -45,8 +43,6 @@
 .header-placeholder {
   width: 40px;
 }
-
-/* 검색 및 필터 섹션 */
 .search-filter-section {
   padding: 20px;
   background-color: #fff;
@@ -115,8 +111,6 @@
   border-color: #0ce19a;
   color: #fff;
 }
-
-/* 북마크 콘텐츠 */
 .bookmarks-content {
   padding: 20px;
 }
@@ -275,7 +269,6 @@
   background-color: #f8f9fa;
 }
 
-/* 반응형 디자인 */
 @media (max-width: 768px) {
   .bookmark-header {
     padding: 12px 16px;

@@ -25,7 +25,6 @@ const EditMyNamePage: React.FC = () => {
         isVisible: false
     });
 
-    // 현재 사용자 정보 로드
     useEffect(() => {
         const loadUserProfile = async () => {
             try {
@@ -59,35 +58,29 @@ const EditMyNamePage: React.FC = () => {
     const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            // 파일 크기 제한 (5MB)
             if (file.size > 5 * 1024 * 1024) {
                 showToast('이미지 크기는 5MB 이하여야 합니다.', 'warning');
                 return;
             }
 
-            // 파일 타입 확인
             if (!file.type.startsWith('image/')) {
                 showToast('이미지 파일만 업로드 가능합니다.', 'warning');
                 return;
             }
 
-            // 미리보기용 URL 생성
             const url = URL.createObjectURL(file);
             setPreviewUrl(url);
 
-            // 즉시 업로드 시작
             setIsUploadingImage(true);
             try {
                 const uploadedUrl = await uploadImage(file);
                 setUploadedImageUrl(uploadedUrl);
-                // 업로드 완료 후 미리보기 URL을 업로드된 URL로 교체
                 URL.revokeObjectURL(url);
                 setPreviewUrl(uploadedUrl);
                 showToast('이미지가 업로드되었습니다.', 'success');
             } catch (error: any) {
                 console.error('이미지 업로드 실패:', error);
                 showToast('이미지 업로드에 실패했습니다.', 'error');
-                // 업로드 실패 시 미리보기도 제거
                 URL.revokeObjectURL(url);
                 setPreviewUrl(null);
                 setUploadedImageUrl(null);
@@ -97,16 +90,13 @@ const EditMyNamePage: React.FC = () => {
         }
     };
 
-    // 닉네임 중복 확인
     const handleNicknameBlur = async () => {
         const trimmedNickname = nickname.trim();
         
-        // 빈 값이거나 원래 닉네임과 같으면 중복 확인 안 함
         if (!trimmedNickname || trimmedNickname === originalNickname) {
             return;
         }
 
-        // 닉네임 길이 확인
         if (trimmedNickname.length < 2 || trimmedNickname.length > 20) {
             showToast('닉네임은 2자 이상 20자 이하여야 합니다.', 'warning');
             return;
@@ -120,7 +110,6 @@ const EditMyNamePage: React.FC = () => {
                 setNickname(originalNickname);
             }
         } catch (error) {
-            // 중복 확인 실패해도 계속 진행 가능
         } finally {
             setIsCheckingNickname(false);
         }
@@ -131,7 +120,6 @@ const EditMyNamePage: React.FC = () => {
 
         const trimmedNickname = nickname.trim();
 
-        // 닉네임 유효성 검사
         if (!trimmedNickname) {
             showToast('닉네임을 입력해주세요.', 'warning');
             return;
@@ -142,7 +130,6 @@ const EditMyNamePage: React.FC = () => {
             return;
         }
 
-        // 변경 사항 확인: 닉네임과 이미지 모두 변경되지 않았으면 API 호출하지 않음
         const isNicknameChanged = trimmedNickname !== originalNickname;
         const isImageChanged = uploadedImageUrl !== null;
         
@@ -151,7 +138,6 @@ const EditMyNamePage: React.FC = () => {
             return;
         }
 
-        // 이미지가 선택되었지만 아직 업로드 중인 경우
         if (isImageChanged && !uploadedImageUrl && isUploadingImage) {
             showToast('이미지 업로드 중입니다. 잠시만 기다려주세요.', 'info');
             return;
@@ -160,25 +146,20 @@ const EditMyNamePage: React.FC = () => {
         setIsLoading(true);
 
         try {
-            // 최종 보낼 이미지 URL (필수)
             let finalImageUrl: string | null = null;
 
-            // 업로드된 이미지 URL이 있으면 사용, 없으면 기존 이미지 URL 사용
             if (uploadedImageUrl) {
                 finalImageUrl = uploadedImageUrl;
             } else if (previewUrl) {
-                // 파일을 새로 선택하지 않은 경우 기존 이미지 URL 사용
                 finalImageUrl = previewUrl;
             }
 
-            // 서버 요구사항: 이미지가 반드시 함께 전달되어야 함
             if (!finalImageUrl) {
                 showToast('프로필 이미지를 선택해주세요.', 'warning');
                 setIsLoading(false);
                 return;
             }
 
-            // 업데이트할 데이터 준비 - 항상 두 필드를 함께 보냄
             const updateData: {
                 nickname: string;
                 profileImageUrl: string;
@@ -187,13 +168,10 @@ const EditMyNamePage: React.FC = () => {
                 profileImageUrl: finalImageUrl
             };
 
-            // 정보 업데이트
             const response = await updateMemberInfo(updateData);
 
             if (response.isSuccess) {
-                // 응답 결과 확인
                 if (response.result) {
-                    // 닉네임이 null로 반환되는 경우 경고
                     if (response.result.nickname === null && trimmedNickname) {
                         showToast('이미지는 업데이트되었지만 닉네임 업데이트에 문제가 있을 수 있습니다.', 'warning');
                     } else if (response.result.nickname === trimmedNickname) {

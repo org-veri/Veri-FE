@@ -27,9 +27,7 @@ function DownloadCardPage() {
     const [isImageLoaded, setIsImageLoaded] = useState(false);
     const [action, setAction] = useState<'download' | 'share'>('download');
 
-    // 이미지를 fetch로 가져와서 blob URL로 변환 (CORS 문제 해결)
     const loadImageAsBlob = useCallback(async (imageUrl: string): Promise<string> => {
-        // S3 URL인 경우 blob으로 변환 시도
         if (imageUrl.includes('s3.amazonaws.com') || imageUrl.includes('s3.ap-northeast-2.amazonaws.com')) {
             try {
                 const response = await fetch(imageUrl, {
@@ -46,7 +44,6 @@ function DownloadCardPage() {
                 console.warn('이미지를 blob으로 변환 실패 (CORS 오류일 수 있음), 원본 URL 사용:', err);
             }
         }
-        // CORS 오류가 발생하거나 S3 URL이 아닌 경우 원본 URL 반환
         return imageUrl;
     }, []);
 
@@ -125,8 +122,8 @@ function DownloadCardPage() {
 
             const canvas = await html2canvas(cardPreviewElement as HTMLElement, {
                 scale: 2,
-                useCORS: false, // blob URL 사용 시 false
-                allowTaint: false, // blob URL 사용 시 false
+                useCORS: false,
+                allowTaint: false,
                 backgroundColor: '#ffffff',
                 foreignObjectRendering: false,
                 imageTimeout: 15000,
@@ -190,8 +187,8 @@ function DownloadCardPage() {
 
             const canvas = await html2canvas(cardPreviewElement as HTMLElement, { 
                 scale: 2,
-                useCORS: false, // blob URL 사용 시 false
-                allowTaint: false, // blob URL 사용 시 false
+                useCORS: false,
+                allowTaint: false,
                 backgroundColor: '#ffffff',
                 foreignObjectRendering: false,
                 imageTimeout: 15000,
@@ -248,7 +245,6 @@ function DownloadCardPage() {
 
             const state = location.state as LocationState;
 
-            // action 설정 (기본값: 'download')
             if (state?.action) {
                 setAction(state.action);
             } else {
@@ -257,7 +253,6 @@ function DownloadCardPage() {
 
             if (state?.cardDetail) {
                 setCardDetail(state.cardDetail);
-                // 이미지를 blob으로 변환
                 if (state.cardDetail.imageUrl) {
                     try {
                         const blobUrl = await loadImageAsBlob(state.cardDetail.imageUrl);
@@ -265,7 +260,7 @@ function DownloadCardPage() {
                         setIsImageLoaded(true);
                     } catch (err) {
                         console.error('이미지 로드 실패:', err);
-                        setIsImageLoaded(true); // 실패해도 계속 진행
+                        setIsImageLoaded(true);
                     }
                 } else {
                     setIsImageLoaded(true);
@@ -282,7 +277,6 @@ function DownloadCardPage() {
         loadCardData();
     }, [location.state, handleCardDataLoad, loadImageAsBlob]);
 
-    // cardDetail이 변경되면 이미지 다시 로드
     useEffect(() => {
         if (cardDetail?.imageUrl && !imageBlobUrl) {
             loadImageAsBlob(cardDetail.imageUrl).then(blobUrl => {
@@ -295,7 +289,6 @@ function DownloadCardPage() {
         }
     }, [cardDetail?.imageUrl, imageBlobUrl, loadImageAsBlob]);
 
-    // 컴포넌트 언마운트 시 blob URL 정리
     useEffect(() => {
         return () => {
             if (imageBlobUrl) {
