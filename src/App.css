@@ -45,11 +45,13 @@ body::-webkit-scrollbar {
   .App {
     max-width: 100%;
     margin: 0;
-    padding-left: 250px;
-    /* 사이드바 너비만큼 공간 확보 */
     overflow-x: auto;
     align-items: flex-start;
-    /* 중앙 정렬 해제 */
+  }
+
+  /* 사이드바 있을 때만 왼쪽 여백 (로그인 등은 전체 너비로 중앙 정렬) */
+  .App.has-sidebar {
+    padding-left: 250px;
   }
 
   /* 탭바 숨기기 */
