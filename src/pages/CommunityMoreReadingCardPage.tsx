@@ -169,15 +169,6 @@ function CommunityMoreReadingCardPage() {
     loadCards(1, true);
   };
 
-  const formatDate = (dateString: string) => {
-  //   const date = new Date(dateString);
-  //   return date.toLocaleDateString('ko-KR', {
-  //     year: 'numeric',
-  //     month: '2-digit',
-  //     day: '2-digit'
-  //   }).replace(/\./g, '.').replace(/\s/g, '');
-  // };
-
   if (isLoading && cards.length === 0) {
     return (
       <div className="page-container">
@@ -203,7 +194,6 @@ function CommunityMoreReadingCardPage() {
   if (error) {
     return (
       <div className="page-container">
-        {/* 헤더 */}
         <header className="detail-header">
           <button className="header-left-arrow" onClick={handleBack}>
             <span className="mgc_left_fill"></span>
@@ -228,7 +218,6 @@ function CommunityMoreReadingCardPage() {
 
   return (
     <div className="page-container">
-      {/* 헤더 */}
       <header className="detail-header">
         <button className="header-left-arrow" onClick={handleBack}>
           <span className="mgc_left_fill"></span>
