@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './BookDetailPage.css';
 import DeleteConfirmationModal from '../../components/DeleteConfirmationModal';
-import BottomEditModal from '../../components/BottomEditModal'; // ✨ 경로 확인
+import BottomEditModal from '../../components/BottomEditModal';
 import Toast from '../../components/Toast';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
@@ -128,8 +128,8 @@ function BookDetailPage() {
                     ...fetchedBook,
                     cardSummaries: response.result.cardSummaries
                 } as Book & { cardSummaries: CardSummary[] });
-                const responseResult = response.result as any;
-                setIsPublic(responseResult.isPublic !== undefined ? responseResult.isPublic : true);
+                // API 응답에서 isPublic 필드 읽어오기
+                setIsPublic(response.result.isPublic !== undefined ? response.result.isPublic : false);
             } else {
                 setError(response.message || "책 상세 정보를 가져오는데 실패했습니다.");
             }
@@ -194,7 +194,7 @@ function BookDetailPage() {
     const handleEditModalClose = useCallback(() => {
         setIsEditModalOpen(false);
         if (id) {
-            fetchBookDetails(Number(id)); // 책 정보 업데이트 후 다시 불러오기
+            fetchBookDetails(Number(id));
         }
     }, [id, fetchBookDetails]);
 
@@ -213,9 +213,10 @@ function BookDetailPage() {
         try {
             const response = await updateBookVisibility(book.memberBookId, newVisibility);
             if (response.isSuccess && response.result) {
-                // API 응답의 결과로 상태 업데이트
-                const updatedIsPublic = response.result.idPublic;
+                // API 응답의 결과로 상태 업데이트 (idPublic 또는 isPublic 필드 확인)
+                const updatedIsPublic = (response.result as any).isPublic ?? response.result.idPublic;
                 setIsPublic(updatedIsPublic);
+                
                 setToast({ 
                     message: updatedIsPublic ? '독서 기록이 공개되었습니다.' : '독서 기록이 비공개되었습니다.', 
                     type: 'success', 
@@ -250,7 +251,7 @@ function BookDetailPage() {
         } finally {
             setIsUpdatingVisibility(false);
         }
-    }, [book, isPublic, isUpdatingVisibility, isSavingChanges]);
+    }, [book, isPublic, isUpdatingVisibility, isSavingChanges, fetchBookDetails]);
 
 
     if (isLoading || isSavingChanges) {
@@ -381,19 +382,17 @@ function BookDetailPage() {
                 info="책장에서 제거된 책의 독서카드는 독서카드 페이지에 그대로 남아있어요 :)"
             />
 
-            {/* ✨ BottomEditModal에 책 제목과 작가 props 추가 */}
             <BottomEditModal
                 isOpen={isEditModalOpen}
-                onClose={handleEditModalClose} // 수정 후 책 정보를 다시 불러오도록 onClose 핸들러 변경
+                onClose={handleEditModalClose}
                 memberBookId={book.memberBookId}
                 defaultScore={book.score}
                 defaultStartedAt={book.startedAt}
                 defaultEndedAt={book.endedAt}
-                bookTitle={book.title} // ✨ 책 제목 전달
-                bookAuthor={book.author} // ✨ 책 작가 전달
+                bookTitle={book.title}
+                bookAuthor={book.author}
             />
-
-            {/* Toast 알림 */}
+            
             <Toast
                 message={toast.message}
                 type={toast.type}

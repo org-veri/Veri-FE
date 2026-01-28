@@ -12,7 +12,6 @@ import CommunityDeactiveIcon from '../assets/icons/NavBar/Deactive/community.svg
 import HomeActiveIcon from '../assets/icons/NavBar/Active/home.svg';
 import HomeDeactiveIcon from '../assets/icons/NavBar/Deactive/home.svg';
 
-// 아이콘 컴포넌트를 정의합니다.
 const LibraryIcon = ({ active }: { active: boolean }) => (
     <img 
         src={active ? LibraryActiveIcon : LibraryDeactiveIcon} 

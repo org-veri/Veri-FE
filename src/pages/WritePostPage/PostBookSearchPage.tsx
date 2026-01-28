@@ -75,7 +75,6 @@ const PostBookSearchPage: React.FC = () => {
     }, [fetchMyBooks]);
 
     const handleSelectMyBook = useCallback((book: Book) => {
-        // 내 책장의 책을 선택 (memberBookId 포함)
         const bookItem: SelectedBookInfo = {
             bookId: book.bookId,
             title: book.title,
@@ -91,7 +90,6 @@ const PostBookSearchPage: React.FC = () => {
     const handleConfirmSelection = useCallback(() => {
         if (!selectedBook) return;
 
-        // 선택된 책 정보를 WritePostPage로 전달 (memberBookId 포함)
         navigate('/write-post', {
             state: {
                 selectedBook: selectedBook

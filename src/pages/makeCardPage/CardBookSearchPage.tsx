@@ -543,7 +543,6 @@ const CardBookSearchPage: React.FC = () => {
                                         handleRegisterMyBook(myBook);
                                     }
                                 } else {
-                                    // 검색 결과의 책
                                     handleRegisterBook(selectedBook);
                                 }
                             }}

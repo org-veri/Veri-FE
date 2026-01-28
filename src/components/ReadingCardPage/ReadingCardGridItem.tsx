@@ -1,10 +1,7 @@
-// src/components/ReadingCardPage/ReadingCardGridItem.tsx
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ReadingCardGridItem.css'; // CSS 파일 임포트 유지
-import { type ReadingCardItemType } from '../../pages/mainPage/ReadingCardPage'; // ReadingCardPage에서 정의된 인터페이스 임포트
-
-// 각 독서카드를 이미지 갤러리 형태로 표시하는 컴포넌트
+import './ReadingCardGridItem.css';
+import { type ReadingCardItemType } from '../../pages/mainPage/ReadingCardPage';
 const ReadingCardGridItem: React.FC<ReadingCardItemType> = ({ id, title, thumbnailUrl, isPublic }) => {
     const navigate = useNavigate();
     const fallbackImageUrl = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="150" height="200"%3E%3Crect width="150" height="200" fill="%23E3E7ED"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="12"%3ENo Image%3C/text%3E%3C/svg%3E';

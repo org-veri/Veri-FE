@@ -82,7 +82,7 @@ const CardCustomizationCompletePage: React.FC = () => {
                     title: bookDetail.title,
                     author: bookDetail.author,
                 },
-                textPosition: textPosition, // 텍스트 위치 정보 추가
+                textPosition: textPosition,
             };
             navigate('/download-card', { state: { cardDetail: cardDataForDownloadPage, action: 'download' } });
         } else {
@@ -103,7 +103,7 @@ const CardCustomizationCompletePage: React.FC = () => {
                     title: bookDetail.title,
                     author: bookDetail.author,
                 },
-                textPosition: textPosition, // 텍스트 위치 정보 추가
+                textPosition: textPosition,
             };
             navigate('/download-card', { state: { cardDetail: cardDataForDownloadPage, action: 'share' } });
         } else {
@@ -181,7 +181,7 @@ const CardCustomizationCompletePage: React.FC = () => {
         } catch (saveError: any) {
             console.error('카드 메타데이터 저장 중 오류:', saveError);
             setSaveError(`카드 저장 실패: ${saveError.message || '알 수 없는 오류'}`);
-            hasSaved.current = false; // 에러 발생 시 다시 시도할 수 있도록
+            hasSaved.current = false;
         } finally {
             setIsSaving(false);
         }

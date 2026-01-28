@@ -1,5 +1,3 @@
-// src/pages/LoginPage.tsx
-
 import React, {useEffect, useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import { getAccessToken } from '../api/auth';
@@ -19,7 +17,6 @@ const LoginPage: React.FC = () => {
       try {
         const token = getAccessToken();
         if (token) {
-          // 유효한 토큰이 있으면 홈으로 리다이렉트
           console.log('저장된 로그인 정보가 있습니다. 자동으로 로그인합니다.');
           navigate('/', { replace: true });
         }

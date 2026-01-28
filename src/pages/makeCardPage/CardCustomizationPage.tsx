@@ -11,16 +11,13 @@ import CheckFillIconSVG from '../../assets/icons/CustomizePage/check_fill.svg?re
 import CameraIcon from '../../assets/icons/camera.svg';
 import GalleryIcon from '../../assets/icons/gallery.svg';
 
-// Book images
 import Book1 from '../../assets/images/cardSample/Book/book1.jpg';
 import Book2 from '../../assets/images/cardSample/Book/book2.jpg';
 
-// Cafe images
 import Cafe1 from '../../assets/images/cardSample/Cafe/cafe1.jpg';
 import Cafe2 from '../../assets/images/cardSample/Cafe/cafe2.jpg';
 import Cafe3 from '../../assets/images/cardSample/Cafe/cafe3.jpg';
 
-// Landscape images
 import Landscape1 from '../../assets/images/cardSample/Landscape/landscape1.jpg';
 import Landscape2 from '../../assets/images/cardSample/Landscape/landscape2.jpg';
 import Landscape3 from '../../assets/images/cardSample/Landscape/landscape3.jpg';
@@ -31,7 +28,6 @@ import Landscape7 from '../../assets/images/cardSample/Landscape/landscape7.jpg'
 import Landscape8 from '../../assets/images/cardSample/Landscape/landscape8.jpg';
 import Landscape9 from '../../assets/images/cardSample/Landscape/landscape9.jpg';
 
-// SolidColor images
 import SolidColor1 from '../../assets/images/cardSample/SolidColor/solidcolor1.png';
 import SolidColor2 from '../../assets/images/cardSample/SolidColor/solidcolor2.png';
 import SolidColor3 from '../../assets/images/cardSample/SolidColor/solidcolor3.png';
@@ -66,7 +62,6 @@ const CardCustomizationPage: React.FC = () => {
         setToast(prev => ({ ...prev, isVisible: false }));
     };
 
-    // 배경 카테고리별 이미지 데이터
     const backgroundCategories = {
         'my-photo': [
             { label: '촬영 사진', url: image, id: 'uploaded' },
@@ -103,8 +98,6 @@ const CardCustomizationPage: React.FC = () => {
         ],
     };
 
-
-    // 폰트 목록 - fonts 폴더의 모든 폰트
     const fonts = [
         { label: 'Pretendard', value: 'Pretendard, sans-serif', id: 'pretendard' },
         { label: 'Nanum Gothic', value: '"Nanum Gothic", sans-serif', id: 'nanum-gothic' },
@@ -118,21 +111,17 @@ const CardCustomizationPage: React.FC = () => {
     const [selectedBackground, setSelectedBackground] = useState<'uploaded' | string>('uploaded');
     const [selectedFontId, setSelectedFontId] = useState<string>(fonts[0]?.id || 'pretendard');
     
-    // 효과 관련 상태
     const [selectedEffect, setSelectedEffect] = useState<'none' | 'blur' | 'darkness'>('none');
     const [effectIntensity, setEffectIntensity] = useState<number>(50);
     
-    // 텍스트 드래그 관련 상태
     const [textPosition, setTextPosition] = useState({ x: 16, y: 100 });
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const cardPreviewRef = useRef<HTMLDivElement>(null);
     
-    // 카메라/갤러리 관련 ref
     const cameraInputRef = useRef<HTMLInputElement>(null);
     const galleryInputRef = useRef<HTMLInputElement>(null);
     
-    // 선택한 이미지 상태 (카메라/갤러리에서 가져온 이미지)
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const getBackgroundImage = () => {
@@ -141,7 +130,6 @@ const CardCustomizationPage: React.FC = () => {
             return selectedImage || image;
         }
         
-        // 카테고리별로 찾기
         const category = backgroundCategories[selectedBackgroundCategory];
         if (category) {
             const found = category.find((bg) => bg.id === selectedBackground);
@@ -151,17 +139,14 @@ const CardCustomizationPage: React.FC = () => {
         return image;
     };
 
-    // 카메라 열기
     const handleCameraClick = () => {
         cameraInputRef.current?.click();
     };
 
-    // 갤러리 열기
     const handleGalleryClick = () => {
         galleryInputRef.current?.click();
     };
 
-    // 파일 선택 처리
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, source: 'camera' | 'gallery') => {
         const file = e.target.files?.[0];
         if (file) {
@@ -179,7 +164,6 @@ const CardCustomizationPage: React.FC = () => {
             };
             reader.readAsDataURL(file);
         }
-        // 같은 파일을 다시 선택할 수 있도록 value 초기화
         e.target.value = '';
     };
 
@@ -205,7 +189,6 @@ const CardCustomizationPage: React.FC = () => {
         );
     }
 
-    // 텍스트 드래그 이벤트 핸들러들
     const handleStart = (clientX: number, clientY: number, target: HTMLElement) => {
         const rect = target.getBoundingClientRect();
         setDragOffset({
@@ -311,7 +294,6 @@ const CardCustomizationPage: React.FC = () => {
                 throw new Error('Canvas context를 가져올 수 없습니다.');
             }
 
-            // 배경 이미지 로드
             const backgroundImage = new Image();
             backgroundImage.crossOrigin = 'anonymous';
             
@@ -321,17 +303,13 @@ const CardCustomizationPage: React.FC = () => {
                 backgroundImage.src = currentImage;
             });
 
-            // 배경 이미지 그리기
             ctx.save();
             
-            // 효과 적용
             if (selectedEffect === 'blur') {
-                // blur 효과
                 const blurAmount = effectIntensity * 0.1 * scale;
                 ctx.filter = `blur(${blurAmount}px)`;
                 ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
             } else if (selectedEffect === 'darkness') {
-                // brightness 효과 - 픽셀 조작으로 구현
                 ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
@@ -343,9 +321,9 @@ const CardCustomizationPage: React.FC = () => {
                         const g = data[i + 1];
                         const b = data[i + 2];
                         if (r !== undefined && g !== undefined && b !== undefined) {
-                            data[i] = Math.max(0, Math.min(255, r * brightness));     // R
-                            data[i + 1] = Math.max(0, Math.min(255, g * brightness)); // G
-                            data[i + 2] = Math.max(0, Math.min(255, b * brightness)); // B
+                            data[i] = Math.max(0, Math.min(255, r * brightness));
+                            data[i + 1] = Math.max(0, Math.min(255, g * brightness));
+                            data[i + 2] = Math.max(0, Math.min(255, b * brightness));
                         }
                     }
                     
@@ -357,7 +335,6 @@ const CardCustomizationPage: React.FC = () => {
             
             ctx.restore();
 
-            // 텍스트 렌더링
             const textElement = cardPreviewRef.current.querySelector('.overlay-text') as HTMLElement;
             if (textElement) {
                 const computedStyle = window.getComputedStyle(textElement);
@@ -373,29 +350,39 @@ const CardCustomizationPage: React.FC = () => {
                 ctx.fillStyle = color;
                 ctx.textBaseline = 'top';
                 
-                // 텍스트 위치 (scale 적용, padding 포함)
                 const textX = textPosition.x * scale + padding;
                 const textY = textPosition.y * scale + padding;
                 
-                // 텍스트 줄바꿈 처리
                 const maxWidth = (cardWidth - textPosition.x - 16) * scale - (padding * 2);
-                const words = extractedText.split(' ');
-                let line = '';
+                const lines = extractedText.split('\n');
                 let y = textY;
                 
-                for (let i = 0; i < words.length; i++) {
-                    const testLine = line + words[i] + ' ';
-                    const metrics = ctx.measureText(testLine);
+                for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+                    const lineText = lines[lineIndex] || '';
+                    const words = lineText.split(' ');
+                    let line = '';
                     
-                    if (metrics.width > maxWidth && i > 0) {
-                        ctx.fillText(line, textX, y);
-                        line = words[i] + ' ';
+                    for (let i = 0; i < words.length; i++) {
+                        const testLine = line + words[i] + ' ';
+                        const metrics = ctx.measureText(testLine);
+                        
+                        if (metrics.width > maxWidth && i > 0) {
+                            ctx.fillText(line.trim(), textX, y);
+                            line = words[i] + ' ';
+                            y += lineHeight;
+                        } else {
+                            line = testLine;
+                        }
+                    }
+                    if (line.trim()) {
+                        ctx.fillText(line.trim(), textX, y);
                         y += lineHeight;
-                    } else {
-                        line = testLine;
+                    }
+                    // 줄바꿈 문자로 인한 빈 줄 처리
+                    if (lineIndex < lines.length - 1 && lines[lineIndex + 1] === '') {
+                        y += lineHeight;
                     }
                 }
-                ctx.fillText(line, textX, y);
                 
                 ctx.restore();
             }
@@ -426,8 +413,6 @@ const CardCustomizationPage: React.FC = () => {
                     <button 
                         className="customization-cancel-btn" 
                         onClick={() => {
-                            // 텍스트 수정 페이지에서 왔을 때는 뒤로가기 제스처로만 돌아갈 수 있도록
-                            // 취소는 항상 make-card로 이동
                             navigate('/make-card');
                         }}
                     >

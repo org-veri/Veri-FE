@@ -1,4 +1,3 @@
-// src/pages/mainPage/LibraryPage.tsx
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './LibraryPage.css';

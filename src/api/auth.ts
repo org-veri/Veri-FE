@@ -1,8 +1,5 @@
-// src/api/auth.ts
-
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
-// 타입 정의
 interface JwtPayload {
   exp?: number;
   [key: string]: any;
@@ -23,7 +20,6 @@ interface ApiError {
   code?: string;
 }
 
-// 유틸리티 함수들
 const decodeJwt = (token: string): JwtPayload | null => {
   try {
     const parts = token.split('.');
@@ -46,7 +42,6 @@ const decodeJwt = (token: string): JwtPayload | null => {
           .join('')
       );
     } catch (decodeError) {
-      // 디코딩 실패 시 더 간단한 방법 시도
       try {
         jsonPayload = atob(base64);
       } catch (simpleError) {
@@ -65,7 +60,7 @@ const decodeJwt = (token: string): JwtPayload | null => {
 const isTokenExpired = (token: string): boolean => {
   const payload = decodeJwt(token);
   if (!payload?.exp || typeof payload.exp !== 'number') {
-    return true; // exp가 없으면 만료된 것으로 간주
+    return true;
   }
   return payload.exp < Date.now() / 1000;
 };
@@ -126,7 +121,6 @@ const handleReissueResponse = async (response: Response): Promise<ReissueRespons
     try {
       errorData = await response.json();
     } catch {
-      // JSON 파싱 실패 시 무시
     }
     throw new Error(errorData.message || `HTTP ${response.status} 오류`);
   }
@@ -199,7 +193,6 @@ export const getAccessTokenAsync = async (autoReissue: boolean = true): Promise<
     if (isTokenExpired(token)) {
       console.warn('액세스 토큰이 만료되었습니다.');
       
-      // 자동 재발급이 활성화되어 있고 refreshToken이 있으면 재발급 시도
       if (autoReissue && getRefreshToken()) {
         try {
           console.log('토큰을 자동으로 재발급합니다.');
@@ -244,7 +237,6 @@ export const removeAccessToken = (): void => {
   localStorage.removeItem('accessToken');
 };
 
-// RefreshToken 관리 함수들
 export const getRefreshToken = (): string | null => {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem('refreshToken');
@@ -303,7 +295,6 @@ export const reissueToken = async (): Promise<string> => {
   }
 };
 
-// 현재 로그인한 사용자 ID 추출
 export const getCurrentUserId = (): number | null => {
   const token = getAccessToken();
   if (!token) {
@@ -317,8 +308,6 @@ export const getCurrentUserId = (): number | null => {
     return null;
   }
 
-  // JWT 페이로드에서 사용자 ID 추출
-  // 실제 백엔드 JWT 페이로드 구조: { sub: 'veri', id: 4, email: '...', nickName: '...', ... }
   const userId = payload.id || payload.memberId || payload.userId || payload.member_id;
 
   if (typeof userId === 'number') {
@@ -332,7 +321,6 @@ export const getCurrentUserId = (): number | null => {
     }
   }
 
-  // 디버깅: 어떤 필드들이 있는지 확인
   if (import.meta.env.DEV) {
     console.warn('[getCurrentUserId] User ID not found in payload. Available keys:', Object.keys(payload));
   }

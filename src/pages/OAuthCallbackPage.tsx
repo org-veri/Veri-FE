@@ -1,5 +1,3 @@
-// src/pages/OAuthCallbackPage.tsx
-
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { handleSocialLoginCallback, setAccessToken, setRefreshToken } from '../api/auth';
