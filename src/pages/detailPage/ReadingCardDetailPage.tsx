@@ -19,7 +19,8 @@ function ReadingCardDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isMyCard, setIsMyCard] = useState<boolean>(true); // 기본값은 true (내 카드로 가정)
+  const [isMyCard, setIsMyCard] = useState<boolean>(false);
+  const [cardOwnerNickname, setCardOwnerNickname] = useState<string | null>(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -47,6 +48,7 @@ function ReadingCardDetailPage() {
       setIsLoading(true);
       setError(null);
       setCardDetail(null);
+      setCardOwnerNickname(null);
 
       try {
         const response = await getCardDetailById(cardId);
@@ -55,11 +57,12 @@ function ReadingCardDetailPage() {
           const bookData = response.result.book;
           const currentUserId = getCurrentUserId();
           const cardOwnerId = response.result.memberProfileResponse?.id;
-          
-          // 현재 사용자 ID와 카드 소유자 ID를 비교하여 내 카드인지 판단
+          const nickname = response.result.memberProfileResponse?.nickname ?? null;
+
           const isMyCardValue = currentUserId !== null && cardOwnerId !== undefined && currentUserId === cardOwnerId;
           setIsMyCard(isMyCardValue);
-          
+          setCardOwnerNickname(nickname);
+
           setCardDetail({
             cardId: response.result.id,
             content: response.result.content,
@@ -267,7 +270,7 @@ function ReadingCardDetailPage() {
   // 기존 handleGoToDownloadPage 유지
   const handleGoToDownloadPage = useCallback(() => {
     if (cardDetail) {
-      navigate('/download-card', { state: { cardDetail: cardDetail, action: 'download' } }); // action 추가
+      navigate('/download-card', { state: { cardDetail: cardDetail, action: 'download' } });
     } else {
       setToast({ message: '다운로드할 독서 카드 정보를 불러오지 못했습니다.', type: 'error', isVisible: true });
     }
@@ -305,27 +308,31 @@ function ReadingCardDetailPage() {
             className="mgc_left_fill"
           ></span>
         </button>
-        <h3>나의 독서카드</h3>
+        <h3>{isMyCard ? '나의 독서카드' : cardOwnerNickname ? `${cardOwnerNickname}의 독서카드` : '독서카드'}</h3>
         <div className="header-right-wrapper">
-          <button
-            className="header-menu-button"
-            onClick={() => setMenuOpen((prev) => !prev)}
-            disabled={isProcessing}
-          >
-            <BsThreeDotsVertical size={20} color="#333" />
-          </button>
+          {isMyCard && (
+            <>
+              <button
+                className="header-menu-button"
+                onClick={() => setMenuOpen((prev) => !prev)}
+                disabled={isProcessing}
+              >
+                <BsThreeDotsVertical size={20} color="#333" />
+              </button>
 
-          {menuOpen && (
-            <div className="header-dropdown-menu" ref={menuRef}>
-              <div className="menu-item" onClick={handleEditCard}>
-                <FiEdit2 size={16} />
-                <span>수정하기</span>
-              </div>
-              <div className="menu-item" onClick={handleDeleteCard}>
-                <FiTrash2 size={16} />
-                <span>삭제하기</span>
-              </div>
-            </div>
+              {menuOpen && (
+                <div className="header-dropdown-menu" ref={menuRef}>
+                  <div className="menu-item" onClick={handleEditCard}>
+                    <FiEdit2 size={16} />
+                    <span>수정하기</span>
+                  </div>
+                  <div className="menu-item" onClick={handleDeleteCard}>
+                    <FiTrash2 size={16} />
+                    <span>삭제하기</span>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </header>
@@ -382,14 +389,12 @@ function ReadingCardDetailPage() {
           <FiDownload size={24} />
           <span>다운로드</span>
         </button>
-        {/* '공유하기' 버튼도 DownloadCardPage로 이동하도록 변경 */}
         <button className="action-button-revised share-button-revised" onClick={handleShare} disabled={isProcessing}>
           <FiShare2 size={24} />
           <span>공유하기</span>
         </button>
       </div>
 
-      {/* 독서 카드 수정 모달 */}
       {cardDetail && (
         <ReadingCardEditModal
           isOpen={editModalOpen}
@@ -403,7 +408,6 @@ function ReadingCardDetailPage() {
         />
       )}
 
-      {/* 독서 카드 삭제 확인 모달 */}
       <DeleteConfirmationModal
         isOpen={isDeleteConfirmModalOpen}
         onClose={() => setIsDeleteConfirmModalOpen(false)}
@@ -413,7 +417,6 @@ function ReadingCardDetailPage() {
         info="삭제된 독서카드는 복구할 수 없어요"
       />
 
-      {/* Toast 알림 */}
       <Toast
         message={toast.message}
         type={toast.type}
