@@ -1,4 +1,3 @@
-// src/components/HomePage/MyReadingCard.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MyReadingCard.css';

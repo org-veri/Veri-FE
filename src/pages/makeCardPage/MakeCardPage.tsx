@@ -42,7 +42,6 @@ const MakeCardPage: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // 전달받은 에러 메시지 처리
   useEffect(() => {
     const errorMessage = location.state?.errorMessage as string | undefined;
     const errorType = location.state?.errorType as 'success' | 'error' | 'warning' | 'info' | undefined;
@@ -104,7 +103,6 @@ const MakeCardPage: React.FC = () => {
       try {
         const uploadedUrl = await uploadImage(file);
         console.log('갤러리 이미지 업로드 성공:', uploadedUrl);
-        // 바로 UsePhotoPage로 이동
         navigate('/use-photo', {
           state: { image: uploadedUrl }
         });
@@ -193,7 +191,6 @@ const MakeCardPage: React.FC = () => {
           stopCameraStream();
           setCameraError(null);
           console.log('촬영된 사진 업로드 성공:', uploadedUrl);
-          // 바로 UsePhotoPage로 이동
           navigate('/use-photo', {
             state: { image: uploadedUrl }
           });

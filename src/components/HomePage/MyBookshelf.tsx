@@ -1,26 +1,22 @@
-// src/pages/LibraryPage/MyBookshelf.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookApi'; // API 임포트
+import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookApi';
 
-// 개별 책장 아이템의 타입 정의
-// Book 인터페이스와 호환되도록 조정
 interface BookshelfItemType {
-  id: string; // bookId
-  coverUrl: string; // imageUrl
+  id: string;
+  coverUrl: string;
   title: string;
   author: string;
 }
 
-// 개별 책장 아이템을 렌더링하는 내부 컴포넌트
 const SingleBookshelfItem: React.FC<BookshelfItemType> = ({ id, coverUrl, title, author }) => {
   const navigate = useNavigate();
   const fallbackImageUrl = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="150"%3E%3Crect width="100" height="150" fill="%23E3E7ED"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="12"%3ENo Cover%3C/text%3E%3C/svg%3E';
   const hasErrorRef = React.useRef(false);
 
   const handleClick = () => {
-    navigate(`/book-detail/${id}`); // 클릭 시 해당 책의 상세 페이지로 이동
+    navigate(`/book-detail/${id}`);
   };
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -45,7 +41,6 @@ const SingleBookshelfItem: React.FC<BookshelfItemType> = ({ id, coverUrl, title,
   );
 };
 
-// '나의 책장' 섹션 전체를 담당하는 컴포넌트
 const MyBookshelfSection: React.FC = () => {
   const navigate = useNavigate();
   const [bookshelfItems, setBookshelfItems] = useState<BookshelfItemType[]>([]);

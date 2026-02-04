@@ -206,7 +206,6 @@ function LibraryPage() {
 
       <div className="header-margin"></div>
 
-      {/* 책장 제목과 책 수 */}
       <div className="library-title-section">
         <h2 className="library-title">나의책장 <span className="book-count">{filteredBooks.length}</span></h2>
         <div className="view-toggle-buttons">
@@ -227,7 +226,6 @@ function LibraryPage() {
         </div>
       </div>
 
-      {/* 필터와 검색 섹션 */}
       <div className="filter-search-section">
         <div className="left-filters">
           <div className="reading-status-filters">

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './LibraryPageList.css';
 
 import { StarRatingFullPage } from '../../pages/mainPage/LibraryPage';
-import { type Book, type BookStatus } from '../../api/bookApi'; // Ensure BookStatus is imported
+import { type Book, type BookStatus } from '../../api/bookApi';
 
 interface BookshelfListProps {
   books: Book[];
@@ -19,13 +19,13 @@ const BookshelfList: React.FC<BookshelfListProps> = ({ books }) => {
   const getStatusClass = (status: BookStatus) => {
     switch (status) {
       case 'READING':
-        return '독서중'; // Corresponds to CSS class '독서중'
+        return '독서중';
       case 'DONE':
-        return '완독';   // Corresponds to CSS class '완독'
+        return '완독';
       case 'NOT_START':
-        return '읽기전'; // Assign a new CSS class for "NOT_START"
+        return '읽기전';
       default:
-        return 'status-unknown'; // Fallback for any unhandled status
+        return 'status-unknown';
     }
   };
 
@@ -62,7 +62,7 @@ const BookshelfList: React.FC<BookshelfListProps> = ({ books }) => {
                     : book.status === 'DONE'
                       ? '완독'
                       : book.status === 'NOT_START'
-                        ? '읽기 전' // Display text for NOT_START
+                        ? '읽기 전'
                         : book.status}
                 </span>
                 <span className="book-date">

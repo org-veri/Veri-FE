@@ -1,5 +1,3 @@
-/* src/components/ReadingStatusModal.css */
-
 .reading-status-modal {
   position: fixed;
   background: white;
@@ -78,7 +76,6 @@
   white-space: nowrap;
 }
 
-/* 호버 효과 */
 .checkbox-label:hover .custom-checkbox {
   border-color: #311CA8;
 }

@@ -162,7 +162,6 @@ function CommunityPage() {
       <div className="header-margin"></div>
       
       <div className="community-content">
-        {/* 독서카드 섹션 */}
         <div className="reading-cards-section">
           <h2 className="reading-cards-section-title">독서카드</h2>
           
@@ -210,7 +209,6 @@ function CommunityPage() {
           )}
         </div>
 
-        {/* 이달의 추천 섹션 */}
         <div className="recommendations-section">
           <div className="recommendations-header">
             <div className="header-content">
@@ -310,14 +308,12 @@ function CommunityPage() {
               );
             })}
               
-              {/* 로딩 인디케이터 */}
               {loadingMore && (
                 <div className="loading-more">
                   <p className="loading-message">더 많은 게시글을 불러오는 중...</p>
                 </div>
               )}
               
-              {/* 게시글이 없는 경우 */}
               {!isLoading && posts.length === 0 && !error && (
                 <div className="no-posts">
                   <p>아직 게시글이 없습니다.</p>

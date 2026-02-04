@@ -1,5 +1,3 @@
-// src/components/BottomEditModal.tsx
-
 import React, { useState } from 'react';
 import './BottomEditModal.css';
 import { updateBookStatus } from '../api/bookApi';
@@ -18,7 +16,6 @@ interface BottomEditModalProps {
   bookAuthor: string;
 }
 
-// StarRatingInput 컴포넌트
 interface StarRatingInputProps {
   initialRating: number;
   onRatingChange: (rating: number) => void;
@@ -77,9 +74,7 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'warning' | 'error'>('warning');
 
-  // 날짜 유효성 검사 함수
   const validateDates = (start: string | null, end: string | null) => {
-    // 둘 중 하나라도 null이면 유효성 검사 통과
     if (!start || !end) return true;
     
     const startDateStr = start.split('T')[0];
@@ -90,21 +85,17 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
     const startDate = new Date(startDateStr);
     const endDate = new Date(endDateStr);
     const today = new Date();
-    
-    // 모든 날짜의 시간을 00:00:00으로 설정하여 날짜만 비교
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
-    
-    // 종료일이 현재 날짜보다 미래인지 검사
+
     if (endDate > today) {
       setToastMessage('종료일은 현재 날짜보다 과거이거나 오늘이어야 합니다.');
       setToastType('warning');
       setShowToast(true);
       return false;
     }
-    
-    // 종료일이 시작일보다 빠른지 검사
+
     if (endDate < startDate) {
       setToastMessage('종료일은 시작일보다 늦어야 합니다.');
       setToastType('warning');
@@ -119,8 +110,6 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
     const value = e.target.value;
     const newStartDate = value ? new Date(value).toISOString() : null;
     setStartedAt(newStartDate);
-    
-    // 시작일 변경 시 종료일과 비교 (둘 다 값이 있을 때만)
     if (newStartDate && endedAt) {
       validateDates(newStartDate, endedAt);
     }
@@ -130,15 +119,12 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
     const value = e.target.value;
     const newEndDate = value ? new Date(value).toISOString() : null;
     setEndedAt(newEndDate);
-    
-    // 종료일 변경 시 시작일과 비교 (둘 다 값이 있을 때만)
     if (startedAt && newEndDate) {
       validateDates(startedAt, newEndDate);
     }
   };
 
   const handleSave = async () => {
-    // 저장 전 최종 날짜 유효성 검사
     if (!validateDates(startedAt, endedAt)) {
       return;
     }
@@ -153,7 +139,6 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
       setToastMessage('책 정보가 성공적으로 수정되었습니다.');
       setToastType('success');
       setShowToast(true);
-      // 수정 완료 시 바로 모달 닫기
       onClose();
     } catch (error) {
       console.error('저장 중 오류가 발생했습니다:', error);

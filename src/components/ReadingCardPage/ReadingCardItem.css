@@ -18,9 +18,7 @@
     width: 100px;
     height: 100px;
     margin-right: 16px;
-    /* 이미지와 텍스트 사이 간격 */
     flex-shrink: 0;
-    /* 이미지가 줄어들지 않도록 */
     position: relative;
 }
 
@@ -32,7 +30,6 @@
     border-radius: inherit;
 }
 
-/* 비공개 배지 스타일 (텍스트 뷰) */
 .private-badge-text {
     position: absolute;
     bottom: 6px;
@@ -52,13 +49,9 @@
 .card-content {
     flex-grow: 1;
     height: 100%;
-    /* 콘텐츠 영역이 카드 높이에 맞게 조정 */
     display: flex;
-    /* 콘텐츠 내부 요소들을 세로로 정렬하기 위해 Flexbox 사용 */
     flex-direction: column;
-    /* 세로 방향으로 정렬 */
     justify-content: space-between;
-    /* 콘텐츠 내부 요소들을 위아래로 정렬 */
 }
 
 .card-book-info {
@@ -66,7 +59,7 @@
     flex-direction: row;
     gap: 4px;
     align-items: center;
-    min-width: 0; /* flex 아이템이 줄어들 수 있도록 */
+    min-width: 0;
 }
 
 .card-preview {
@@ -94,13 +87,13 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     word-break: break-all;
-    flex: 1; /* 남은 공간 차지 */
-    min-width: 0; /* 텍스트 오버플로우를 위해 필요 */
+    flex: 1;
+    min-width: 0;
 }
 
 .card-date {
-    flex-shrink: 0; /* 날짜는 줄어들지 않음 */
-    white-space: nowrap; /* 무조건 한 줄로 표시 */
+    flex-shrink: 0;
+    white-space: nowrap;
     font-size: 0.8em;
     color: #999;
     text-align: right;

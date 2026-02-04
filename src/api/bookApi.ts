@@ -3,7 +3,6 @@ import { getAccessToken } from './auth';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
-// 타입 정의
 export type BookStatus = "NOT_START" | "READING" | "DONE";
 
 export interface CardSummary {
@@ -322,7 +321,6 @@ export const updateBookVisibility = async (
 
     const data: UpdateBookVisibilityResponse = await response.json();
     if (!data.isSuccess) {
-      // 에러 객체에 code와 message를 포함하여 throw
       const error: any = new Error(data.message || '독서 공개 여부 수정에 실패했습니다.');
       error.code = data.code;
       error.message = data.message;

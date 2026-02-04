@@ -12,7 +12,6 @@ import type { BookItem } from '../../api/bookSearchApi';
 import BookIcon from '../../assets/icons/book.svg';
 import BookActiveIcon from '../../assets/icons/book_active.svg';
 
-// 선택된 책 정보 타입 (memberBookId 포함)
 interface SelectedBookInfo extends BookItem {
     bookId?: number;
     memberBookId?: number;
@@ -110,7 +109,6 @@ const PostBookSearchPage: React.FC = () => {
                 {isLoadingMyBooks && <p className="loading-message">내 책장을 불러오는 중입니다...</p>}
                 {myBooksError && <p className="error-message">{myBooksError}</p>}
 
-                {/* 나의 책장 표시 */}
                 {!isLoadingMyBooks && !myBooksError && myBooks.length > 0 ? (
                     <div>
                         <div className="book-list">
@@ -154,7 +152,6 @@ const PostBookSearchPage: React.FC = () => {
                 onClose={hideToast}
             />
 
-            {/* 하단 선택된 책 정보 또는 안내 메시지 */}
             <div className={`bottom-selection-area ${selectedBook ? 'has-selection' : ''}`}>
                 {selectedBook ? (
                     <div className="selected-book-info">

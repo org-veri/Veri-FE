@@ -1,10 +1,9 @@
-/* src/components/MyBookshelfPage/BookshelfList.css */
 .bookshelf-list-full {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 15px; /* 아이템 간 간격 */
-    padding-bottom: 20px; /* 하단 여백 (이것은 리스트 내부의 여백) */
+    gap: 15px;
+    padding-bottom: 20px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     -ms-overflow-style: none;
@@ -12,24 +11,23 @@
 }
 
 .bookshelf-list-full::-webkit-scrollbar {
-    display: none; /* Chrome, Safari 스크롤바 숨김 */
+    display: none;
 }
 
-/* 개별 책 아이템 스타일 (full 페이지용) */
 .bookshelf-item-full {
     height: 140px;
     display: flex;
     background-color: #fff;
     border-radius: 12px;
-    align-items: flex-start; /* 세로 정렬 */
+    align-items: flex-start;
     cursor: pointer;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .bookshelf-item-full .book-cover-large {
-    width: 90px; /* 더 큰 커버 이미지 너비 */
-    height: 135px; /* 2:3 비율 (90 * 1.5) */
-    flex-shrink: 0; /* 줄어들지 않도록 */
+    width: 90px;
+    height: 135px;
+    flex-shrink: 0;
     margin-right: 15px;
     background-color: #f0f0f0;
 }
@@ -43,12 +41,12 @@
 }
 
 .bookshelf-item-full .book-details-full {
-    flex-grow: 1; /* 남은 공간을 차지 */
-    text-align: start; /* 텍스트 왼쪽 정렬 */
+    flex-grow: 1;
+    text-align: start;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* 내용 분산 (상단 제목/저자, 하단 상태/날짜) */
-    height: 100%; /* 부모 높이와 동일하게 */
+    justify-content: space-between;
+    height: 100%;
 }
 
 .bookshelf-item-full .book-title-full {
@@ -60,7 +58,7 @@
     line-height: normal;
     margin: 0 0 5px 0;
     line-height: 1.4;
-    max-height: 2.8em; /* 2줄까지 표시 */
+    max-height: 2.8em;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -85,9 +83,9 @@
 
 .book-status-info {
     display: flex;
-    justify-content: flex-start; /* 상태 태그와 날짜 왼쪽 정렬 */
+    justify-content: flex-start;
     align-items: center;
-    margin-bottom: 10px; /* 별점 아래 여백 */
+    margin-bottom: 10px;
 }
 
 .book-status-info .book-status {
@@ -114,7 +112,8 @@
 
 .no-books-message {
     text-align: center;
-    color: #888;
+    color: #777;
     padding: 20px;
-    font-size: 16px;
+    font-size: 14px;
+    font-family: Pretendard;
 }

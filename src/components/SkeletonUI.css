@@ -1,4 +1,3 @@
-/* Skeleton UI 애니메이션 - 개선된 성능과 부드러움 */
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -14,7 +13,6 @@
   animation: shimmer 1.8s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
 }
 
-/* 기본 스켈레톤 요소들 */
 .skeleton-card {
   display: flex;
   gap: 12px;
@@ -50,7 +48,6 @@
   border-radius: 4px;
 }
 
-/* 책 아이템 스켈레톤 */
 .skeleton-book-item {
   display: flex;
   flex-direction: column;
@@ -80,7 +77,6 @@
   border-radius: 4px;
 }
 
-/* 독서카드 스켈레톤 */
 .skeleton-reading-card {
   display: flex;
   gap: 12px;
@@ -129,7 +125,6 @@
   border-radius: 4px;
 }
 
-/* 독서카드 그리드 스켈레톤 */
 .skeleton-reading-card-grid {
   aspect-ratio: 1;
   border-radius: 6px;
@@ -142,7 +137,6 @@
   border-radius: 6px;
 }
 
-/* 히어로 섹션 스켈레톤 */
 .skeleton-hero-section {
   position: relative;
   height: 270px;
@@ -207,9 +201,6 @@
   background-color: rgba(255, 255, 255, 0.9);
 }
 
-/* 모든 스켈레톤 요소에 shimmer 효과는 아래에서 직접 적용됩니다 */
-
-/* Shimmer 클래스를 직접 적용 */
 .skeleton-image,
 .skeleton-title,
 .skeleton-text,

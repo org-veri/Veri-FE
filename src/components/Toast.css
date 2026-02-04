@@ -50,7 +50,6 @@
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* 토스트 타입별 스타일 */
 .toast-success {
     background-color: #d4edda;
     color: #155724;
@@ -75,7 +74,6 @@
     border-left: 4px solid #17a2b8;
 }
 
-/* 모바일 반응형 */
 @media (max-width: 768px) {
     .toast {
         top: 10px;

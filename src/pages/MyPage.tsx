@@ -112,7 +112,6 @@ const MyPage: React.FC = () => {
     return content.substring(0, maxLength) + '...';
   };
 
-  // 로딩 상태 처리
   if (isLoading) {
     return <div className="loading-page-container">
       <div className="loading-spinner"></div>
@@ -123,7 +122,6 @@ const MyPage: React.FC = () => {
     return <div className="loading-page-container" style={{ color: 'red' }}>{error}</div>;
   }
 
-  // 데이터 없음 상태 처리
   if (!userData) {
     return <div className="loading-page-container">사용자 데이터를 찾을 수 없습니다.</div>;
   }

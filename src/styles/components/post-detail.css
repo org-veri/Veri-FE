@@ -1,16 +1,11 @@
-/* 게시물 상세 페이지 공통 스타일 */
-
-/* 컨텐츠 영역 */
 .detail-content {
   flex: 1;
-  padding-bottom: 80px; /* 댓글 입력창 공간 확보 */
+  padding-bottom: 80px;
 }
 
-/* 메인 이미지 */
 .main-image-container {
   position: relative;
   width: 100%;
-  height: 300px;
   background-color: #f0f0f0;
   overflow: hidden;
 }
@@ -59,7 +54,6 @@
   border-color: #333;
 }
 
-/* 게시글 공개/비공개 토글 버튼 */
 .post-visibility-toggle {
   position: absolute;
   top: 12px;
@@ -116,7 +110,6 @@
   user-select: none;
 }
 
-/* 게시물 정보 */
 .detail-post-info {
   padding: 20px;
 }
@@ -237,7 +230,6 @@
   line-height: 1.3;
 }
 
-/* CommunityPostDetailPage 전용 버튼 스타일 */
 .detail-like-button,
 .detail-comment-button {
   display: flex;
@@ -270,14 +262,9 @@
   font-size: 16px;
 }
 
-/* 반응형 디자인 */
 @media (max-width: 480px) {
-  .main-image-container {
-    height: 250px;
-  }
-  
+
   .detail-post-info {
     padding: 15px;
   }
 }
-

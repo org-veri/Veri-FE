@@ -1,17 +1,11 @@
-/* src/index.css */
 @import 'mingcute_icon/font/Mingcute.css';
-
-/* 폰트 로드 */
 @import './styles/fonts.css';
-
-/* 공통 스타일 import */
 @import './styles/variables.css';
 @import './styles/base.css';
 @import './styles/layout.css';
 @import './styles/components/loading.css';
 @import './styles/components/headers.css';
 @import './styles/components/buttons.css';
-@import './styles/components/tabs.css';
 @import './styles/components/book-list.css';
 @import './styles/components/book-detail.css';
 @import './styles/components/selection-area.css';

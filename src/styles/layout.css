@@ -1,8 +1,5 @@
-/* 페이지 레이아웃 관련 */
-
 .page-container {
   position: relative;
-  /* Ensure absolute children are relative to this container */
   max-width: 100%;
   width: 100%;
   height: auto;
@@ -11,12 +8,10 @@
   opacity: 1;
 }
 
-/* 페이지 로딩 중 투명도 조절 */
 .page-container.loading {
   opacity: 0.7;
 }
 
-/* 페이지 에러 상태 스타일 */
 .page-container.error-state {
   display: flex;
   flex-direction: column;
@@ -52,7 +47,6 @@
   background: var(--dark-purple, #311CA8);
 }
 
-/* 페이지 전환 애니메이션 */
 .page-transition-enter {
   opacity: 0;
   transform: translateY(10px);
@@ -103,6 +97,15 @@
   border-radius: 8px;
   background-color: #007bff;
   color: white;
+}
+
+.main-layout {
+  width: 100%;
+  min-height: 100%;
+}
+
+.main-layout--with-tab-bar {
+  padding-bottom: 70px;
 }
 
 .main-page-margin {

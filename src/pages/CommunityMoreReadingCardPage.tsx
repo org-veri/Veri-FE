@@ -160,7 +160,6 @@ function CommunityMoreReadingCardPage() {
   };
 
   const handleCardClick = (cardId: number) => {
-    // 독서카드 상세 페이지로 이동 (실제 구현 시 해당 페이지로 연결)
     navigate(`/reading-card-detail/${cardId}`);
   };
 

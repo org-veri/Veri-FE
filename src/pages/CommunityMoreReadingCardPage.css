@@ -23,7 +23,6 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* 카드 이미지 */
 .community-more-card-image {
   border-radius: 10px;
   width: 100%;
@@ -44,7 +43,6 @@
   transform: scale(1.05);
 }
 
-/* 카드 정보 */
 .card-info {
   padding: 5px;
   flex: 1;

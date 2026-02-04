@@ -578,7 +578,6 @@ const CardCustomizationPage: React.FC = () => {
                                     ))}
                                 </div>
                             </div>
-                            {/* 숨겨진 파일 입력 요소들 */}
                             <input
                                 type="file"
                                 ref={cameraInputRef}

@@ -75,7 +75,6 @@ export interface MyPostsResponse {
   count: number;
 }
 
-// 카드 관련 타입들
 export interface CardMember {
   id: number;
   nickname: string;
@@ -130,7 +129,6 @@ export interface GetCardsQueryParams {
   sort?: 'newest' | 'oldest' | 'popular';
 }
 
-// 게시글 작성 요청 타입
 export interface CreatePostRequest {
   title: string;
   content: string;

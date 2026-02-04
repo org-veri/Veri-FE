@@ -1,4 +1,4 @@
-.reading-card-edit-modal-overlay {
+.community-post-edit-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -12,9 +12,10 @@
     padding: 20px;
 }
 
-.reading-card-edit-modal {
+.community-post-edit-modal {
     width: 100%;
-    max-width: 370px;
+    max-width: 450px;
+    /* Slightly wider for potential multi-image */
     max-height: 90vh;
     background: #fff;
     border-radius: 20px;
@@ -92,12 +93,12 @@
     cursor: not-allowed;
 }
 
-.image-upload-container {
+.input-container {
     text-align: start;
     margin-bottom: 16px;
 }
 
-.image-upload-container h3 {
+.input-container h3 {
     color: #1A1A1A;
     font-family: Pretendard;
     font-size: 18px;
@@ -115,14 +116,45 @@
     gap: 12px;
 }
 
+/* Multi-image adaptation */
+.image-list {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.image-item-container {
+    position: relative;
+    flex-shrink: 0;
+    width: 120px;
+    height: 120px;
+}
+
 .image-preview {
     width: 100%;
-    max-width: 300px;
-    aspect-ratio: 1 / 1;
+    height: 100%;
     object-fit: cover;
     border-radius: 12px;
-    border: 2px solid #E7E9EF;
-    background-color: #f8f9fa;
+    border: 1px solid #E7E9EF;
+}
+
+.remove-image-button {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
 }
 
 .upload-button {
@@ -153,19 +185,23 @@
     cursor: not-allowed;
 }
 
-.content-input-container {
-    text-align: start;
-    margin-bottom: 16px;
+.text-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #E7E9EF;
+    border-radius: 8px;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #1A1A1A;
+    box-sizing: border-box;
 }
 
-.content-input-container h3 {
-    color: #1A1A1A;
-    font-family: Pretendard;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    margin: 0px 0px 12px 0px;
+.text-input:focus {
+    outline: none;
+    border-color: #0CE19A;
 }
 
 .content-textarea {
@@ -270,7 +306,7 @@
 }
 
 @media (max-width: 480px) {
-    .reading-card-edit-modal {
+    .community-post-edit-modal {
         max-width: 100%;
         margin: 10px;
         padding: 20px;
@@ -278,7 +314,6 @@
 
     .image-preview {
         max-width: 100%;
-        aspect-ratio: 1 / 1;
     }
 
     .upload-button {

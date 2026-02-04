@@ -8,7 +8,6 @@
   margin: 15px 15px 0px 15px;
 }
 
-/* 좌측 프로필 묶음 */
 .profile-left {
   display: flex;
   align-items: center;
@@ -154,7 +153,6 @@
   letter-spacing: -0.48px;
 }
 
-/* 내 게시글 목록 섹션 */
 .my-posts-section {
   margin: 20px;
   padding: 0;
@@ -222,18 +220,22 @@
 }
 
 .posts-error {
-  color: #e53e3e;
+  color: #dc3545;
+  font-family: Pretendard;
 }
 
 .no-posts-message {
   text-align: center;
   padding: 40px 20px;
-  color: #999;
+  color: #777;
+  font-size: 14px;
+  font-family: Pretendard;
 }
 
 .no-posts-message p {
   margin: 0 0 8px 0;
   font-size: 14px;
+  font-family: Pretendard;
 }
 
 .no-posts-message p:first-child {
@@ -242,7 +244,6 @@
   color: #666;
 }
 
-/* 게시글 목록 */
 .my-posts-list {
   display: flex;
   flex-direction: column;
@@ -271,7 +272,6 @@
   object-fit: cover;
 }
 
-/* 게시글 헤더 (제목 + 공개/비공개 태그) */
 .my-post-header {
   display: flex;
   gap: 10px;

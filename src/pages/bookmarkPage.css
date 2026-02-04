@@ -1,5 +1,3 @@
-/* src/pages/bookmarkPage.css */
-
 .bookmark-page-container {
   min-height: 100vh;
   background-color: #f8f8f8;
@@ -163,7 +161,6 @@
   background-color: #00b066;
 }
 
-/* 북마크 목록 */
 .bookmarks-list {
   display: flex;
   flex-direction: column;

@@ -1,13 +1,9 @@
-/* LibraryPage 스타일 */
-
-/* 히어로 섹션 */
 .library-hero-section {
     position: relative;
     height: 240px;
     overflow: hidden;
 }
 
-/* 히어로 헤더의 아이콘 폰트 스타일 */
 .library-hero-section .hero-header .header-icons .mgc_search_2_fill,
 .library-hero-section .hero-header .header-icons .mgc_notification_fill {
   font-size: 20px;
@@ -30,7 +26,6 @@
     z-index: 0;
 }
 
-/* 블랙 그라데이션 오버레이 추가 */
 .hero-background::after {
     content: '';
     position: absolute;
@@ -59,7 +54,6 @@
     box-sizing: border-box;
 }
 
-/* 프로필 */
 .profile-circle {
     border: 0px;
     width: 48px;
@@ -95,7 +89,6 @@
     border-radius: 50%;
 }
 
-/* 환영 텍스트 */
 .welcome-text h2 {
     margin: 0;
     font-weight: 500;
@@ -116,7 +109,6 @@
     opacity: 0.9;
 }
 
-/* 메인 책 커버 */
 .main-book-cover {
     height: 100px;
     border-radius: 8px;
@@ -135,38 +127,33 @@
     object-fit: cover;
 }
 
-/* 공통 섹션 */
 section {
     background-color: #fff;
     padding: 15px;
-    min-height: 200px; /* 섹션 최소 높이 추가 */
+    min-height: 200px;
 }
 
-/* 나의 독서카드 섹션 */
 .myReadingCards {
     background-color: #fff;
     padding: 15px;
     margin-top: 15px;
-    min-height: 200px; /* 섹션 최소 높이 추가 */
+    min-height: 200px;
 }
 
-/* 나의 책장 섹션 */
 .my-bookshelf {
     background-color: #fff;
     padding: 15px;
     margin-top: 15px;
-    min-height: 200px; /* 섹션 최소 높이 추가 */
+    min-height: 200px;
 }
 
-/* 오늘의 추천 섹션 */
 .todays-recommendation {
     background-color: #fff;
     padding: 15px;
     margin-top: 15px;
-    min-height: 200px; /* 섹션 최소 높이 추가 */
+    min-height: 200px;
 }
 
-/* 가로 스크롤 컨테이너 */
 .horizontal-scroll-container {
     display: flex;
     overflow-x: auto;
@@ -174,8 +161,8 @@ section {
     white-space: nowrap;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    min-height: 150px; /* 컨테이너 최소 높이 추가 */
-    align-items: center; /* 세로 중앙 정렬 */
+    min-height: 150px;
+    align-items: center;
     gap: 10px;
 }
 
@@ -183,7 +170,6 @@ section {
     display: none;
 }
 
-/* 메시지 스타일 개선 */
 .loading-message,
 .error-message,
 .no-cards-message {
@@ -191,11 +177,22 @@ section {
     text-align: center;
     color: #777;
     margin: 20px 0;
-    font-size: 8px;
-    min-height: 100px; /* 메시지 영역 최소 높이 */
+    font-size: 14px;
+    font-family: Pretendard;
+    min-height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.todays-recommendation .loading-message,
+.todays-recommendation .error-message,
+.todays-recommendation .no-cards-message,
+.my-bookshelf .loading-message,
+.my-bookshelf .error-message,
+.my-bookshelf .no-cards-message {
+    font-size: 14px;
+    font-family: Pretendard;
 }
 
 .error-message {
@@ -228,7 +225,6 @@ section {
     cursor: pointer;
 }
 
-/* 공통 아이템 스타일 */
 .bookshelf-item,
 .recommended-book-item {
     display: flex;
@@ -243,7 +239,6 @@ section {
     cursor: pointer;
 }
 
-/* 나의 책장 섹션 */
 .my-bookshelf .bookshelf-list {
     padding: 0;
 }
@@ -259,7 +254,7 @@ section {
 
 .my-bookshelf .book-cover-thumbnail {
     width: 100%;
-    aspect-ratio: 1 / 1.5; /* 가로 1:세로 1.5 비율 자동 조정 */
+    aspect-ratio: 1 / 1.5;
     position: relative;
     background-color: #f0f0f0;
     border-radius: 10px;
@@ -298,7 +293,6 @@ section {
     text-overflow: ellipsis;
 }
 
-/* 오늘의 추천 섹션 */
 .todays-recommendation .recommended-book-item {
     height: 200px;
     width: 110px;
@@ -351,7 +345,6 @@ section {
     margin: 0;
 }
 
-/* 추천 섹션 헤더 */
 .recommendation-section-header {
     height: 30px;
     display: flex;
@@ -359,7 +352,7 @@ section {
 }
 
 .recommendation-section-header p {
-    font-size: 20px; /* LibraryPage.css와 동일 */
+    font-size: 20px;
     font-weight: 500;
     color: #000000;
     margin: 0;

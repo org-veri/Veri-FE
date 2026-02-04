@@ -224,7 +224,6 @@ function WritePostPage() {
 
   return (
     <div className="page-container">
-      {/* 헤더 */}
       <header className="detail-header">
         <button className="header-left-arrow" onClick={() => navigate(-1)}>
           <span
@@ -243,7 +242,6 @@ function WritePostPage() {
       <div className="header-margin"></div>
 
       <div className="write-post-content">
-        {/* 제목 입력 */}
         <div className="form-section">
           <input
             type="text"
@@ -255,7 +253,6 @@ function WritePostPage() {
           />
         </div>
 
-        {/* 내용 입력 */}
         <div className="form-section">
           <textarea
             className="content-input"
@@ -266,10 +263,8 @@ function WritePostPage() {
           />
         </div>
 
-        {/* 이미지 섹션 */}
         <div className="image-section">
           <div className="image-grid">
-            {/* 카메라 버튼 (첫 번째 슬롯) */}
             <div className="image-upload-slot">
               <input
                 type="file"
@@ -284,7 +279,6 @@ function WritePostPage() {
               </label>
             </div>
 
-            {/* 업로드된 이미지들 */}
             {images.map((image, index) => (
               <div key={index} className="image-slot">
                 <img src={image} alt={`업로드 ${index + 1}`} />
@@ -302,7 +296,6 @@ function WritePostPage() {
           </div>
         </div>
 
-        {/* 책 선택 섹션 */}
         <div className="book-section">
           <div className="book-label-section">          
             <div className="book-label">책 선택하기</div>
@@ -335,7 +328,6 @@ function WritePostPage() {
           )}
         </div>
 
-        {/* 글 올리기 버튼 */}
         <div className="submit-section">
           <button 
             className="submit-button"

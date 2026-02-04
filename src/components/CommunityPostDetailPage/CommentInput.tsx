@@ -1,4 +1,3 @@
-// src/components/CommunityPostDetailPage/CommentInput.tsx
 import React from 'react';
 import './CommentInput.css';
 

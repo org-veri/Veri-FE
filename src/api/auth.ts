@@ -31,7 +31,6 @@ const decodeJwt = (token: string): JwtPayload | null => {
     const base64Url = parts[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
-    // 더 안전한 디코딩 방법
     let jsonPayload: string;
     try {
       const decoded = atob(base64);
@@ -105,7 +104,6 @@ const makeApiRequest = async (endpoint: string, options: RequestInit = {}): Prom
   }
 };
 
-// 토큰 재발급 응답 타입
 interface ReissueResponse {
   isSuccess: boolean;
   code: string;
@@ -134,7 +132,6 @@ const handleReissueResponse = async (response: Response): Promise<ReissueRespons
   return data;
 };
 
-// 공개 API 함수들
 export const handleSocialLoginCallback = async (provider: string, code: string, state: string): Promise<{ accessToken: string; refreshToken: string }> => {
   try {
     const response = await fetch(`${BASE_URL}/api/v1/oauth2/${provider}?code=${code}&state=${state}`, {
@@ -182,7 +179,6 @@ export const getAccessToken = (): string | null => {
   }
 };
 
-// 자동 재발급을 지원하는 비동기 버전
 export const getAccessTokenAsync = async (autoReissue: boolean = true): Promise<string | null> => {
   if (typeof window === 'undefined') return null;
 
@@ -261,7 +257,6 @@ export const removeRefreshToken = (): void => {
   localStorage.removeItem('refreshToken');
 };
 
-// 토큰 재발급 함수
 export const reissueToken = async (): Promise<string> => {
   const refreshToken = getRefreshToken();
   if (!refreshToken) {
@@ -287,8 +282,6 @@ export const reissueToken = async (): Promise<string> => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
     console.error('토큰 재발급 실패:', errorMessage);
-    
-    // 재발급 실패 시 토큰 삭제
     removeAccessToken();
     removeRefreshToken();
     throw error;

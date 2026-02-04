@@ -1,8 +1,7 @@
-// src/components/TabBar.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import './TabBar.css';
 
-// SVG 아이콘들을 import합니다.
 import LibraryActiveIcon from '../assets/icons/NavBar/Active/library.svg';
 import LibraryDeactiveIcon from '../assets/icons/NavBar/Deactive/library.svg';
 import ReadingCardActiveIcon from '../assets/icons/NavBar/Active/reading_card.svg';

@@ -35,7 +35,6 @@ const TopBar: React.FC<TopBarProps> = ({
           // localStorage에 프로필 이미지 저장
           localStorage.setItem('profileImage', imageUrl);
         } else {
-          // 프로필 이미지가 없으면 localStorage에서도 제거
           localStorage.removeItem('profileImage');
           setProfileImage(null);
         }
@@ -64,7 +63,6 @@ const TopBar: React.FC<TopBarProps> = ({
     if (onNotificationClick) {
       onNotificationClick();
     }
-    // 기본 알림 기능은 아직 없음
   };
 
   const handleProfileClick = () => {

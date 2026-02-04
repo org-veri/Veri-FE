@@ -1,4 +1,3 @@
-// src/pages/LibraryPage/TodaysRecommendation.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -53,7 +52,6 @@ const SingleRecommendedBookItem: React.FC<RecommendedBookType> = ({ title, image
   );
 };
 
-// '오늘의 추천' 섹션 전체를 담당하는 컴포넌트
 const TodaysRecommendationSection: React.FC = () => {
   const [recommendedBooks, setRecommendedBooks] = useState<RecommendedBookType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,13 +70,12 @@ const TodaysRecommendationSection: React.FC = () => {
         const response = await getPopularBooks(queryParams);
 
         if (response.isSuccess && response.result && response.result.books) {
-          // API 응답 데이터를 RecommendedBookType에 맞게 매핑
           const mappedBooks: RecommendedBookType[] = response.result.books.map((book: PopularBookItem) => ({
             title: book.title,
-            imageUrl: book.image, // PopularBookItem의 'image' 필드를 'imageUrl'로 매핑
+            imageUrl: book.image,
             author: book.author,
-            publisher: book.publisher, // PopularBookItem의 'publisher' 필드 매핑
-            isbn: book.isbn, // PopularBookItem의 'isbn' 필드 매핑
+            publisher: book.publisher,
+            isbn: book.isbn,
           }));
           setRecommendedBooks(mappedBooks);
         } else {
@@ -93,7 +90,7 @@ const TodaysRecommendationSection: React.FC = () => {
     };
 
     fetchRecommendations();
-  }, []); // 컴포넌트가 처음 마운트될 때 한 번만 실행
+  }, []);
 
   if (isLoading) {
     return (
@@ -133,7 +130,7 @@ const TodaysRecommendationSection: React.FC = () => {
         {recommendedBooks.length > 0 ? (
           recommendedBooks.map((book) => (
             <SingleRecommendedBookItem
-              key={book.isbn} // key로 isbn 사용
+              key={book.isbn}
               title={book.title}
               imageUrl={book.imageUrl}
               author={book.author}

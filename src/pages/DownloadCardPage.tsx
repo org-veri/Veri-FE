@@ -97,7 +97,6 @@ function DownloadCardPage() {
         
         setIsProcessing(true);
         try {
-            // 이미지가 완전히 로드될 때까지 대기
             const imgElement = cardContentRef.current.querySelector('.download-card-main-image') as HTMLImageElement;
             if (imgElement && !imgElement.complete) {
                 await new Promise((resolve, reject) => {
@@ -107,13 +106,11 @@ function DownloadCardPage() {
                 });
             }
 
-            // 카드 미리보기 컨테이너만 캡처 (블러 배경 제외)
             const cardPreviewElement = cardContentRef.current.querySelector('.download-card-preview-container');
             if (!cardPreviewElement) {
                 throw new Error('카드 미리보기 요소를 찾을 수 없습니다.');
             }
 
-            // 블러 배경을 임시로 숨김
             const blurBackground = cardContentRef.current.querySelector('.download-card-blurred-background') as HTMLElement;
             const originalDisplay = blurBackground?.style.display;
             if (blurBackground) {
@@ -131,7 +128,6 @@ function DownloadCardPage() {
                 removeContainer: true,
             });
 
-            // 블러 배경을 다시 표시
             if (blurBackground) {
                 (blurBackground as HTMLElement).style.display = originalDisplay || '';
             }
@@ -162,7 +158,6 @@ function DownloadCardPage() {
         
         setIsProcessing(true);
         try {
-            // 이미지가 완전히 로드될 때까지 대기
             const imgElement = cardContentRef.current.querySelector('.download-card-main-image') as HTMLImageElement;
             if (imgElement && !imgElement.complete) {
                 await new Promise((resolve, reject) => {
@@ -172,13 +167,11 @@ function DownloadCardPage() {
                 });
             }
 
-            // 카드 미리보기 컨테이너만 캡처 (블러 배경 제외)
             const cardPreviewElement = cardContentRef.current.querySelector('.download-card-preview-container');
             if (!cardPreviewElement) {
                 throw new Error('카드 미리보기 요소를 찾을 수 없습니다.');
             }
 
-            // 블러 배경을 임시로 숨김
             const blurBackground = cardContentRef.current.querySelector('.download-card-blurred-background') as HTMLElement;
             const originalDisplay = blurBackground?.style.display;
             if (blurBackground) {
@@ -196,7 +189,6 @@ function DownloadCardPage() {
                 removeContainer: true,
             });
 
-            // 블러 배경을 다시 표시
             if (blurBackground) {
                 blurBackground.style.display = originalDisplay || '';
             }

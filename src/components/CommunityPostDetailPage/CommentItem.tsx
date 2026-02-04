@@ -1,4 +1,3 @@
-// src/components/CommunityPostDetailPage/CommentItem.tsx
 import type { Comment } from '../../api/communityApi';
 import './CommentItem.css';
 
@@ -140,7 +139,6 @@ function CommentItem({
             </>
           )}
 
-          {/* 대댓글 입력 폼 (인라인) */}
           {!isReply && !comment.isDeleted && replyingToCommentId === comment.commentId && (
             <div className="reply-input-form">
               <input
@@ -169,7 +167,6 @@ function CommentItem({
             </div>
           )}
 
-          {/* 대댓글 렌더링 */}
           {comment.replies && comment.replies.length > 0 && (
             <div className="replies-container">
               {comment.replies.map((reply, replyIndex) => (

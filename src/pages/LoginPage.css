@@ -49,7 +49,6 @@
     margin-bottom: 20px;
 }
 
-/* 소셜 로그인 버튼 공통 스타일 */
 .social-login-button {
     width: 100%;
     height: 50px;
@@ -84,7 +83,6 @@
     color: #fff;
 }
 
-/* 카카오 아이콘 */
 .kakao-social-icon {
     width: 18px;
     height: 18px;
@@ -98,7 +96,6 @@
     height: 18px;
 }
 
-/* 카카오 로그인 텍스트 */
 .kakao-social-text {
     color: #000;
     font-family: "Pretendard";

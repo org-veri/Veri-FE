@@ -7,7 +7,6 @@ import { getMyCards, getCardDetailById, type MyCardItem, type GetMyCardsQueryPar
 import TopBar from '../../components/TopBar';
 import { SkeletonList, SkeletonReadingCard, SkeletonReadingCardGrid } from '../../components/SkeletonUI';
 
-// 독서 카드 아이템 타입 정의
 export interface ReadingCardItemType {
     id: string;
     title: string | undefined;
@@ -27,7 +26,6 @@ function ReadingCardPage() {
     const [activeTab, setActiveTab] = useState<'image' | 'text'>('image');
     const [searchQuery, setSearchQuery] = useState<string>('');
 
-    // 검색 필터링 함수
     const handleSearch = useCallback((query: string) => {
         setSearchQuery(query);
         if (!query.trim()) {
@@ -41,7 +39,6 @@ function ReadingCardPage() {
         }
     }, [readingCards]);
 
-    // 독서 카드 데이터 가져오기 (최적화된 버전)
     const fetchCards = useCallback(async () => {
         setIsLoading(true);
         setError(null);
@@ -56,7 +53,6 @@ function ReadingCardPage() {
             const response = await getMyCards(queryParams);
 
             if (response.isSuccess && response.result?.cards) {
-                // 기본 카드 정보로 먼저 state 업데이트 (빠른 렌더링)
                 const basicCards = response.result.cards.map((card: MyCardItem) => ({
                     id: card.cardId ? String(card.cardId) : `temp-${Date.now()}-${Math.random()}`,
                     title: card.content.length > 30 ? `${card.content.substring(0, 30)}...` : card.content || "제목 없음",
@@ -68,9 +64,8 @@ function ReadingCardPage() {
                 
                 setReadingCards(basicCards);
                 setFilteredCards(basicCards);
-                setIsLoading(false); // 기본 데이터 로딩 완료
+                setIsLoading(false);
 
-                // 백그라운드에서 상세 정보 가져오기 (배치 처리)
                 const cardDetailPromises = response.result.cards
                     .filter(card => card.cardId)
                     .map(async (card: MyCardItem, index: number) => {
@@ -89,10 +84,7 @@ function ReadingCardPage() {
                         return null;
                     });
 
-                // 상세 정보를 배치로 처리
                 const detailResults = await Promise.allSettled(cardDetailPromises);
-                
-                // 성공한 상세 정보들로 카드 업데이트
                 setReadingCards(prevCards => {
                     const updatedCards = [...prevCards];
                     detailResults.forEach((result) => {
@@ -113,7 +105,6 @@ function ReadingCardPage() {
                 setReadingCards([]);
                 setFilteredCards([]);
                 if (!response.result?.cards || response.result.cards.length === 0) {
-                    // 빈 배열은 오류가 아님
                 } else {
                     setError("독서 카드를 불러왔으나, 표시할 내용이 없습니다.");
                 }
@@ -155,9 +146,8 @@ function ReadingCardPage() {
         navigate('/my-page');
     };
 
-    // 에러 상태 처리
     if (error) {
-        return <div className="loading-page-container" style={{ color: 'red' }}>{error}</div>;
+        return <div className="loading-page-container reading-card-page-message reading-card-page-error">{error}</div>;
     }
 
     return (
@@ -185,7 +175,6 @@ function ReadingCardPage() {
                     </button>
                 </nav>
                 
-                {/* 텍스트 뷰에서만 검색 입력 필드 표시 */}
                 {activeTab === 'text' && (
                     <div className="reading-card-search-input-container">
                         <input
@@ -209,7 +198,6 @@ function ReadingCardPage() {
                     </span>
                 </div>
 
-                {/* 이미지 뷰 */}
                 {activeTab === 'image' && (
                     <div className="reading-card-grid-view">
                         {isLoading ? (
@@ -234,7 +222,6 @@ function ReadingCardPage() {
                     </div>
                 )}
 
-                {/* 텍스트 뷰 */}
                 {activeTab === 'text' && (
                     <div className="reading-card-text-view">
                         {isLoading ? (

@@ -73,7 +73,6 @@ function MyCommunityPostDetailPage() {
     });
   };
 
-  // 게시글 데이터 로드
   useEffect(() => {
     const loadPostDetail = async () => {
       if (!postId) {

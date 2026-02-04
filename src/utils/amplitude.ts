@@ -1,6 +1,3 @@
-// Amplitude Analytics 유틸리티 함수
-
-// Amplitude 타입 정의
 declare global {
   interface Window {
     amplitude: {

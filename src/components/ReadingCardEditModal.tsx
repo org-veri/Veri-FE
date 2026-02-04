@@ -1,5 +1,3 @@
-// src/components/ReadingCardEditModal.tsx
-
 import React, { useState, useRef } from 'react';
 import './ReadingCardEditModal.css';
 import { updateCard, uploadImageAndGetUrl } from '../api/cardApi';

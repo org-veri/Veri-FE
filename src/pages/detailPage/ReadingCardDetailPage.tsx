@@ -186,7 +186,6 @@ function ReadingCardDetailPage() {
       return;
     }
 
-    // 현재 공개 상태를 명확히 확인하고 반대로 토글
     const currentIsPublic = cardDetail.isPublic === true;
     const newVisibility = !currentIsPublic;
     
@@ -196,8 +195,6 @@ function ReadingCardDetailPage() {
       const response = await updateCardVisibility(cardDetail.cardId, newVisibility);
       
       if (response.isSuccess && response.result) {
-        // API 응답의 결과로 상태 업데이트
-        // 실제 API 응답 구조: result.idPublic (isPublic이 아님!)
         const result = response.result as any;
         const updatedIsPublic = result.idPublic === true || result.isPublic === true;
         
@@ -212,7 +209,6 @@ function ReadingCardDetailPage() {
           isVisible: true 
         });
       } else {
-        // 에러 코드에 따른 메시지 처리
         let errorMessage = response.message || '카드 공개 여부 변경에 실패했습니다.';
         if (response.code === 'C1005') {
           errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -225,8 +221,6 @@ function ReadingCardDetailPage() {
       }
     } catch (err: any) {
       console.error('카드 공개 여부 변경 중 오류 발생:', err);
-      
-      // 에러 코드에 따른 메시지 처리
       let errorMessage = err.message || '카드 공개 여부 변경 중 오류가 발생했습니다.';
       if (err.code === 'C1005') {
         errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -250,7 +244,6 @@ function ReadingCardDetailPage() {
     try {
       const date = new Date(isoDate);
 
-      // 유효하지 않은 날짜인지 확인
       if (isNaN(date.getTime())) {
         return null;
       }
@@ -267,7 +260,6 @@ function ReadingCardDetailPage() {
     }
   };
 
-  // 기존 handleGoToDownloadPage 유지
   const handleGoToDownloadPage = useCallback(() => {
     if (cardDetail) {
       navigate('/download-card', { state: { cardDetail: cardDetail, action: 'download' } });
@@ -339,7 +331,6 @@ function ReadingCardDetailPage() {
 
       <div className="header-margin"></div>
 
-      {/* The main card content area - this will be captured by html2canvas on the download page */}
       <div className="card-content-area">
         <div className="card-image-wrapper">
           <img

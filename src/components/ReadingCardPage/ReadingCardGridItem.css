@@ -1,22 +1,19 @@
-/* src/components/ReadingCardPage/ReadingCardGridItem.css */
-/* 이 CSS는 ReadingCardGridItem.tsx (이미지 그리드 뷰)에만 적용됩니다. */
-
 .reading-card-grid-item {
     border-radius: 9px;
     background: var(--Grey_2, #E7E9EF);
     cursor: pointer;
-    overflow: hidden; /* 둥근 모서리 적용을 위해 */
+    overflow: hidden;
     display: flex;
-    flex-direction: column; /* 이미지와 제목을 세로로 정렬 */
-    position: relative; /* 그리드 이미지 wrapper의 절대 위치 기준 */
+    flex-direction: column;
+    position: relative;
 }
 
 .grid-image-wrapper {
     width: 100%;
-    padding-bottom: 100%; /* 너비와 같은 높이를 만들어 정사각형 비율 유지 */
-    position: relative; /* 내부 이미지의 절대 위치 기준 */
-    overflow: hidden; /* 이미지 둥근 모서리 */
-    border-top-left-radius: 8px; /* 부모의 둥근 모서리 상단 */
+    padding-bottom: 100%;
+    position: relative;
+    overflow: hidden;
+    border-top-left-radius: 8px;
     border-top-right-radius: 8px;
 }
 
@@ -30,7 +27,6 @@
     display: block;
 }
 
-/* 비공개 배지 스타일 */
 .private-badge {
     position: absolute;
     bottom: 8px;
@@ -52,16 +48,15 @@
     font-weight: bold;
     color: #333;
     text-align: left;
-    padding: 8px; /* 제목 내부 패딩 */
-    white-space: nowrap; /* 제목이 한 줄에 표시되도록 */
+    padding: 8px;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-top: auto; /* 아래쪽에 붙도록 */
+    margin-top: auto;
 }
 
-/* 썸네일 이미지가 없을 경우를 대비한 스타일 (선택 사항) */
 .reading-card-grid-item:has(.grid-image-wrapper img:not([src]):not([srcset])) .grid-image-wrapper {
-    background-color: #f0f0f0; /* 이미지가 없으면 회색 배경 */
+    background-color: #f0f0f0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -69,9 +64,8 @@
     font-size: 0.8em;
 }
 
-/* 이미지 없는 카드에 대한 텍스트 오버레이 같은 추가 처리 (선택 사항) */
 .reading-card-grid-item:has(.grid-image-wrapper img:not([src]):not([srcset])) .grid-image-wrapper::after {
-    content: "No Image"; /* 이미지가 없으면 표시될 텍스트 */
+    content: "No Image";
     position: absolute;
     top: 50%;
     left: 50%;

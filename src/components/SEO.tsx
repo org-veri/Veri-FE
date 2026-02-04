@@ -1,4 +1,3 @@
-// src/components/SEO.tsx
 import { Helmet } from 'react-helmet-async';
 
 interface SEOProps {
@@ -9,7 +8,6 @@ interface SEOProps {
   type?: string;
   siteName?: string;
   twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
-  // 모바일 앱 관련 (선택사항)
   iosAppStoreId?: string;
   iosAppName?: string;
   iosUrl?: string;
@@ -35,16 +33,12 @@ const SEO = ({
   androidUrl,
   webUrl,
 }: SEOProps) => {
-  // 현재 URL 가져오기
   const currentUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
 
   return (
     <Helmet>
-      {/* 기본 메타 태그 */}
       <title>{title}</title>
       <meta name="description" content={description} />
-      
-      {/* Open Graph 메타 태그 */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={currentUrl} />
       <meta property="og:title" content={title} />
@@ -54,19 +48,13 @@ const SEO = ({
       <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content={siteName} />
       <meta property="og:locale" content="ko_KR" />
-      
-      {/* Twitter Card 메타 태그 */}
       <meta name="twitter:card" content={twitterCard} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
-      
-      {/* iOS 앱 링크 (선택사항) */}
       {iosUrl && <meta property="al:ios:url" content={iosUrl} />}
       {iosAppStoreId && <meta property="al:ios:app_store_id" content={iosAppStoreId} />}
       {iosAppName && <meta property="al:ios:app_name" content={iosAppName} />}
-      
-      {/* Android 앱 링크 (선택사항) */}
       {androidUrl && <meta property="al:android:url" content={androidUrl} />}
       {androidAppName && <meta property="al:android:app_name" content={androidAppName} />}
       {androidPackage && <meta property="al:android:package" content={androidPackage} />}

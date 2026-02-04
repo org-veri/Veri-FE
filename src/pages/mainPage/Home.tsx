@@ -7,11 +7,9 @@ import { getMemberProfile } from '../../api/memberApi';
 import { getAllBooks, type GetAllBooksQueryParams } from '../../api/bookApi';
 import { SkeletonHeroSection } from '../../components/SkeletonUI';
 
-// 아이콘 import
 import unionIcon from '../../assets/icons/TopBar/union.svg';
 import profileIcon from '../../assets/icons/TopBar/profile.svg';
 
-// 이미지 import
 import sampleBookBackground from '../../assets/images/profileSample/sample_book_background.jpg';
 import sampleBook from '../../assets/images/profileSample/sample_book.jpg';
 import sampleUser from '../../assets/images/profileSample/sample_user.png';
@@ -246,7 +244,6 @@ function LibraryPage() {
       </div>
 
       <MyReadingCardSection />
-      {/* <MyBookshelfSection /> */}
       <TodaysRecommendationSection />
 
       <div className='main-page-margin'>
