@@ -101,8 +101,11 @@ export async function extractTextFromImage(imageUrl: string): Promise<OcrRespons
         }
 
         return data;
-    } catch (error) {
+    } catch (error: any) {
         console.error(`Failed to perform OCR for image ${imageUrl}:`, error);
+        if (error.message && error.message.includes('API call failed')) {
+            throw new Error('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        }
         throw error;
     }
 }

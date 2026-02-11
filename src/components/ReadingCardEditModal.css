@@ -43,6 +43,7 @@
     position: relative;
     text-align: center;
     margin-bottom: 10px;
+    padding-top: 10px;
 }
 
 .modal-title {
@@ -53,7 +54,8 @@
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-    margin-top: 50px;
+    margin-top: 0;
+    padding-right: 40px;
 }
 
 .modal-author {
@@ -117,12 +119,12 @@
 
 .image-preview {
     width: 100%;
-    max-width: 300px;
-    aspect-ratio: 1 / 1;
+    height: auto;
     object-fit: cover;
     border-radius: 12px;
     border: 2px solid #E7E9EF;
     background-color: #f8f9fa;
+    display: block;
 }
 
 .upload-button {
@@ -278,7 +280,7 @@
 
     .image-preview {
         max-width: 100%;
-        aspect-ratio: 1 / 1;
+        height: auto;
     }
 
     .upload-button {

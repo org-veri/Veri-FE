@@ -66,11 +66,11 @@ const isTokenExpired = (token: string): boolean => {
 
 const handleApiResponse = async (response: Response): Promise<AuthResponse> => {
   if (!response.ok) {
+    const responseClone = response.clone();
     let errorData: ApiError = {};
     try {
-      errorData = await response.json();
+      errorData = await responseClone.json();
     } catch {
-      // JSON 파싱 실패 시 무시
     }
     throw new Error(errorData.message || `HTTP ${response.status} 오류`);
   }
@@ -115,9 +115,10 @@ interface ReissueResponse {
 
 const handleReissueResponse = async (response: Response): Promise<ReissueResponse> => {
   if (!response.ok) {
+    const responseClone = response.clone();
     let errorData: ApiError = {};
     try {
-      errorData = await response.json();
+      errorData = await responseClone.json();
     } catch {
     }
     throw new Error(errorData.message || `HTTP ${response.status} 오류`);

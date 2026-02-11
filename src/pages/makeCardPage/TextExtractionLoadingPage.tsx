@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { extractTextFromImage } from '../../api/ocrApi';
 import Toast from '../../components/Toast';
-import CardLoading from '../../assets/images/CardLoading.png';
-
 import './TextExtractionLoadingPage.css';
 
 const TextExtractionLoadingPage: React.FC = () => {
@@ -14,7 +12,6 @@ const TextExtractionLoadingPage: React.FC = () => {
     const bookId = location.state?.bookId as number | undefined;
 
     const [isLoadingText, setIsLoadingText] = useState(true);
-    const [ocrError, setOcrError] = useState<string | null>(null);
     const [toast, setToast] = useState<{
         message: string;
         type: 'success' | 'error' | 'warning' | 'info';
@@ -61,7 +58,7 @@ const TextExtractionLoadingPage: React.FC = () => {
                             replace: true
                         });
                     } else {
-                        setOcrError(parsedResult.error);
+                        showToast(parsedResult.error, 'error');
                         setIsLoadingText(false);
                     }
                 }
@@ -71,7 +68,6 @@ const TextExtractionLoadingPage: React.FC = () => {
             sessionStorage.setItem(processingKey, 'true');
 
             setIsLoadingText(true);
-            setOcrError(null);
 
             try {
                 const extractedText = await extractTextFromImage(image);
@@ -105,13 +101,11 @@ const TextExtractionLoadingPage: React.FC = () => {
             } catch (err: any) {
                 console.error('OCR 처리 중 오류 발생:', err);
                 const errorMessage = `텍스트 추출 중 오류가 발생했습니다: ${err.message || '알 수 없는 오류'}.`;
-                setOcrError(errorMessage);
-
+                showToast(errorMessage, 'error');
                 sessionStorage.setItem(`ocr_result_${image}`, JSON.stringify({
                     success: false,
                     error: errorMessage
                 }));
-
             } finally {
                 setIsLoadingText(false);
                 sessionStorage.removeItem(processingKey);
@@ -147,61 +141,11 @@ const TextExtractionLoadingPage: React.FC = () => {
 
             <div className="text-extraction-wrapper">
                 <div className="text-extraction-loading-page">
-                    <header className="loading-header">
-                        {isLoadingText ? (
-                            <>
-                                <h3>텍스트를 분석중이에요</h3>
-                                <p>결과가 나올때까지 조금만 기다려주세요!</p>
-                            </>
-                        ) : ocrError ? (
-                            <h3 style={{ color: 'red' }}>오류 발생!</h3>
-                        ) : (
-                            <h3>분석 완료!</h3>
-                        )}
-                    </header>
-
-                    <div className="loading-content">
-                        <img
-                            src={CardLoading}
-                            alt="텍스트 분석 중"
-                            style={{ marginTop: '20px', maxWidth: '80%', borderRadius: '8px' }}
-                        />
-                        {ocrError ? (
-                            <div style={{ textAlign: 'center' }}>
-                                <p style={{ color: 'red', marginBottom: '20px' }}>{ocrError}</p>
-                                <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                                    <button
-                                        onClick={() => window.location.reload()}
-                                        style={{
-                                            padding: '10px 20px',
-                                            backgroundColor: '#007bff',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '5px',
-                                            cursor: 'pointer'
-                                        }}
-                                    >
-                                        다시 시도
-                                    </button>
-                                    <button
-                                        onClick={() => navigate('/make-card')}
-                                        style={{
-                                            padding: '10px 20px',
-                                            backgroundColor: '#28a745',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '5px',
-                                            cursor: 'pointer'
-                                        }}
-                                    >
-                                        새 이미지 선택
-                                    </button>
-                                </div>
-                            </div>
-                        ) : (
-                            <p>오늘도 화이팅!</p>
-                        )}
-                    </div>
+                    {isLoadingText ? (
+                        <div className="loading-page-container">
+                            <div className="loading-spinner"></div>
+                        </div>
+                    ) : null}
                 </div>
             </div>
             <Toast

@@ -22,14 +22,39 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
   });
 
   if (!response.ok) {
-    let errorMessage = `API call failed: ${response.status}`;
+    const responseClone = response.clone();
+    let errorMessage = '';
+    
     try {
-      const errorData = await response.json();
-      errorMessage += ` - ${errorData.message || response.statusText}`;
-    } catch (e) {
-      const text = await response.text();
-      errorMessage += ` - ${text || response.statusText}`;
+      const errorData = await responseClone.json();
+      if (errorData.message && errorData.message.trim()) {
+        errorMessage = errorData.message;
+      } else if (errorData.code) {
+        errorMessage = `오류 코드: ${errorData.code}`;
+      }
+    } catch {
+      try {
+        const text = await responseClone.text();
+        if (text && text.trim()) {
+          errorMessage = text.trim();
+        }
+      } catch {
+      }
     }
+    
+    if (!errorMessage) {
+      const statusMessages: Record<number, string> = {
+        400: '잘못된 요청입니다.',
+        401: '인증이 필요합니다.',
+        403: '접근 권한이 없습니다.',
+        404: '요청한 리소스를 찾을 수 없습니다.',
+        500: '서버 오류가 발생했습니다.',
+        502: '서버에 연결할 수 없습니다.',
+        503: '서비스를 사용할 수 없습니다.',
+      };
+      errorMessage = statusMessages[response.status] || `서버 오류가 발생했습니다 (${response.status})`;
+    }
+    
     throw new Error(errorMessage);
   }
   return response;

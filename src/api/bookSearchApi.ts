@@ -59,12 +59,12 @@ export const searchBooks = async (query: string, page: number = 1, size: number 
         });
 
         if (!response.ok) {
+            const responseClone = response.clone();
             let errorMessage = '책 검색 실패';
             try {
-                const errorData = await response.json();
+                const errorData = await responseClone.json();
                 errorMessage = errorData.message || errorMessage;
             } catch {
-                // JSON 파싱 실패 시 기본 메시지 사용
             }
             return { isSuccess: false, code: response.status.toString(), message: errorMessage };
         }
