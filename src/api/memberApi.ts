@@ -46,7 +46,7 @@ export interface CheckNicknameExistsResponse {
     isSuccess: boolean;
     code: string;
     message: string;
-    result: boolean;
+    result: { exists: boolean };
 }
 
 export async function getMemberProfile(): Promise<GetMemberProfileResponse> {

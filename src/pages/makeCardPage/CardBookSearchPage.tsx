@@ -307,8 +307,8 @@ const CardBookSearchPage: React.FC = () => {
 
             let memberBookId: number;
 
-            if (searchResponse.isSuccess && searchResponse.result > 0) {
-                memberBookId = searchResponse.result;
+            if (searchResponse.isSuccess && searchResponse.result.memberBookId > 0) {
+                memberBookId = searchResponse.result.memberBookId;
                 showToast('기존 책에 독서카드가 추가됩니다.', 'info');
             } else {
                 const payload: CreateBookRequest = {

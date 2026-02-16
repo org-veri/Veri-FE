@@ -100,8 +100,8 @@ export type UpdateBookVisibilityResponse = BaseApiResponse<{
   id: number;
   idPublic: boolean;
 }>;
-export type GetMyBooksCountResponse = BaseApiResponse<number>;
-export type SearchMyBookResponse = BaseApiResponse<number>;
+export type GetMyBooksCountResponse = BaseApiResponse<{ count: number }>;
+export type SearchMyBookResponse = BaseApiResponse<{ memberBookId: number }>;
 
 export interface GetAllBooksQueryParams {
   page?: number;

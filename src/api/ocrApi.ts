@@ -6,7 +6,7 @@ export interface OCRResponse {
   isSuccess: boolean;
   code: string;
   message: string;
-  result: string | null;
+  result: { resultText: string } | null;
 }
 
 export const extractTextFromImage = async (imageUrl: string): Promise<string> => {
@@ -24,7 +24,7 @@ export const extractTextFromImage = async (imageUrl: string): Promise<string> =>
       throw new Error(data.message || '텍스트 추출에 실패했습니다.');
     }
 
-    return data.result;
+    return data.result.resultText;
   } catch (error: any) {
     if (error.message && error.message.includes('API call failed')) {
       throw new Error('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');

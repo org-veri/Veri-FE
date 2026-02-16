@@ -23,8 +23,8 @@ interface BaseApiResponse<T> {
   result: T;
 }
 
-export type CreateCommentResponse = BaseApiResponse<number>;
-export type CreateReplyResponse = BaseApiResponse<number>;
+export type CreateCommentResponse = BaseApiResponse<{ commentId: number }>;
+export type CreateReplyResponse = BaseApiResponse<{ commentId: number }>;
 export type UpdateCommentResponse = BaseApiResponse<Record<string, never>>;
 export type DeleteCommentResponse = BaseApiResponse<Record<string, never>>;
 

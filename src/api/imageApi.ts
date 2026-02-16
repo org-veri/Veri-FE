@@ -34,7 +34,7 @@ export interface OcrResponse {
     isSuccess: boolean;
     code: string;
     message: string;
-    result: string;
+    result: { resultText: string };
 }
 
 export async function uploadImage(file: File): Promise<string> {

@@ -163,7 +163,7 @@ export const bookHandlers = [
     return withDelay(body);
   }),
   http.get('*/api/v2/bookshelf/my/count', async () => {
-    const body = createMockResponse(books.length, 'Mock 내 책 개수 조회 성공');
+    const body = createMockResponse({ count: books.length }, 'Mock 내 책 개수 조회 성공');
     return withDelay(body);
   }),
   http.get('*/api/v2/bookshelf/my/search', async ({ request }) => {
@@ -174,7 +174,7 @@ export const bookHandlers = [
       book.title.toLowerCase().includes(title) &&
       book.author.toLowerCase().includes(author)
     );
-    const body = createMockResponse(found ? found.memberBookId : 0, found ? 'Mock 내 책 검색 성공' : 'Mock 검색 결과 없음');
+    const body = createMockResponse({ memberBookId: found ? found.memberBookId : 0 }, found ? 'Mock 내 책 검색 성공' : 'Mock 검색 결과 없음');
     return withDelay(body);
   }),
   http.patch('*/api/v2/bookshelf/:readingId/visibility', async ({ params, request }) => {

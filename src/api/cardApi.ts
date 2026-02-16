@@ -126,7 +126,7 @@ export interface GetMyCardsCountResponse {
   isSuccess: boolean;
   code: string;
   message: string;
-  result: number;
+  result: { count: number };
 }
 
 export interface UpdateCardVisibilityResponse {
