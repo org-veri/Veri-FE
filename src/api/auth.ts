@@ -321,3 +321,130 @@ export const getCurrentUserId = (): number | null => {
 
   return null;
 };
+
+// 토큰 재발급 중복 요청 방지용 Promise
+let reissuePromise: Promise<string> | null = null;
+
+/**
+ * 인증이 필요한 API 요청을 수행합니다.
+ * 401 에러 발생 시 자동으로 토큰을 재발급하고 요청을 재시도합니다.
+ */
+export const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
+  let accessToken = getAccessToken();
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string>),
+  };
+
+  // accessToken이 없지만 refreshToken이 있으면 먼저 재발급 시도
+  if (!accessToken && getRefreshToken()) {
+    console.log('[fetchWithAuth] Access token 없음. 토큰 재발급을 시도합니다.');
+
+    if (!reissuePromise) {
+      reissuePromise = reissueToken().finally(() => {
+        reissuePromise = null;
+      });
+    }
+
+    try {
+      accessToken = await reissuePromise;
+      console.log('[fetchWithAuth] 토큰 재발급 성공.');
+    } catch (reissueError) {
+      console.error('[fetchWithAuth] 토큰 재발급 실패:', reissueError);
+      removeAccessToken();
+      removeRefreshToken();
+      throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
+    }
+  }
+
+  if (accessToken) {
+    headers['Authorization'] = `Bearer ${accessToken}`;
+  } else {
+    console.warn(`[fetchWithAuth] Access token is missing for URL: ${url}`);
+  }
+
+  let response = await fetch(url, {
+    ...options,
+    headers: headers as HeadersInit,
+  });
+
+  // 401 에러 발생 시 토큰 재발급 후 재요청
+  if (response.status === 401) {
+    console.warn('[fetchWithAuth] 401 Unauthorized. 토큰 재발급을 시도합니다.');
+
+    // 재발급이 이미 진행 중이면 해당 Promise를 재사용 (중복 요청 방지)
+    if (!reissuePromise) {
+      reissuePromise = reissueToken().finally(() => {
+        reissuePromise = null;
+      });
+    }
+
+    try {
+      accessToken = await reissuePromise;
+      console.log('[fetchWithAuth] 토큰 재발급 성공. 요청을 재시도합니다.');
+
+      // 새 토큰으로 헤더 업데이트
+      headers['Authorization'] = `Bearer ${accessToken}`;
+
+      // 원래 요청 재시도
+      response = await fetch(url, {
+        ...options,
+        headers: headers as HeadersInit,
+      });
+
+      if (!response.ok && response.status === 401) {
+        // 재발급 후에도 401이면 리프레시 토큰도 만료된 것으로 간주
+        console.error('[fetchWithAuth] 토큰 재발급 후에도 401 응답. 리프레시 토큰이 만료되었습니다.');
+        removeAccessToken();
+        removeRefreshToken();
+      }
+    } catch (reissueError) {
+      console.error('[fetchWithAuth] 토큰 재발급 실패:', reissueError);
+      removeAccessToken();
+      removeRefreshToken();
+      throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
+    }
+  }
+
+  // 에러 응답 처리 (401 제외 - 위에서 이미 처리됨)
+  if (!response.ok) {
+    const responseClone = response.clone();
+    let errorMessage = '';
+
+    try {
+      const errorData = await responseClone.json();
+      if (errorData.message && errorData.message.trim()) {
+        errorMessage = errorData.message;
+      } else if (errorData.code) {
+        errorMessage = `오류 코드: ${errorData.code}`;
+      }
+    } catch {
+      try {
+        const text = await responseClone.text();
+        if (text && text.trim()) {
+          errorMessage = text.trim();
+        }
+      } catch {
+        // 무시
+      }
+    }
+
+    if (!errorMessage) {
+      const statusMessages: Record<number, string> = {
+        400: '잘못된 요청입니다.',
+        401: '인증이 필요합니다.',
+        403: '접근 권한이 없습니다.',
+        404: '요청한 리소스를 찾을 수 없습니다.',
+        500: '서버 오류가 발생했습니다.',
+        502: '서버에 연결할 수 없습니다.',
+        503: '서비스를 사용할 수 없습니다.',
+      };
+      errorMessage = statusMessages[response.status] || `서버 오류가 발생했습니다 (${response.status})`;
+    }
+
+    throw new Error(errorMessage);
+  }
+
+  return response;
+};

@@ -132,7 +132,7 @@ export const communityHandlers = [
       isPublic: true,
     };
     posts = [newPost, ...posts];
-    const body = createMockResponse(newId, 'Mock 게시글 작성 성공');
+    const body = createMockResponse({ postId: newId }, 'Mock 게시글 작성 성공');
     return withDelay(body);
   }),
   http.patch('*/api/v1/posts/:postId', async ({ request, params }) => {

@@ -1,31 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import { getAccessToken } from '../api/auth';
 import kakaoIcon from '../assets/icons/login/kakao_icon.svg';
 import veriLogo from '../assets/icons/union.svg';
 import './LoginPage.css';
 
 const LoginPage: React.FC = () => {
-  const navigate = useNavigate();
   const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
   const buttonsContainerRef = useRef<HTMLDivElement>(null);
   const [bottomPadding, setBottomPadding] = useState(50);
-
-  useEffect(() => {
-    const checkExistingToken = () => {
-      try {
-        const token = getAccessToken();
-        if (token) {
-          console.log('저장된 로그인 정보가 있습니다. 자동으로 로그인합니다.');
-          navigate('/', { replace: true });
-        }
-      } catch (error) {
-        console.log('저장된 토큰이 없거나 만료되었습니다.');
-      }
-    };
-
-    checkExistingToken();
-  }, [navigate]);
 
   useEffect(() => {
     const calculateBottomPadding = () => {

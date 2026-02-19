@@ -1,5 +1,5 @@
 // src/api/bookApi.ts
-import { getAccessToken } from './auth';
+import { fetchWithAuth } from './auth';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
@@ -100,8 +100,8 @@ export type UpdateBookVisibilityResponse = BaseApiResponse<{
   id: number;
   idPublic: boolean;
 }>;
-export type GetMyBooksCountResponse = BaseApiResponse<number>;
-export type SearchMyBookResponse = BaseApiResponse<number>;
+export type GetMyBooksCountResponse = BaseApiResponse<{ count: number }>;
+export type SearchMyBookResponse = BaseApiResponse<{ memberBookId: number }>;
 
 export interface GetAllBooksQueryParams {
   page?: number;
@@ -145,62 +145,7 @@ export interface RateBookRequest {
   score: number;
 }
 
-const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
-  const accessToken = getAccessToken();
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    ...(options.headers as Record<string, string>),
-  };
-
-  if (accessToken) {
-    headers['Authorization'] = `Bearer ${accessToken}`;
-  } else {
-    console.warn(`[fetchWithAuth] Access token is missing for URL: ${url}`);
-  }
-
-  const response = await fetch(url, {
-    ...options,
-    headers: headers as HeadersInit,
-  });
-
-  if (!response.ok) {
-    const responseClone = response.clone();
-    let errorMessage = '';
-    
-    try {
-      const errorData = await responseClone.json();
-      if (errorData.message && errorData.message.trim()) {
-        errorMessage = errorData.message;
-      } else if (errorData.code) {
-        errorMessage = `오류 코드: ${errorData.code}`;
-      }
-    } catch {
-      try {
-        const text = await responseClone.text();
-        if (text && text.trim()) {
-          errorMessage = text.trim();
-        }
-      } catch {
-      }
-    }
-    
-    if (!errorMessage) {
-      const statusMessages: Record<number, string> = {
-        400: '잘못된 요청입니다.',
-        401: '인증이 필요합니다.',
-        403: '접근 권한이 없습니다.',
-        404: '요청한 리소스를 찾을 수 없습니다.',
-        500: '서버 오류가 발생했습니다.',
-        502: '서버에 연결할 수 없습니다.',
-        503: '서비스를 사용할 수 없습니다.',
-      };
-      errorMessage = statusMessages[response.status] || `서버 오류가 발생했습니다 (${response.status})`;
-    }
-    
-    throw new Error(errorMessage);
-  }
-  return response;
-};
+// fetchWithAuth는 auth.ts에서 관리됩니다 (401 시 자동 토큰 재발급 지원)
 
 const makeApiRequest = async <T>(
   endpoint: string, 

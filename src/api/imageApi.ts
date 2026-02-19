@@ -1,4 +1,4 @@
-import { fetchWithAuth } from './cardApi';
+import { fetchWithAuth } from './auth';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
@@ -34,7 +34,7 @@ export interface OcrResponse {
     isSuccess: boolean;
     code: string;
     message: string;
-    result: string;
+    result: { resultText: string };
 }
 
 export async function uploadImage(file: File): Promise<string> {

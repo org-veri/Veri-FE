@@ -90,7 +90,7 @@ export const cardHandlers = [
     return withDelay(body);
   }),
   http.get('*/api/v1/cards/my/count', async () => {
-    const body = createMockResponse(cards.length, 'Mock 내 독서카드 개수 조회 성공');
+    const body = createMockResponse({ count: cards.length }, 'Mock 내 독서카드 개수 조회 성공');
     return withDelay(body);
   }),
   http.patch('*/api/v1/cards/:cardId', async ({ params, request }) => {

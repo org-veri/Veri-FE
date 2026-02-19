@@ -1,10 +1,11 @@
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import TabBar from './components/TabBar';
 import MainLayout from './components/MainLayout';
 import Sidebar from './components/Sidebar';
 import FloatingCameraButton from './components/FloatingCameraButton';
 import { PATH, PATHS_PUBLIC, shouldShowTabBar, shouldShowSidebar, shouldShowFloatingCamera } from './config/routes';
+import { getAccessTokenAsync } from './api/auth';
 import './App.css';
 
 import HomePage from './pages/mainPage/Home';
@@ -35,25 +36,57 @@ import WritePostPage from './pages/WritePostPage/WritePostPage';
 import PostBookSearchPage from './pages/WritePostPage/PostBookSearchPage';
 import CommunityMoreReadingCardPage from './pages/CommunityMoreReadingCardPage';
 
-const isAuthenticated = () => {
-  const token = localStorage.getItem('accessToken');
-  return !!token;
-};
-
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isInitialCheckDone, setIsInitialCheckDone] = useState(false);
+  const authCheckRef = useRef(false);
 
+  // 앱 진입 시 한 번만 인증 체크 (선제적 토큰 재발급)
   useEffect(() => {
-    if (!isAuthenticated() && !PATHS_PUBLIC.includes(location.pathname)) {
-      navigate(PATH.LOGIN);
-    }
+    if (authCheckRef.current) return;
+    authCheckRef.current = true;
+
+    const checkAuthOnMount = async () => {
+      // 공개 페이지는 체크 스킵
+      if (PATHS_PUBLIC.includes(location.pathname)) {
+        setIsInitialCheckDone(true);
+        return;
+      }
+
+      try {
+        const token = await getAccessTokenAsync(true); // 자동 재발급 활성화
+        if (!token) {
+          navigate(PATH.LOGIN, { replace: true });
+        }
+      } catch {
+        navigate(PATH.LOGIN, { replace: true });
+      } finally {
+        setIsInitialCheckDone(true);
+      }
+    };
+
+    checkAuthOnMount();
+  }, []); // 빈 의존성: 마운트 시 한 번만 실행
+
+  // 라우트 변경 시 스크롤 리셋
+  useEffect(() => {
     window.scrollTo(0, 0);
-  }, [location.pathname, navigate]);
+  }, [location.pathname]);
 
   const showTabBar = shouldShowTabBar(location.pathname);
   const showFloatingCameraButton = shouldShowFloatingCamera(location.pathname);
   const showSidebar = shouldShowSidebar(location.pathname);
+
+  // 인증 체크 전까지 로딩 표시 (공개 페이지 제외)
+  const isPublicPage = PATHS_PUBLIC.includes(location.pathname);
+  if (!isInitialCheckDone && !isPublicPage) {
+    return (
+      <div className="loading-page-container">
+        <div className="loading-spinner"></div>
+      </div>
+    );
+  }
 
   return (
     <div className={`App ${showSidebar ? 'has-sidebar' : ''}`}>

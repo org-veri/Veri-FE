@@ -1,4 +1,4 @@
-import { fetchWithAuth } from './cardApi';
+import { fetchWithAuth } from './auth';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
@@ -46,7 +46,7 @@ export interface CheckNicknameExistsResponse {
     isSuccess: boolean;
     code: string;
     message: string;
-    result: boolean;
+    result: { exists: boolean };
 }
 
 export async function getMemberProfile(): Promise<GetMemberProfileResponse> {
