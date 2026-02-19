@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MyReadingCard.css';
 import { getMyCards, type MyCardItem, type GetMyCardsQueryParams } from '../../api/cardApi';
@@ -46,6 +46,10 @@ const MyReadingCardSection: React.FC = () => {
   const [readingCards, setReadingCards] = useState<ReadingCardItemType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -88,6 +92,29 @@ const MyReadingCardSection: React.FC = () => {
     fetchCards();
   }, []);
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!scrollContainerRef.current) return;
+    isDragging.current = true;
+    startX.current = e.pageX - scrollContainerRef.current.offsetLeft;
+    scrollLeft.current = scrollContainerRef.current.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    isDragging.current = false;
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging.current || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX.current) * 2;
+    scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+
   if (isLoading) {
     return (
       <section className="myReadingCards">
@@ -97,7 +124,14 @@ const MyReadingCardSection: React.FC = () => {
             독서카드 보러가기 <span className="mgc_right_line"></span>
           </span>
         </div>
-        <div className="horizontalScrollContainer">
+        <div 
+          className="horizontal-scroll-container"
+          ref={scrollContainerRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+        >
           <p className="loadingMessage">독서 카드를 불러오는 중...</p>
         </div>
       </section>
@@ -113,7 +147,14 @@ const MyReadingCardSection: React.FC = () => {
             독서카드 보러가기 <span className="mgc_right_line"></span>
           </span>
         </div>
-        <div className="horizontalScrollContainer">
+        <div 
+          className="horizontal-scroll-container"
+          ref={scrollContainerRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+        >
           <p className="errorMessage">{error}</p>
         </div>
       </section>
@@ -128,7 +169,14 @@ const MyReadingCardSection: React.FC = () => {
           독서카드 보러가기 <span className="mgc_right_line"></span>
         </span>
       </div>
-      <div className="horizontalScrollContainer">
+      <div 
+        className="horizontal-scroll-container"
+        ref={scrollContainerRef}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+      >
         {readingCards.length > 0 ? (
           readingCards.map((card) => (
             <SingleReadingCard

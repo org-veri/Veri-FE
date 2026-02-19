@@ -104,6 +104,10 @@ const makeApiRequest = async (endpoint: string, options: RequestInit = {}): Prom
   }
 };
 
+export interface ReissueRequest {
+  refreshToken: string;
+}
+
 interface ReissueResponse {
   isSuccess: boolean;
   code: string;
@@ -114,20 +118,31 @@ interface ReissueResponse {
 }
 
 const handleReissueResponse = async (response: Response): Promise<ReissueResponse> => {
+  const responseClone = response.clone();
+  let errorData: ApiError = {};
+
   if (!response.ok) {
-    const responseClone = response.clone();
-    let errorData: ApiError = {};
     try {
       errorData = await responseClone.json();
     } catch {
+      // JSON 파싱 실패 시 빈 객체 유지
     }
-    throw new Error(errorData.message || `HTTP ${response.status} 오류`);
+
+    // 상태 코드별 에러 메시지 처리
+    const statusMessages: Record<number, string> = {
+      400: errorData.message || '잘못된 요청입니다. 리프레시 토큰을 확인해주세요.',
+      409: errorData.message || '토큰 재발급 중 충돌이 발생했습니다.',
+      500: errorData.message || '서버 오류가 발생했습니다.',
+    };
+
+    const errorMessage = statusMessages[response.status] || errorData.message || `HTTP ${response.status} 오류`;
+    throw new Error(errorMessage);
   }
 
   const data: ReissueResponse = await response.json();
 
   if (!data.isSuccess || !data.result?.accessToken) {
-    throw new Error('유효하지 않은 응답: 액세스 토큰이 없습니다.');
+    throw new Error(data.message || '유효하지 않은 응답: 액세스 토큰이 없습니다.');
   }
 
   return data;
@@ -258,6 +273,20 @@ export const removeRefreshToken = (): void => {
   localStorage.removeItem('refreshToken');
 };
 
+/**
+ * 리프레시 토큰을 이용하여 액세스 토큰을 재발급합니다.
+ * 
+ * @returns {Promise<string>} 새로 발급된 액세스 토큰
+ * @throws {Error} 리프레시 토큰이 없거나 재발급에 실패한 경우
+ * 
+ * @example
+ * try {
+ *   const newToken = await reissueToken();
+ *   console.log('토큰 재발급 성공');
+ * } catch (error) {
+ *   console.error('토큰 재발급 실패:', error.message);
+ * }
+ */
 export const reissueToken = async (): Promise<string> => {
   const refreshToken = getRefreshToken();
   if (!refreshToken) {
@@ -265,26 +294,36 @@ export const reissueToken = async (): Promise<string> => {
   }
 
   try {
+    const requestBody: ReissueRequest = {
+      refreshToken: refreshToken
+    };
+
     const response = await fetch(`${BASE_URL}/api/v1/auth/reissue`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify({
-        refreshToken: refreshToken
-      })
+      body: JSON.stringify(requestBody)
     });
 
     const data = await handleReissueResponse(response);
     const newAccessToken = data.result.accessToken;
+    
+    if (!newAccessToken) {
+      throw new Error('액세스 토큰이 응답에 포함되지 않았습니다.');
+    }
+
     setAccessToken(newAccessToken);
     return newAccessToken;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
     console.error('토큰 재발급 실패:', errorMessage);
+    
+    // 재발급 실패 시 토큰 제거
     removeAccessToken();
     removeRefreshToken();
+    
     throw error;
   }
 };
@@ -336,8 +375,6 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
   };
-
-  // accessToken이 없지만 refreshToken이 있으면 먼저 재발급 시도
   if (!accessToken && getRefreshToken()) {
     console.log('[fetchWithAuth] Access token 없음. 토큰 재발급을 시도합니다.');
 
@@ -383,18 +420,13 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
     try {
       accessToken = await reissuePromise;
       console.log('[fetchWithAuth] 토큰 재발급 성공. 요청을 재시도합니다.');
-
-      // 새 토큰으로 헤더 업데이트
       headers['Authorization'] = `Bearer ${accessToken}`;
-
-      // 원래 요청 재시도
       response = await fetch(url, {
         ...options,
         headers: headers as HeadersInit,
       });
 
       if (!response.ok && response.status === 401) {
-        // 재발급 후에도 401이면 리프레시 토큰도 만료된 것으로 간주
         console.error('[fetchWithAuth] 토큰 재발급 후에도 401 응답. 리프레시 토큰이 만료되었습니다.');
         removeAccessToken();
         removeRefreshToken();
@@ -407,7 +439,6 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
     }
   }
 
-  // 에러 응답 처리 (401 제외 - 위에서 이미 처리됨)
   if (!response.ok) {
     const responseClone = response.clone();
     let errorMessage = '';

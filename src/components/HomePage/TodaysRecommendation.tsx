@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getPopularBooks, type PopularBookItem, type GetPopularBooksQueryParams } from '../../api/bookApi';
@@ -56,6 +56,10 @@ const TodaysRecommendationSection: React.FC = () => {
   const [recommendedBooks, setRecommendedBooks] = useState<RecommendedBookType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -92,6 +96,29 @@ const TodaysRecommendationSection: React.FC = () => {
     fetchRecommendations();
   }, []);
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!scrollContainerRef.current) return;
+    isDragging.current = true;
+    startX.current = e.pageX - scrollContainerRef.current.offsetLeft;
+    scrollLeft.current = scrollContainerRef.current.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    isDragging.current = false;
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging.current || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX.current) * 2;
+    scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+
   if (isLoading) {
     return (
       <section className="todays-recommendation">
@@ -99,7 +126,14 @@ const TodaysRecommendationSection: React.FC = () => {
           <p>오늘의 추천</p>
           <span className="more-text">오늘 가장 많이 읽은 책이에요</span>
         </div>
-        <div className="recommendation-list horizontal-scroll-container">
+        <div 
+          className="recommendation-list horizontal-scroll-container"
+          ref={scrollContainerRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+        >
           <p className="loading-message">오늘의 추천 데이터를 불러오는 중...</p>
         </div>
       </section>
@@ -113,7 +147,14 @@ const TodaysRecommendationSection: React.FC = () => {
           <p>오늘의 추천</p>
           <span className="more-text">오늘 가장 많이 읽은 책이에요</span>
         </div>
-        <div className="recommendation-list horizontal-scroll-container">
+        <div 
+          className="recommendation-list horizontal-scroll-container"
+          ref={scrollContainerRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+        >
           <p className="error-message">{error}</p>
         </div>
       </section>
@@ -126,7 +167,14 @@ const TodaysRecommendationSection: React.FC = () => {
         <p>오늘의 추천</p>
         <span className="more-text">오늘 가장 많이 읽은 책이에요</span>
       </div>
-      <div className="recommendation-list horizontal-scroll-container">
+      <div 
+        className="recommendation-list horizontal-scroll-container"
+        ref={scrollContainerRef}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+      >
         {recommendedBooks.length > 0 ? (
           recommendedBooks.map((book) => (
             <SingleRecommendedBookItem

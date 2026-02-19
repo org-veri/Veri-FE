@@ -40,9 +40,10 @@
     min-height: 200px;
 }
 
-.horizontalScrollContainer {
+.horizontal-scroll-container {
     display: flex;
     overflow-x: auto;
+    overflow-y: hidden;
     -ms-overflow-style: none;
     scrollbar-width: none;
     min-height: 150px;
@@ -52,9 +53,15 @@
     margin-right: -15px;
     padding-left: 15px;
     padding-right: 15px;
+    cursor: grab;
+    user-select: none;
 }
 
-.horizontalScrollContainer::-webkit-scrollbar {
+.horizontal-scroll-container:active {
+    cursor: grabbing;
+}
+
+.horizontal-scroll-container::-webkit-scrollbar {
     width: 100%;
     display: none;
 }
@@ -68,6 +75,8 @@
     background-color: #fff;
     border-radius: 8px;
     cursor: pointer;
+    user-select: none;
+    pointer-events: auto;
 }
 
 .cardThumbnail {

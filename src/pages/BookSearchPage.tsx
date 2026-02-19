@@ -9,7 +9,6 @@ import '../styles/components/book-list.css';
 import './BookSearchPage.css';
 import type { BookItem, BookSearchResponseResult } from '../api/bookSearchApi';
 import { searchBooks } from '../api/bookSearchApi';
-import { removeAccessToken } from '../api/auth';
 
 const BookSearchPage: React.FC = () => {
     const navigate = useNavigate();
@@ -111,13 +110,7 @@ const BookSearchPage: React.FC = () => {
             return response.result;
         } catch (error: any) {
             console.error('책 검색 중 예상치 못한 오류:', error);
-            if (error.message === 'TOKEN_EXPIRED') {
-                alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-                removeAccessToken();
-                navigate('/login');
-            } else {
-                setSearchError(`검색 중 오류 발생: ${error.message}`);
-            }
+            setSearchError(`검색 중 오류 발생: ${error.message}`);
             return { books: [], totalPages: 0, page: 1, size: size, totalElements: 0 };
         }
     }, [navigate]);

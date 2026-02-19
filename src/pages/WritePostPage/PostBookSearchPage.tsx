@@ -5,7 +5,6 @@ import { MdArrowBackIosNew } from 'react-icons/md';
 import '../../styles/components/search.css';
 import '../../styles/components/book-list.css';
 import './PostBookSearchPage.css';
-import { removeAccessToken } from '../../api/auth';
 import { getAllBooks, type Book } from '../../api/bookApi';
 import Toast from '../../components/Toast';
 import type { BookItem } from '../../api/bookSearchApi';
@@ -57,13 +56,7 @@ const PostBookSearchPage: React.FC = () => {
             setMyBooks(response.result.memberBooks);
         } catch (error: any) {
             console.error('내 책장 로드 중 오류:', error);
-            if (error.message === 'TOKEN_EXPIRED') {
-                showToast('세션이 만료되었습니다. 다시 로그인해주세요.', 'error');
-                removeAccessToken();
-                navigate('/login');
-            } else {
-                setMyBooksError(`내 책장 로드 중 오류: ${error.message}`);
-            }
+            setMyBooksError(`내 책장 로드 중 오류: ${error.message}`);
         } finally {
             setIsLoadingMyBooks(false);
         }

@@ -9,7 +9,6 @@ import '../../styles/components/book-list.css';
 import './CardBookSearchPage.css';
 import type { BookItem, BookSearchResponseResult } from '../../api/bookSearchApi';
 import { searchBooks } from '../../api/bookSearchApi';
-import { removeAccessToken } from '../../api/auth';
 import { createBook, searchMyBook, getAllBooks, type Book } from '../../api/bookApi';
 import type { CreateBookRequest } from '../../api/bookApi';
 import Toast from '../../components/Toast';
@@ -148,13 +147,7 @@ const CardBookSearchPage: React.FC = () => {
             return response.result;
         } catch (error: any) {
             console.error('책 검색 중 예상치 못한 오류:', error);
-            if (error.message === 'TOKEN_EXPIRED') {
-                showToast('세션이 만료되었습니다. 다시 로그인해주세요.', 'error');
-                removeAccessToken();
-                navigate('/login');
-            } else {
-                setSearchError(`검색 중 오류 발생: ${error.message}`);
-            }
+            setSearchError(`검색 중 오류 발생: ${error.message}`);
             return { books: [], totalPages: 0, page: 1, size: size, totalElements: 0 };
         }
     }, [navigate]);
@@ -173,13 +166,7 @@ const CardBookSearchPage: React.FC = () => {
             setMyBooks(response.result.memberBooks);
         } catch (error: any) {
             console.error('내 책장 로드 중 오류:', error);
-            if (error.message === 'TOKEN_EXPIRED') {
-                showToast('세션이 만료되었습니다. 다시 로그인해주세요.', 'error');
-                removeAccessToken();
-                navigate('/login');
-            } else {
-                setMyBooksError(`내 책장 로드 중 오류: ${error.message}`);
-            }
+            setMyBooksError(`내 책장 로드 중 오류: ${error.message}`);
         } finally {
             setIsLoadingMyBooks(false);
         }

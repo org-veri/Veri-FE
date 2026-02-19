@@ -157,8 +157,8 @@ section {
 .horizontal-scroll-container {
     display: flex;
     overflow-x: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
-    white-space: nowrap;
     -ms-overflow-style: none;
     scrollbar-width: none;
     min-height: 150px;
@@ -168,6 +168,12 @@ section {
     margin-right: -15px;
     padding-left: 15px;
     padding-right: 15px;
+    cursor: grab;
+    user-select: none;
+}
+
+.horizontal-scroll-container:active {
+    cursor: grabbing;
 }
 
 .horizontal-scroll-container::-webkit-scrollbar {
@@ -241,6 +247,8 @@ section {
     border-radius: 8px;
     padding: 10px;
     cursor: pointer;
+    user-select: none;
+    pointer-events: auto;
 }
 
 .my-bookshelf .bookshelf-list {
