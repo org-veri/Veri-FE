@@ -70,7 +70,7 @@ const ReadingStatusModal: React.FC<ReadingStatusModalProps> = ({
             <div className="custom-checkbox">
               {selectedStatuses.includes('READING') && <span className="checkmark">✓</span>}
             </div>
-            <span className="status-text">독서중</span>
+            <span className={`status-text ${selectedStatuses.includes('READING') ? 'selected' : ''}`}>독서중</span>
           </label>
         </div>
         <div className="status-divider"></div>
@@ -85,7 +85,7 @@ const ReadingStatusModal: React.FC<ReadingStatusModalProps> = ({
             <div className="custom-checkbox">
               {selectedStatuses.includes('DONE') && <span className="checkmark">✓</span>}
             </div>
-            <span className="status-text">독서완료</span>
+            <span className={`status-text ${selectedStatuses.includes('DONE') ? 'selected' : ''}`}>독서완료</span>
           </label>
         </div>
     </div>

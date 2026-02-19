@@ -1,8 +1,16 @@
+.library-content-wrapper {
+  margin-left: 20px;
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
 .library-title-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 20px;
+  margin-bottom: 14px;
+  padding: 0;
 }
 
 .library-title {
@@ -68,8 +76,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px 20px 20px;
   gap: 8px;
+  margin-bottom: 20px;
 }
 
 .left-filters {
@@ -137,8 +145,12 @@
 }
 
 .book-search-input::placeholder {
-  color: var(--text-dark-gray);
-  font-weight: 300;
+  color: #6A717B;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%;
 }
 
 .search-input-container .mgc_search_2_fill {
@@ -159,7 +171,7 @@
 
 
 .books-container {
-  padding: 0 15px;
+  padding: 0;
   min-height: 200px;
 }
 

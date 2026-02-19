@@ -16,8 +16,8 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: left;
+  justify-content: left;
 }
 
 .sort-option:hover {

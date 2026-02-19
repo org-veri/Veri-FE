@@ -4,6 +4,7 @@ import TopBar from '../../components/TopBar';
 import { SkeletonList, SkeletonCard } from '../../components/SkeletonUI';
 import { getPostFeed, getCards } from '../../api/communityApi';
 import type { Post, GetPostFeedQueryParams, Card, GetCardsQueryParams } from '../../api/communityApi';
+import { getCurrentUserId } from '../../api/auth';
 import './CommunityPage.css';
 
 function CommunityPage() {
@@ -131,8 +132,15 @@ function CommunityPage() {
     navigate('/community/reading-cards');
   };
 
-  const handlePostClick = (postId: number) => {
-    navigate(`/community/post/${postId}`);
+  const handlePostClick = (postId: number, post: Post) => {
+    const currentUserId = getCurrentUserId();
+    const isMyPost = currentUserId !== null && post.author.id === currentUserId;
+    
+    if (isMyPost) {
+      navigate(`/my-community/post/${postId}`);
+    } else {
+      navigate(`/community/post/${postId}`);
+    }
   };
 
   const handleRefresh = () => {
@@ -245,7 +253,7 @@ function CommunityPage() {
                     ref={isLastElement && hasMore ? lastPostElementRef : null}
                     key={post.postId} 
                     className="recommendation-item"
-                    onClick={() => handlePostClick(post.postId)}
+                    onClick={() => handlePostClick(post.postId, post)}
                   >
                   <div className="recommendation-header">
                     <div className="author-info">

@@ -21,6 +21,7 @@ function ReadingCardDetailPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isMyCard, setIsMyCard] = useState<boolean>(false);
   const [cardOwnerNickname, setCardOwnerNickname] = useState<string | null>(null);
+  const [isPublic, setIsPublic] = useState<boolean | null>(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -56,10 +57,12 @@ function ReadingCardDetailPage() {
         if (response.isSuccess && response.result) {
           const bookData = response.result.book;
           const currentUserId = getCurrentUserId();
-          const cardOwnerId = response.result.memberProfileResponse?.id;
-          const nickname = response.result.memberProfileResponse?.nickname ?? null;
-
-          const isMyCardValue = currentUserId !== null && cardOwnerId !== undefined && currentUserId === cardOwnerId;
+          const memberProfile = (response.result as any).memberProfileResponseItem || (response.result as any).memberProfileResponse;
+          const cardOwnerId = memberProfile?.id;
+          const nickname = memberProfile?.nickname ?? null;
+          
+          const mineField = (response.result as any).mine;
+          const isMyCardValue = mineField !== undefined ? mineField : (currentUserId !== null && cardOwnerId !== undefined && currentUserId === cardOwnerId);
           setIsMyCard(isMyCardValue);
           setCardOwnerNickname(nickname);
 
@@ -76,6 +79,7 @@ function ReadingCardDetailPage() {
               author: bookData.author,
             } : null,
           });
+          setIsPublic(response.result.isPublic !== undefined ? response.result.isPublic : false);
         } else {
           setError(response.message || "독서 카드 상세 정보를 가져오는데 실패했습니다.");
         }
@@ -95,7 +99,6 @@ function ReadingCardDetailPage() {
     }
   }, [id]);
 
-  // handleShare 함수를 DownloadCardPage로 이동하도록 변경
   const handleShare = useCallback(() => {
     if (cardDetail) {
       navigate('/download-card', { state: { cardDetail: cardDetail, action: 'share' } });
@@ -164,6 +167,7 @@ function ReadingCardDetailPage() {
                 author: bookData.author,
               } : null,
             });
+            setIsPublic(response.result.isPublic !== undefined ? response.result.isPublic : false);
           }
         } catch (err) {
           console.error('카드 정보 업데이트 후 재로드 중 오류:', err);
@@ -186,7 +190,7 @@ function ReadingCardDetailPage() {
       return;
     }
 
-    const currentIsPublic = cardDetail.isPublic === true;
+    const currentIsPublic = isPublic === true;
     const newVisibility = !currentIsPublic;
     
     setIsUpdatingVisibility(true);
@@ -198,6 +202,7 @@ function ReadingCardDetailPage() {
         const result = response.result as any;
         const updatedIsPublic = result.idPublic === true || result.isPublic === true;
         
+        setIsPublic(updatedIsPublic);
         setCardDetail(prev => {
           if (!prev) return null;
           return { ...prev, isPublic: updatedIsPublic };
@@ -234,7 +239,7 @@ function ReadingCardDetailPage() {
     } finally {
       setIsUpdatingVisibility(false);
     }
-  }, [cardDetail, isProcessing]);
+  }, [cardDetail, isPublic, isUpdatingVisibility, isProcessing]);
 
   const formatDateTime = (isoDate: string | null | undefined) => {
     if (!isoDate) {
@@ -342,16 +347,16 @@ function ReadingCardDetailPage() {
               e.currentTarget.alt = "이미지 로드 실패";
             }}
           />
-          {isMyCard && (
+          {isMyCard && isPublic !== null && (
             <button 
-              className={`card-visibility-toggle ${cardDetail.isPublic === true ? 'public' : 'private'}`}
+              className={`card-visibility-toggle ${isPublic === true ? 'public' : 'private'}`}
               onClick={handleToggleVisibility}
               disabled={isUpdatingVisibility || isProcessing}
-              aria-label={cardDetail.isPublic === true ? '공개된 카드' : '비공개된 카드'}
+              aria-label={isPublic === true ? '공개된 카드' : '비공개된 카드'}
             >
-              <span className={cardDetail.isPublic === true ? 'mgc_unlock_fill' : 'mgc_lock_fill'}></span>
+              <span className={isPublic === true ? 'mgc_unlock_fill' : 'mgc_lock_fill'}></span>
               <span className="visibility-text">
-                {cardDetail.isPublic === true ? '공개된 카드' : '비공개된 카드'}
+                {isPublic === true ? '공개된 카드' : '비공개된 카드'}
               </span>
             </button>
           )}

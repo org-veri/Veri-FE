@@ -48,11 +48,6 @@
     text-align: left;
     justify-content: left;
 
-    font-size: 1.1em;
-    font-weight: 400;
-    color: #DBDFE4;
-    margin-bottom: 8px;
-
     border: none;
     background: none;
     margin: 0px;
@@ -65,10 +60,12 @@
     text-align: left;
     justify-content: left;
 
+    color: var(--dark-grey, #6A717B);
+    font-family: Pretendard;
     font-size: 14px;
-    font-weight: 500;
-    color: #DBDFE4;
-    margin-bottom: 8px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 140%;
 
     border: none;
     background: none;
@@ -77,19 +74,20 @@
 }
 
 .card-content-text {
+    color: var(--Black, #1A1A1A);
+    font-family: Pretendard;
     font-size: 16px;
-    color: black;
+    font-style: normal;
     font-weight: 500;
-    line-height: 1.5;
-    margin-bottom: 15px;
-    white-space: pre-wrap;
+    line-height: 140%;
 }
 
 .card-upload-date {
+    color: var(--Grey_1, #9BA2B1);
     font-size: 14px;
-    color: #DBDFE4;
-    text-align: left;
-    font-weight: 400;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 140%;
     margin-top: 20px;
     padding-right: 0;
 }

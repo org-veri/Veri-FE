@@ -205,34 +205,35 @@ function LibraryPage() {
         </header>
 
         <div className="hero-content">
-          <button
-            className="profile-circle"
-            onClick={handleProfileClick}
-            aria-label="프로필 보기"
-          >
-            {hasValidProfileImage ? (
-              <>
-                <img 
-                  src={userData.image} 
-                  className="profile-image" 
-                  alt="프로필 이미지"
-                  onError={handleProfileImageError}
-                />
+          <div className="hero-profile-row">
+            <button
+              className="profile-circle"
+              onClick={handleProfileClick}
+              aria-label="프로필 보기"
+            >
+              {hasValidProfileImage ? (
+                <>
+                  <img 
+                    src={userData.image} 
+                    className="profile-image" 
+                    alt="프로필 이미지"
+                    onError={handleProfileImageError}
+                  />
+                  <div
+                    className="profile-placeholder"
+                    style={{ backgroundImage: `url(${sampleUser})`, display: 'none' }}
+                  />
+                </>
+              ) : (
                 <div
                   className="profile-placeholder"
-                  style={{ backgroundImage: `url(${sampleUser})`, display: 'none' }}
+                  style={{ backgroundImage: `url(${sampleUser})` }}
                 />
-              </>
-            ) : (
-              <div
-                className="profile-placeholder"
-                style={{ backgroundImage: `url(${sampleUser})` }}
-              />
-            )}
-          </button>
-          <div className="welcome-text">
-            <h2>반가워요, {userData.nickname}님!</h2>
-            <p>오늘도 책 잘 기록해 봐요...</p>
+              )}
+            </button>
+            <div className="welcome-text">
+              <h2>반가워요, {userData.nickname}님!</h2>
+            </div>
           </div>
           <img
             src={heroBookSampleImageSrc}

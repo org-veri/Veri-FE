@@ -206,86 +206,88 @@ function LibraryPage() {
 
       <div className="header-margin"></div>
 
-      <div className="library-title-section">
-        <h2 className="library-title">나의책장 <span className="book-count">{filteredBooks.length}</span></h2>
-        <div className="view-toggle-buttons">
-          <button
-            className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-            onClick={() => handleViewModeToggle('list')}
-            aria-label="리스트 보기"
-          >
-            <span className="mgc_rows_3_fill"></span>
-          </button>
-          <button
-            className={`view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
-            onClick={() => handleViewModeToggle('grid')}
-            aria-label="그리드 보기"
-          >
-            <span className="mgc_layout_grid_fill"></span>
-          </button>
-        </div>
-      </div>
-
-      <div className="filter-search-section">
-        <div className="left-filters">
-          <div className="reading-status-filters">
-            <span
-              ref={statusButtonRef}
-              className={`sort-button ${selectedReadingStatuses.length > 0 ? 'active' : ''}`}
-              onClick={() => setIsStatusModalOpen(!isStatusModalOpen)}
+      <div className="library-content-wrapper">
+        <div className="library-title-section">
+          <h2 className="library-title">나의책장 <span className="book-count">{filteredBooks.length}</span></h2>
+          <div className="view-toggle-buttons">
+            <button
+              className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={() => handleViewModeToggle('list')}
+              aria-label="리스트 보기"
             >
-              <div className="mgc_filter_fill"></div>
-              독서상태
-            </span>
-          </div>
-          <div className="sort-options">
-            <span
-              ref={sortButtonRef}
-              className="sort-button"
-              onClick={() => setIsSortModalOpen(!isSortModalOpen)}
+              <span className="mgc_rows_3_fill"></span>
+            </button>
+            <button
+              className={`view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => handleViewModeToggle('grid')}
+              aria-label="그리드 보기"
             >
-              <div className="mgc_filter_2_fill"></div>
-              {getSortDisplayText(sortOrder)}
-            </span>
+              <span className="mgc_layout_grid_fill"></span>
+            </button>
           </div>
         </div>
-        <div className="search-input-container">
-          <input
-            type="text"
-            placeholder="텍스트를 입력하세요"
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="book-search-input"
-          />
-          <span className="mgc_search_2_fill"></span>
-        </div>
-      </div>
 
-      {isLoading ? (
-        <div className="books-container list-view">
-          <SkeletonList count={5}>
-            <SkeletonCard />
-          </SkeletonList>
+        <div className="filter-search-section">
+          <div className="left-filters">
+            <div className="reading-status-filters">
+              <span
+                ref={statusButtonRef}
+                className={`sort-button ${selectedReadingStatuses.length > 0 ? 'active' : ''}`}
+                onClick={() => setIsStatusModalOpen(!isStatusModalOpen)}
+              >
+                <div className="mgc_filter_fill"></div>
+                독서상태
+              </span>
+            </div>
+            <div className="sort-options">
+              <span
+                ref={sortButtonRef}
+                className="sort-button"
+                onClick={() => setIsSortModalOpen(!isSortModalOpen)}
+              >
+                <div className="mgc_filter_2_fill"></div>
+                {getSortDisplayText(sortOrder)}
+              </span>
+            </div>
+          </div>
+          <div className="search-input-container">
+            <input
+              type="text"
+              placeholder="텍스트를 입력하세요"
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              className="book-search-input"
+            />
+            <span className="mgc_search_2_fill"></span>
+          </div>
         </div>
-      ) : filteredBooks.length === 0 && !error ? (
-        <div className="no-books-message">
-          {searchQuery ? (
-            <p>검색 결과가 없습니다.</p>
-          ) : selectedReadingStatuses.length > 0 ? (
-            <p>선택한 독서상태의 책이 없습니다.</p>
-          ) : (
-            <p>등록된 책이 없습니다. 새로운 책을 등록해보세요!</p>
-          )}
-        </div>
-      ) : (
-        <div className={`books-container ${viewMode === 'grid' ? 'grid-view' : 'list-view'}`}>
-          {viewMode === 'list' ? (
-            <BookshelfList books={filteredBooks} />
-          ) : (
-            <LibraryPageGrid books={filteredBooks} />
-          )}
-        </div>
-      )}
+
+        {isLoading ? (
+          <div className="books-container list-view">
+            <SkeletonList count={5}>
+              <SkeletonCard />
+            </SkeletonList>
+          </div>
+        ) : filteredBooks.length === 0 && !error ? (
+          <div className="no-books-message">
+            {searchQuery ? (
+              <p>검색 결과가 없습니다.</p>
+            ) : selectedReadingStatuses.length > 0 ? (
+              <p>선택한 독서상태의 책이 없습니다.</p>
+            ) : (
+              <p>등록된 책이 없습니다. 새로운 책을 등록해보세요!</p>
+            )}
+          </div>
+        ) : (
+          <div className={`books-container ${viewMode === 'grid' ? 'grid-view' : 'list-view'}`}>
+            {viewMode === 'list' ? (
+              <BookshelfList books={filteredBooks} />
+            ) : (
+              <LibraryPageGrid books={filteredBooks} />
+            )}
+          </div>
+        )}
+      </div>
 
       <div className='main-page-margin'>
       </div>
