@@ -34,10 +34,6 @@ const PostBookSearchPage: React.FC = () => {
         isVisible: false
     });
 
-    const showToast = (message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') => {
-        setToast({ message, type, isVisible: true });
-    };
-
     const hideToast = () => {
         setToast(prev => ({ ...prev, isVisible: false }));
     };
