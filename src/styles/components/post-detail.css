@@ -6,14 +6,16 @@
 .main-image-container {
   position: relative;
   width: 100%;
+  aspect-ratio: 1 / 1;
   background-color: #f0f0f0;
   overflow: hidden;
 }
 
-.main-image {
+.main-image-container .main-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .no-image-placeholder-detail {
@@ -195,11 +197,12 @@
 /* 책 정보 */
 .detail-book-info {
   display: flex;
+  padding: 10px 12px;
   align-items: center;
-  gap: 12px;
-  background-color: #f8f9fa;
-  padding: 15px;
-  border-radius: 8px;
+  gap: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--grey_2, #F4F5F7);
+  background: rgba(244, 245, 247, 0.40);
   margin: 20px 0;
 }
 

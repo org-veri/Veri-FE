@@ -3,6 +3,21 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './CardCustomizationPage.css';
 import Toast from '../../components/Toast';
 import { Sparkles } from 'lucide-react';
+const loadImage = (url: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const isDataOrBlob = url.startsWith('data:') || url.startsWith('blob:');
+        if (!isDataOrBlob) {
+            img.crossOrigin = 'anonymous';
+            const separator = url.includes('?') ? '&' : '?';
+            img.src = `${url}${separator}t=${Date.now()}`;
+        } else {
+            img.src = url;
+        }
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`이미지 로드 실패: ${url.substring(0, 50)}`));
+    });
+};
 
 import PicFillIconSVG from '../../assets/icons/CustomizePage/pic_fill.svg?react';
 import FontSizeFillIconSVG from '../../assets/icons/CustomizePage/font_size_fill.svg?react';
@@ -281,59 +296,29 @@ const CardCustomizationPage: React.FC = () => {
 
         try {
             showToast('카드를 생성 중입니다...', 'info');
-            
+
+            const drawable = await loadImage(currentImage);
+
             const cardWidth = cardPreviewRef.current.offsetWidth;
-            const cardHeight = cardWidth; // 1:1 비율
-            const scale = 2; // 고해상도
+            const scale = 2;
             const canvas = document.createElement('canvas');
             canvas.width = cardWidth * scale;
-            canvas.height = cardHeight * scale;
+            canvas.height = cardWidth * scale;
             const ctx = canvas.getContext('2d');
-            
             if (!ctx) {
                 throw new Error('Canvas context를 가져올 수 없습니다.');
             }
 
-            const backgroundImage = new Image();
-            backgroundImage.crossOrigin = 'anonymous';
-            
-            await new Promise<void>((resolve, reject) => {
-                backgroundImage.onload = () => resolve();
-                backgroundImage.onerror = () => reject(new Error('배경 이미지 로드 실패'));
-                backgroundImage.src = currentImage;
-            });
-
             ctx.save();
-            
             if (selectedEffect === 'blur') {
-                const blurAmount = effectIntensity * 0.1 * scale;
-                ctx.filter = `blur(${blurAmount}px)`;
-                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+                ctx.filter = `blur(${effectIntensity * 0.1 * scale}px)`;
             } else if (selectedEffect === 'darkness') {
-                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const data = imageData.data;
-                const brightness = 1 - effectIntensity * 0.01;
-                
-                if (data) {
-                    for (let i = 0; i < data.length; i += 4) {
-                        const r = data[i];
-                        const g = data[i + 1];
-                        const b = data[i + 2];
-                        if (r !== undefined && g !== undefined && b !== undefined) {
-                            data[i] = Math.max(0, Math.min(255, r * brightness));
-                            data[i + 1] = Math.max(0, Math.min(255, g * brightness));
-                            data[i + 2] = Math.max(0, Math.min(255, b * brightness));
-                        }
-                    }
-                    
-                    ctx.putImageData(imageData, 0, 0);
-                }
-            } else {
-                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+                ctx.filter = `brightness(${1 - effectIntensity * 0.01})`;
             }
-            
+            ctx.drawImage(drawable, 0, 0, canvas.width, canvas.height);
             ctx.restore();
+
+            ctx.filter = 'none';
 
             const textElement = cardPreviewRef.current.querySelector('.overlay-text') as HTMLElement;
             if (textElement) {
@@ -378,7 +363,6 @@ const CardCustomizationPage: React.FC = () => {
                         ctx.fillText(line.trim(), textX, y);
                         y += lineHeight;
                     }
-                    // 줄바꿈 문자로 인한 빈 줄 처리
                     if (lineIndex < lines.length - 1 && lines[lineIndex + 1] === '') {
                         y += lineHeight;
                     }
@@ -387,7 +371,6 @@ const CardCustomizationPage: React.FC = () => {
                 ctx.restore();
             }
 
-            // 캡쳐된 이미지를 base64로 변환
             const capturedImage = canvas.toDataURL('image/png');
 
             navigate('/card-book-search-before', {
@@ -401,8 +384,8 @@ const CardCustomizationPage: React.FC = () => {
                 },
             });
         } catch (error) {
-            console.error('카드 캡쳐 실패:', error);
-            showToast('카드 캡쳐에 실패했습니다. 다시 시도해주세요.', 'error');
+            console.error('캡쳐 실패 상세:', error);
+            showToast('이미지 보안 정책(CORS)으로 인해 저장이 불가능할 수 있습니다. 직접 올린 사진을 사용해 보세요.', 'error');
         }
     };
 

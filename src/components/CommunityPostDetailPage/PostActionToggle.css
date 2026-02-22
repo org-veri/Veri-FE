@@ -3,11 +3,13 @@
   align-items: center;
   justify-content: center;
   width: 70px;
-  height: 20px;
-  padding: 5px;
+  height: 25px;
+  display: flex;
+  padding: 4px 4px 4px 6px;
+  align-items: center;
   gap: 4px;
-  border-radius: 15px;
-  border: 0.5px solid var(--border-light, #E7E9EF);
+  border-radius: 12px;
+  border: 1px solid var(--grey_1, #DBDFE4);
   background: none;
   color: var(--text-dark, #333);
   font-size: 12px;
@@ -39,8 +41,8 @@
 
 .post-action-toggle .mgc_up_fill::before,
 .post-action-toggle .mgc_down_fill::before {
-  font-size: 10px;
-  color: #9BA2B1;
+  font-size: 16px;
+  color: #09244B;
 }
 
 .action-count {

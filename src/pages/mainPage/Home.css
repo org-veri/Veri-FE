@@ -4,6 +4,17 @@
     overflow: hidden;
 }
 
+.library-hero-section .hero-header .main-icon,
+.library-hero-section .hero-header .main-icon img {
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+}
+
+.library-hero-section .hero-header .header-icons .search-button,
+.library-hero-section .hero-header .header-icons .notification-button,
+.library-hero-section .hero-header .header-icons .my-page-button {
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+}
+
 .library-hero-section .hero-header .header-icons .mgc_search_2_fill,
 .library-hero-section .hero-header .header-icons .mgc_notification_fill {
   font-size: 20px;

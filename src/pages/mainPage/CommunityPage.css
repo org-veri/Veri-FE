@@ -155,10 +155,6 @@
   gap: 10px;
 }
 
-.recommendation-item:hover {
-  background-color: #f8f9fa;
-}
-
 .author-info {
   display: flex;
   align-items: center;

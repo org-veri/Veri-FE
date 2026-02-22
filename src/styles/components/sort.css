@@ -7,29 +7,24 @@
 
 .sort-options .sort-button {
   display: flex;
+  padding: 6px 6px 6px 10px;
   align-items: center;
-  justify-content: center;
-  width: 70px;
-  height: 20px;
-  padding: 4px;
   gap: 4px;
   border-radius: 15px;
-  border: 0.5px solid var(--border-light);
-  background: none;
-  color: var(--text-dark);
+  border: 0.5px solid #E7E9EF;
+  background: white;
+  color: #464A52;
   font-size: 12px;
+  font-style: normal;
   font-weight: 500;
-  line-height: 14px;
+  line-height: 14.046px;
   cursor: pointer;
-}
-
-.sort-options .sort-button:hover {
-  background-color: #eee;
 }
 
 .sort-options .sort-button::after {
   content: attr(data-arrow);
-  font-size: 10px;
+  font-size: 12px;
+  color: var(--text-dark);
 }
 
 .sort-button .mgc_down_fill,

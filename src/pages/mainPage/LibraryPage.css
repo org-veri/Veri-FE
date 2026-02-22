@@ -93,32 +93,25 @@
   position: relative;
 }
 
-.reading-status-filters .sort-button {
+.list-sort-button {
   display: flex;
-  align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 20px;
-  display: flex;
-  padding: 5px;
+  height: 18px;
+  padding: 6px 8px;
+  align-items: center;
   gap: 4px;
   border-radius: 15px;
-  border: 0.5px solid var(--border-light);
-  background: none;
-  color: var(--text-dark);
-  font-size: 11px;
+  border: 0.5px solid rgba(106, 113, 123, 0.50);
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.30);
+  color: var(--dark-grey_1, #464A52);
+  text-align: center;
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-style: normal;
   font-weight: 500;
-  line-height: 14px;
+  line-height: 14.046px;
   cursor: pointer;
-}
-
-.reading-status-filters .sort-button:hover {
-  background-color: #eee;
-}
-
-.filter-search-section .sort-options {
-  display: flex;
-  align-items: center;
 }
 
 .search-input-container {
@@ -128,10 +121,15 @@
 }
 
 .book-search-input {
-  width: 100%;
-  height: 34px;
-  border: 1px solid var(--border-color);
+  display: flex;
+  width: 170px;
+  height: 25px;
+  padding: 6px 8px 6px 10px;
+  justify-content: space-between;
+  align-items: center;
   border-radius: 6px;
+  border: 1px solid var(--grey_2, #F4F5F7);
+  background: #FFF;
   font-size: 16px;
   background-color: white;
   transition: border-color 0.2s ease;
@@ -145,7 +143,8 @@
 }
 
 .book-search-input::placeholder {
-  color: #6A717B;
+  color: var(--dark-grey, #6A717B);
+  text-align: left;
   font-family: Pretendard;
   font-size: 12px;
   font-style: normal;
@@ -167,8 +166,6 @@
 .search-input-container .mgc_search_2_fill::before {
   color: #666 !important;
 }
-
-
 
 .books-container {
   padding: 0;

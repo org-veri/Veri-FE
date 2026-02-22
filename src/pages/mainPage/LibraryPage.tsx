@@ -232,7 +232,7 @@ function LibraryPage() {
             <div className="reading-status-filters">
               <span
                 ref={statusButtonRef}
-                className={`sort-button ${selectedReadingStatuses.length > 0 ? 'active' : ''}`}
+                className={`list-sort-button ${selectedReadingStatuses.length > 0 ? 'active' : ''}`}
                 onClick={() => setIsStatusModalOpen(!isStatusModalOpen)}
               >
                 <div className="mgc_filter_fill"></div>
@@ -242,7 +242,7 @@ function LibraryPage() {
             <div className="sort-options">
               <span
                 ref={sortButtonRef}
-                className="sort-button"
+                className="list-sort-button"
                 onClick={() => setIsSortModalOpen(!isSortModalOpen)}
               >
                 <div className="mgc_filter_2_fill"></div>
