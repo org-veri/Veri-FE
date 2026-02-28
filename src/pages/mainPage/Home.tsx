@@ -100,6 +100,18 @@ function LibraryPage() {
     fetchUserProfile();
     fetchRecentBook();
   }, []);
+  
+  useEffect(() => {
+    const onProfileUpdated = (e: Event) => {
+      const url = (e as CustomEvent<{ profileImageUrl: string }>).detail?.profileImageUrl;
+      if (url) {
+        setProfileImage(url);
+        setUserData((prev) => (prev ? { ...prev, image: url } : null));
+      }
+    };
+    window.addEventListener('profileUpdated', onProfileUpdated);
+    return () => window.removeEventListener('profileUpdated', onProfileUpdated);
+  }, []);
 
   const handleProfileClick = () => navigate('/my-page');
   const handleSearchClick = () => navigate('/book-search');

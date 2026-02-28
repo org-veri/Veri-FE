@@ -105,7 +105,7 @@ const EditMyNamePage: React.FC = () => {
         setIsCheckingNickname(true);
         try {
             const response = await checkNicknameExists(trimmedNickname);
-            if (response.isSuccess && response.result?.exists) {
+            if (response.isSuccess && response.result.exists) {
                 showToast('이미 사용 중인 닉네임입니다.', 'warning');
                 setNickname(originalNickname);
             }
@@ -183,6 +183,12 @@ const EditMyNamePage: React.FC = () => {
                     showToast('프로필이 성공적으로 수정되었습니다.', 'success');
                 }
                 
+                const newImageUrl = response.result?.image ?? finalImageUrl;
+                if (newImageUrl) {
+                    localStorage.setItem('profileImage', newImageUrl);
+                    window.dispatchEvent(new CustomEvent('profileUpdated', { detail: { profileImageUrl: newImageUrl } }));
+                }
+
                 setTimeout(() => {
                     navigate(-1);
                 }, 1500);

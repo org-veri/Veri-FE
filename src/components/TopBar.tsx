@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './TopBar.css';
 import profileIcon from '../assets/icons/TopBar/profile.svg';
 import unionIcon from '../assets/icons/TopBar/union_fill.svg';
@@ -19,8 +19,8 @@ const TopBar: React.FC<TopBarProps> = ({
   onProfileClick
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [profileImage, setProfileImage] = useState<string | null>(() => {
-    // localStorage에서 프로필 이미지 가져오기
     const storedImage = localStorage.getItem('profileImage');
     return storedImage || null;
   });
@@ -32,7 +32,6 @@ const TopBar: React.FC<TopBarProps> = ({
         if (response.isSuccess && response.result?.image) {
           const imageUrl = response.result.image;
           setProfileImage(imageUrl);
-          // localStorage에 프로필 이미지 저장
           localStorage.setItem('profileImage', imageUrl);
         } else {
           localStorage.removeItem('profileImage');
@@ -44,12 +43,39 @@ const TopBar: React.FC<TopBarProps> = ({
     };
 
     if (showProfile) {
-      // localStorage에 이미지가 없을 때만 API 호출
       if (!localStorage.getItem('profileImage')) {
         fetchProfile();
       }
     }
   }, [showProfile]);
+
+  // 프로필 수정 후 반영: 커스텀 이벤트 수신
+  useEffect(() => {
+    const onProfileUpdated = (e: Event) => {
+      const url = (e as CustomEvent<{ profileImageUrl: string }>).detail?.profileImageUrl;
+      if (url) {
+        setProfileImage(url);
+      }
+    };
+    window.addEventListener('profileUpdated', onProfileUpdated);
+    return () => window.removeEventListener('profileUpdated', onProfileUpdated);
+  }, []);
+  
+  const prevPathRef = React.useRef(location.pathname);
+  useEffect(() => {
+    if (!showProfile) return;
+    const prevPath = prevPathRef.current;
+    prevPathRef.current = location.pathname;
+    if (prevPath === '/edit-my-name' && location.pathname !== '/edit-my-name') {
+      getMemberProfile().then((response) => {
+        if (response.isSuccess && response.result?.image) {
+          const imageUrl = response.result.image;
+          setProfileImage(imageUrl);
+          localStorage.setItem('profileImage', imageUrl);
+        }
+      }).catch(() => {});
+    }
+  }, [location.pathname, showProfile]);
 
   const handleSearchClick = () => {
     if (onSearchClick) {
