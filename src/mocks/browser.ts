@@ -17,11 +17,7 @@ export async function startMockWorker() {
   }
 
   const access = localStorage.getItem('accessToken');
-  const refresh = localStorage.getItem('refreshToken');
   if (!access) {
     localStorage.setItem('accessToken', mockTokens.accessToken);
-  }
-  if (!refresh) {
-    localStorage.setItem('refreshToken', mockTokens.refreshToken);
   }
 }
