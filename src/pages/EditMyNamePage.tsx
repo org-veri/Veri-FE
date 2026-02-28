@@ -105,7 +105,7 @@ const EditMyNamePage: React.FC = () => {
         setIsCheckingNickname(true);
         try {
             const response = await checkNicknameExists(trimmedNickname);
-            if (response.isSuccess && response.result) {
+            if (response.isSuccess && response.result?.exists) {
                 showToast('이미 사용 중인 닉네임입니다.', 'warning');
                 setNickname(originalNickname);
             }
