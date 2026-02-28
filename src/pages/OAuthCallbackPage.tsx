@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { handleSocialLoginCallback, setAccessToken, setRefreshToken } from '../api/auth';
+import { handleSocialLoginCallback, setAccessToken } from '../api/auth';
 
 const OAuthCallbackPage: React.FC = () => {
   const navigate = useNavigate();
@@ -18,9 +18,8 @@ const OAuthCallbackPage: React.FC = () => {
 
       if (code) {
         try {
-          const { accessToken, refreshToken } = await handleSocialLoginCallback('kakao', code, state);
+          const { accessToken } = await handleSocialLoginCallback('kakao', code, state);
           setAccessToken(accessToken);
-          setRefreshToken(refreshToken);
           navigate('/');
         } catch (error) {
           console.error('로그인 실패:', error);

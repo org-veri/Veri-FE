@@ -11,7 +11,6 @@ interface AuthResponse {
   message: string;
   result: {
     accessToken: string;
-    refreshToken: string;
   };
 }
 
@@ -104,10 +103,6 @@ const makeApiRequest = async (endpoint: string, options: RequestInit = {}): Prom
   }
 };
 
-export interface ReissueRequest {
-  refreshToken: string;
-}
-
 interface ReissueResponse {
   isSuccess: boolean;
   code: string;
@@ -148,7 +143,7 @@ const handleReissueResponse = async (response: Response): Promise<ReissueRespons
   return data;
 };
 
-export const handleSocialLoginCallback = async (provider: string, code: string, state: string): Promise<{ accessToken: string; refreshToken: string }> => {
+export const handleSocialLoginCallback = async (provider: string, code: string, state: string): Promise<{ accessToken: string }> => {
   try {
     const response = await fetch(`${BASE_URL}/api/v1/oauth2/${provider}?code=${code}&state=${state}`, {
       method: 'GET',
@@ -161,7 +156,6 @@ export const handleSocialLoginCallback = async (provider: string, code: string, 
     const data = await handleApiResponse(response);
     return {
       accessToken: data.result.accessToken,
-      refreshToken: data.result.refreshToken
     };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
@@ -204,8 +198,8 @@ export const getAccessTokenAsync = async (autoReissue: boolean = true): Promise<
 
     if (isTokenExpired(token)) {
       console.warn('액세스 토큰이 만료되었습니다.');
-      
-      if (autoReissue && getRefreshToken()) {
+
+      if (autoReissue) {
         try {
           console.log('토큰을 자동으로 재발급합니다.');
           const newToken = await reissueToken();
@@ -213,7 +207,6 @@ export const getAccessTokenAsync = async (autoReissue: boolean = true): Promise<
         } catch (reissueError) {
           console.error('토큰 자동 재발급 실패:', reissueError);
           removeAccessToken();
-          removeRefreshToken();
           return null;
         }
       } else {
@@ -249,67 +242,16 @@ export const removeAccessToken = (): void => {
   localStorage.removeItem('accessToken');
 };
 
-export const getRefreshToken = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('refreshToken');
-};
-
-export const setRefreshToken = (token: string): void => {
-  if (typeof window === 'undefined') return;
-
-  try {
-    if (token) {
-      localStorage.setItem('refreshToken', token);
-    } else {
-      localStorage.removeItem('refreshToken');
-    }
-  } catch (error) {
-    console.error('리프레시 토큰 저장 중 오류:', error);
-  }
-};
-
-export const removeRefreshToken = (): void => {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem('refreshToken');
-};
-
-/**
- * 리프레시 토큰을 이용하여 액세스 토큰을 재발급합니다.
- * 
- * @returns {Promise<string>} 새로 발급된 액세스 토큰
- * @throws {Error} 리프레시 토큰이 없거나 재발급에 실패한 경우
- * 
- * @example
- * try {
- *   const newToken = await reissueToken();
- *   console.log('토큰 재발급 성공');
- * } catch (error) {
- *   console.error('토큰 재발급 실패:', error.message);
- * }
- */
 export const reissueToken = async (): Promise<string> => {
-  const refreshToken = getRefreshToken();
-  if (!refreshToken) {
-    throw new Error('리프레시 토큰이 없습니다. 다시 로그인해주세요.');
-  }
-
   try {
-    const requestBody: ReissueRequest = {
-      refreshToken: refreshToken
-    };
-
     const response = await fetch(`${BASE_URL}/api/v1/auth/reissue`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       credentials: 'include',
-      body: JSON.stringify(requestBody)
     });
 
     const data = await handleReissueResponse(response);
     const newAccessToken = data.result.accessToken;
-    
+
     if (!newAccessToken) {
       throw new Error('액세스 토큰이 응답에 포함되지 않았습니다.');
     }
@@ -319,11 +261,9 @@ export const reissueToken = async (): Promise<string> => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
     console.error('토큰 재발급 실패:', errorMessage);
-    
-    // 재발급 실패 시 토큰 제거
+
     removeAccessToken();
-    removeRefreshToken();
-    
+
     throw error;
   }
 };
@@ -375,7 +315,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
   };
-  if (!accessToken && getRefreshToken()) {
+  if (!accessToken) {
     console.log('[fetchWithAuth] Access token 없음. 토큰 재발급을 시도합니다.');
 
     if (!reissuePromise) {
@@ -390,7 +330,6 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
     } catch (reissueError) {
       console.error('[fetchWithAuth] 토큰 재발급 실패:', reissueError);
       removeAccessToken();
-      removeRefreshToken();
       throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
     }
   }
@@ -429,12 +368,10 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
       if (!response.ok && response.status === 401) {
         console.error('[fetchWithAuth] 토큰 재발급 후에도 401 응답. 리프레시 토큰이 만료되었습니다.');
         removeAccessToken();
-        removeRefreshToken();
       }
     } catch (reissueError) {
       console.error('[fetchWithAuth] 토큰 재발급 실패:', reissueError);
       removeAccessToken();
-      removeRefreshToken();
       throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
     }
   }
