@@ -78,12 +78,6 @@
   color: inherit;
 }
 
-.sort-options {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
 .sort-button {
   display: inline-flex;
   align-items: center;
@@ -111,7 +105,7 @@
 }
 
 .reading-card-search-input-container {
-  margin-top: 0;
+  margin-top: 16px;
   position: relative;
   display: flex;
   align-items: center;
