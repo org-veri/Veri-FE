@@ -165,7 +165,7 @@ function CommunityPage() {
 
   const getPostImageUrl = (post: Post): string | null => {
     const p = post as Post & { images?: string[]; imageUrl?: string; cardImage?: string };
-    if (p.images && p.images.length > 0 && p.images[0].trim() !== '') return p.images[0];
+    if (p.images && p.images.length > 0 && p.images[0] && p.images[0].trim() !== '') return p.images[0];
     if (post.thumbnail && post.thumbnail.trim() !== '') return post.thumbnail;
     if (p.imageUrl && p.imageUrl.trim() !== '') return p.imageUrl;
     if (p.cardImage && p.cardImage.trim() !== '') return p.cardImage;
