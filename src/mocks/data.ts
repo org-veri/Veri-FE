@@ -184,7 +184,6 @@ const mockJwtPayload = 'eyJpZCI6MSwiZXhwIjoxODkzNDU2MDAwfQ';
 
 export const mockTokens = {
   accessToken: `${mockJwtHeader}.${mockJwtPayload}.mock-access-signature`,
-  refreshToken: `${mockJwtHeader}.${mockJwtPayload}.mock-refresh-signature`
 };
 
 export const mockOcrResult = '이것은 목업 OCR 결과 텍스트입니다. 실제 이미지에서 추출된 것처럼 보입니다. 독서 카드에 사용할 수 있는 의미 있는 텍스트가 여기에 나타날 것입니다.';
