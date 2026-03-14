@@ -193,7 +193,17 @@ export const getAccessTokenAsync = async (autoReissue: boolean = true): Promise<
   if (typeof window === 'undefined') return null;
 
   try {
-    const token = localStorage.getItem('accessToken');
+    let token = localStorage.getItem('accessToken');
+    if (!token && autoReissue) {
+      try {
+        console.log('액세스 토큰이 없습니다. 쿠키로 토큰 재발급을 시도합니다.');
+        token = await reissueToken();
+        return token;
+      } catch (reissueError) {
+        console.warn('토큰 재발급 실패 (로그인 필요):', reissueError);
+        return null;
+      }
+    }
     if (!token) return null;
 
     if (isTokenExpired(token)) {
