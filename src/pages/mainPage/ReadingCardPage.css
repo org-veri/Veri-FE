@@ -78,43 +78,36 @@
   color: inherit;
 }
 
-.filter-search-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.reading-card-content-wrapper .left-filters {
+.sort-options {
   display: flex;
   align-items: center;
-  gap: 4px;
+  margin-bottom: 16px;
 }
 
-.reading-card-content-wrapper .sort-options {
-  display: flex;
-  align-items: center;
-}
-
-.reading-card-content-wrapper .list-sort-button {
+.sort-button {
   display: inline-flex;
-  justify-content: center;
   align-items: center;
-  min-height: 28px;
-  padding: 6px 8px;
-  gap: 4px;
-  border-radius: 15px;
-  border: 0.5px solid rgba(106, 113, 123, 0.50);
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.30);
-  color: var(--dark-grey_1, #464A52);
+  gap: 6px;
+  padding: 6px 10px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-dark);
   font-family: Pretendard;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
-  line-height: 1.2;
   cursor: pointer;
-  white-space: nowrap;
-  box-sizing: border-box;
+  transition: color 0.2s ease;
+}
+
+.sort-button:hover {
+  color: var(--primary-color);
+}
+
+.sort-button .mgc_down_fill::before,
+.sort-button .mgc_up_fill::before {
+  font-size: 16px;
+  color: inherit;
 }
 
 .reading-card-search-input-container {
@@ -165,7 +158,6 @@
 }
 
 .reading-card-grid-view {
-  margin-top: 16px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 4px;

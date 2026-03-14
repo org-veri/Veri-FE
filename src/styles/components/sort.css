@@ -1,7 +1,7 @@
 .sort-options {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: left;
   gap: 5px;
 }
 

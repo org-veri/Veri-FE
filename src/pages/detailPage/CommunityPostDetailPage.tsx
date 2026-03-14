@@ -45,7 +45,6 @@ function CommunityPostDetailPage() {
 
   const [isLikeAnimating, setIsLikeAnimating] = useState(false);
 
-  // 메뉴 외부 클릭 감지
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -56,7 +55,6 @@ function CommunityPostDetailPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 댓글에 isMine 필드 추가하는 함수
   const addIsMineToComments = (comments: Comment[], currentUserId: number | null): Comment[] => {
     if (!currentUserId) return comments;
 
@@ -74,7 +72,6 @@ function CommunityPostDetailPage() {
     });
   };
 
-  // 게시글 데이터 로드
   useEffect(() => {
     const loadPostDetail = async () => {
       if (!postId) {
@@ -92,11 +89,7 @@ function CommunityPostDetailPage() {
         if (response.isSuccess && response.result) {
           const currentUserId = getCurrentUserId();
           const postData = response.result;
-
-          // 게시글의 isMine 계산
           const isMyPost = currentUserId !== null && postData.author.id === currentUserId;
-
-          // 댓글들에 isMine 추가
           const commentsWithIsMine = addIsMineToComments(postData.comments, currentUserId);
 
           setPost({
@@ -105,7 +98,6 @@ function CommunityPostDetailPage() {
             comments: commentsWithIsMine
           });
           setIsLiked(postData.isLiked);
-          // API 응답에서 isPublic 가져오기 (응답에 포함되어 있다면)
           const responseResult = postData as any;
           setIsPublic(responseResult.isPublic !== undefined ? responseResult.isPublic : true);
         } else {
@@ -428,7 +420,6 @@ function CommunityPostDetailPage() {
         : await unpublishPost(post.postId);
 
       if (response.isSuccess) {
-        // 공개/비공개 성공 후 상태 업데이트
         setIsPublic(newVisibility);
         setToast({
           message: newVisibility ? '게시글이 공개되었습니다.' : '게시글이 비공개되었습니다.',
@@ -436,7 +427,6 @@ function CommunityPostDetailPage() {
           isVisible: true
         });
       } else {
-        // 에러 코드에 따른 메시지 처리
         let errorMessage = response.message || '게시글 공개 여부 변경에 실패했습니다.';
         if (response.code === 'C1005') {
           errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -449,8 +439,6 @@ function CommunityPostDetailPage() {
       }
     } catch (err: any) {
       console.error('게시글 공개 여부 변경 중 오류 발생:', err);
-
-      // 에러 코드에 따른 메시지 처리
       let errorMessage = err.message || '게시글 공개 여부 변경 중 오류가 발생했습니다.';
       if (err.code === 'C1005') {
         errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -466,7 +454,6 @@ function CommunityPostDetailPage() {
     }
   };
 
-  // 날짜 포맷팅 함수
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ko-KR', {
@@ -476,7 +463,6 @@ function CommunityPostDetailPage() {
     }).replace(/\./g, '.').replace(/\s/g, '');
   };
 
-  // 이미지 스와이프 핸들러
   const handleImageSwipe = (direction: 'left' | 'right') => {
     if (!post?.images || post.images.length <= 1) return;
 
@@ -491,7 +477,6 @@ function CommunityPostDetailPage() {
     }
   };
 
-  // 터치 이벤트 핸들러
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
     if (!touch) return;
@@ -508,8 +493,6 @@ function CommunityPostDetailPage() {
 
       const deltaX = endX - startX;
       const deltaY = endY - startY;
-
-      // 수직 스크롤과 구분하기 위해 수평 이동이 더 클 때만 스와이프 처리
       if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
         if (deltaX > 0) {
           handleImageSwipe('right');
@@ -541,12 +524,11 @@ function CommunityPostDetailPage() {
               <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-          <h1 className="header-title">오류</h1>
+          <h1 className="header-title">게시글을 찾을 수 없습니다</h1>
         </div>
         <div className="error-content">
           <p>{error || '게시글을 찾을 수 없습니다.'}</p>
           <button onClick={() => navigate(-1)} className="retry-button">
-            돌아가기
           </button>
         </div>
       </div>

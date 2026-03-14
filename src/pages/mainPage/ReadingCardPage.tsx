@@ -183,18 +183,14 @@ function ReadingCardPage() {
                         </div>
                     </div>
 
-                    <div className="filter-search-section">
-                        <div className="left-filters">
-                            <div className="sort-options">
-                                <span
-                                    className="list-sort-button"
-                                    onClick={handleSortClick}
-                                >
-                                    <span className="mgc_filter_2_fill"></span>
-                                    {sortOrder === 'newest' ? '최신순' : '오래된순'}
-                                </span>
-                            </div>
-                        </div>
+                    <div className="sort-options">
+                        <span
+                            className="sort-button"
+                            onClick={handleSortClick}
+                        >
+                            {sortOrder === 'newest' ? '최신순' : '오래된순'}
+                            <span className={sortOrder === 'newest' ? 'mgc_down_fill' : 'mgc_up_fill'}></span>
+                        </span>
                     </div>
 
                     {activeTab === 'text' && (

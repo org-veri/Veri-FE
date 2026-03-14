@@ -286,34 +286,37 @@ const CardBookSearchPage: React.FC = () => {
             return;
         }
 
+        const payload: CreateBookRequest = {
+            title: book.title.trim(),
+            image: book.imageUrl.trim(),
+            author: book.author.trim(),
+            publisher: book.publisher.trim(),
+            isbn: book.isbn.trim(),
+        };
+
         try {
-            const searchResponse = await searchMyBook({
-                title: book.title.trim(),
-                author: book.author.trim(),
-            });
+            let memberBookId: number | null = null;
 
-            let memberBookId: number;
-
-            if (searchResponse.isSuccess && searchResponse.result.memberBookId > 0) {
-                memberBookId = searchResponse.result.memberBookId;
-                showToast('기존 책에 독서카드가 추가됩니다.', 'info');
-            } else {
-                const payload: CreateBookRequest = {
+            try {
+                const searchResponse = await searchMyBook({
                     title: book.title.trim(),
-                    image: book.imageUrl.trim(),
                     author: book.author.trim(),
-                    publisher: book.publisher.trim(),
-                    isbn: book.isbn.trim(),
-                };
+                });
+                if (searchResponse.isSuccess && searchResponse.result?.memberBookId > 0) {
+                    memberBookId = searchResponse.result.memberBookId;
+                    showToast('기존 책에 독서카드가 추가됩니다.', 'info');
+                }
+            } catch {
+                // 내 책장 검색 실패(400 등) 시 무시하고 새로 추가 진행
+            }
 
+            if (memberBookId == null) {
                 const createResponse = await createBook(payload);
-
                 if (!createResponse.isSuccess || !createResponse.result?.memberBookId) {
                     setSubmitError(createResponse.message || '책 등록에 실패했습니다.');
                     setIsSubmitting(false);
                     return;
                 }
-
                 memberBookId = createResponse.result.memberBookId;
                 showToast('새로운 책이 등록되었습니다! 독서카드에 추가됩니다.', 'success');
             }
@@ -335,7 +338,7 @@ const CardBookSearchPage: React.FC = () => {
         } finally {
             setIsSubmitting(false);
         }
-    }, [navigate, initialImage, initialExtractedText]);
+    }, [navigate, initialImage, initialExtractedText, initialFont, initialTextPosition]);
 
     return (
         <div className="page-container">
@@ -441,7 +444,7 @@ const CardBookSearchPage: React.FC = () => {
                         searchTerm.trim() === '' ? (
                             !isLoadingMyBooks && !myBooksError && myBooks.length > 0 ? (
                                 <div>
-                                    <p className="section-title">나의 책장에 있는 책들이에요~~</p>
+                                    <p className="section-title">나의 책장에 있는 책들이에요</p>
                                     <div className="book-list">
                                         {myBooks.map((book) => {
                                             const isSelected = selectedBook?.title === book.title && selectedBook?.author === book.author;
