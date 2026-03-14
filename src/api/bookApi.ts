@@ -154,7 +154,7 @@ const makeApiRequest = async <T>(
   const response = await fetchWithAuth(`${BASE_URL}${endpoint}`, options);
   
   if (response.status === 204 || response.headers.get('content-length') === '0') {
-    return {} as T;
+    return { isSuccess: true, code: '', message: '', result: {} } as T;
   }
   
   const contentType = response.headers.get('content-type');

@@ -162,7 +162,16 @@ function CommunityPage() {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}.${month}.${day}`;
   };
-  
+
+  const getPostImageUrl = (post: Post): string | null => {
+    const p = post as Post & { images?: string[]; imageUrl?: string; cardImage?: string };
+    if (p.images && p.images.length > 0 && p.images[0].trim() !== '') return p.images[0];
+    if (post.thumbnail && post.thumbnail.trim() !== '') return post.thumbnail;
+    if (p.imageUrl && p.imageUrl.trim() !== '') return p.imageUrl;
+    if (p.cardImage && p.cardImage.trim() !== '') return p.cardImage;
+    return null;
+  };
+
   return (
     <div className="page-container">
       <TopBar onProfileClick={handleProfileClick} />
@@ -248,6 +257,7 @@ function CommunityPage() {
             <div className="recommendations-list">
               {posts.map((post, index) => {
                 const isLastElement = posts.length === index + 1;
+                const imageUrl = getPostImageUrl(post);
                 return (
                   <div 
                     ref={isLastElement && hasMore ? lastPostElementRef : null}
@@ -276,8 +286,8 @@ function CommunityPage() {
                   </div>
                   
                   <div className="recommendation-image">
-                    {post.thumbnail ? (
-                      <img src={post.thumbnail} alt="게시글 이미지" />
+                    {imageUrl ? (
+                      <img src={imageUrl} alt="게시글 이미지" />
                     ) : (
                       <div className="no-image-placeholder">
                         <span>이미지 없음</span>

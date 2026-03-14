@@ -7,6 +7,7 @@
     position: sticky;
     top: 0;
     z-index: 100;
+    min-width: 0;
 }
 
 .header-left-icon {
@@ -18,7 +19,8 @@
 }
 
 .search-input-form {
-    flex-grow: 1;
+    flex: 1;
+    min-width: 0;
     position: relative;
     display: flex;
     align-items: center;
@@ -111,7 +113,20 @@
 .search-results-area {
     padding: 15px;
     flex-grow: 1;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-results-area > * {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .loading-message,

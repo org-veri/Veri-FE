@@ -33,7 +33,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #9BA2B1CC;
+  color: var(--grey-2) !important;
   text-align: center;
   font-family: Pretendard;
   font-size: 12px;
@@ -45,7 +45,7 @@
 }
 
 .tab-item.active {
-  color: var(--accent-color);
+  color: var(--grey-900) !important;
   font-weight: 500;
 }
 
@@ -56,13 +56,21 @@
   min-height: 26px;
   margin-bottom: 4px;
   transition: color 0.3s ease;
-  color: #9BA2B1CC;
-  object-fit: contain;
+  color: var(--grey-2) !important;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
 }
 
-.tab-item-icon.active {
-  color: var(--accent-color);
+.tab-item-icon::before {
+  color: inherit !important;
+}
+
+.tab-item.active .tab-item-icon,
+.tab-item.active .tab-item-icon::before {
+  color: var(--grey-900) !important;
 }
 
 .tab-item-text {

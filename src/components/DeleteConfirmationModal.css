@@ -13,7 +13,7 @@
 
 .modal-content {
     background: #fff;
-    padding: 10px 5px 25px 5px;
+    padding: 50px 20px 20px 20px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     width: 80%;
@@ -21,7 +21,7 @@
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 40px;
 }
 
 .modal-message-container {
@@ -29,7 +29,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 10px 0;
 }
 
 .modal-question {
@@ -41,6 +40,9 @@
     font-style: normal;
     font-weight: 500;
     line-height: normal;
+
+    padding-bottom: 16px;
+    margin: 0px;
 }
 
 .modal-info {
@@ -54,6 +56,8 @@
     font-style: normal;
     font-weight: 300;
     line-height: normal;
+
+    margin: 0px;
 }
 
 .modal-actions-delete {

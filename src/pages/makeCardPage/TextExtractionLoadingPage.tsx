@@ -39,12 +39,10 @@ const TextExtractionLoadingPage: React.FC = () => {
                 return;
             }
 
-            // 중복 처리 방지를 위한 세션스토리지 체크
             const processingKey = `ocr_processing_${image}`;
             const isProcessing = sessionStorage.getItem(processingKey);
 
             if (isProcessing) {
-                // 이미 처리 중이거나 완료된 경우
                 const result = sessionStorage.getItem(`ocr_result_${image}`);
                 if (result) {
                     const parsedResult = JSON.parse(result);
@@ -114,8 +112,7 @@ const TextExtractionLoadingPage: React.FC = () => {
 
         performOcrAndNavigate();
     }, [navigate, image, bookId]);
-
-    // 컴포넌트 언마운트 시 세션스토리지 정리
+    
     useEffect(() => {
         return () => {
             if (image) {

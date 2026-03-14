@@ -279,6 +279,18 @@
   object-fit: cover;
 }
 
+.my-post-no-image-placeholder {
+  width: 100%;
+  height: 200px;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .my-post-header {
   display: flex;
   gap: 10px;

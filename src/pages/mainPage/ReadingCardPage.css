@@ -1,54 +1,124 @@
-.reading-card-hero-section {
-  padding: 0 15px 80px;
+.reading-card-content-wrapper {
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 80px;
 }
 
-.reading-card-header {
+.reading-card-title-section-wrapper {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.reading-card-title-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background-color: var(--background-white);
-  border-bottom: 1px solid var(--hover-gray);
-  box-shadow: 0 1px 3px var(--shadow-light);
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  margin-bottom: 14px;
+  padding: 0;
 }
 
-.reading-card-header h3 {
+.reading-card-title {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 600;
+  color: var(--text-dark);
   margin: 0;
 }
 
-.reading-card-header .header-right-icons {
+.reading-card-count {
+  font-size: 14px;
+  color: var(--text-light);
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.view-toggle-buttons {
   display: flex;
-  gap: 10px;
 }
 
-.reading-card-header .header-right-icons .icon-search,
-.reading-card-header .header-right-icons .icon-more {
+.view-toggle-btn {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  font-size: 16px;
+  color: var(--text-light);
+  transition: all 0.2s ease;
 }
 
-.reading-card-grid-view {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+.view-toggle-btn.active {
+  background: none;
+  color: black;
+  border: none;
+}
+
+.view-toggle-btn:hover {
+  background: none;
+  color: black;
+}
+
+.view-toggle-btn.active:hover {
+  color: black;
+}
+
+.view-toggle-btn .mgc_rows_3_fill,
+.view-toggle-btn .mgc_layout_grid_fill {
+  font-size: 18px;
+}
+
+.view-toggle-btn .mgc_rows_3_fill::before,
+.view-toggle-btn .mgc_layout_grid_fill::before {
+  font-size: 18px;
+  color: inherit;
+}
+
+.filter-search-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.reading-card-content-wrapper .left-filters {
+  display: flex;
+  align-items: center;
   gap: 4px;
 }
 
-.reading-card-text-view {
-  margin-top: 15px;
+.reading-card-content-wrapper .sort-options {
   display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  width: 100%;
+  align-items: center;
+}
+
+.reading-card-content-wrapper .list-sort-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 28px;
+  padding: 6px 8px;
+  gap: 4px;
+  border-radius: 15px;
+  border: 0.5px solid rgba(106, 113, 123, 0.50);
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.30);
+  color: var(--dark-grey_1, #464A52);
+  font-family: Pretendard;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .reading-card-search-input-container {
-  margin-top: 16px;
-  margin-bottom: 16px;
+  margin-top: 0;
   position: relative;
   display: flex;
   align-items: center;
@@ -94,6 +164,21 @@
   color: #666 !important;
 }
 
+.reading-card-grid-view {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 4px;
+}
+
+.reading-card-text-view {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  width: 100%;
+}
+
 .reading-card-page-message {
   font-size: 14px;
   font-family: Pretendard;
@@ -113,44 +198,6 @@
   font-family: Pretendard;
   font-size: 14px;
   margin: 40px 0;
-}
-
-.tab-navigation {
-  margin-bottom: 16px;
-  display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  border-bottom: 1px solid var(--border-gray);
-}
-
-.tab-button {
-  margin: 0 10px;
-  background: none;
-  border: none;
-  padding: 5px 5px;
-  color: var(--text-light);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 140%;
-  cursor: pointer;
-  position: relative;
-  transition: color 0.2s ease;
-}
-
-.tab-button.active {
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-.tab-button.active::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--secondary-color);
-  border-radius: 1px;
 }
 
 .create-card-button:hover {

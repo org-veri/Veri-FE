@@ -104,10 +104,8 @@
     padding: 20px;
     width: 100%;
     max-width: 600px;
-    /* 컨테이너 너비 제한 */
     box-sizing: border-box;
     justify-content: center;
-    /* 버튼들을 가운데로 정렬 */
     margin-top: 20px;
 }
 
@@ -116,30 +114,22 @@
     align-items: center;
     justify-content: center;
     height: 50px;
-    /* 버튼 높이 */
     border-radius: 12px;
-    /* 둥근 모서리 */
     font-weight: bold;
     font-size: 1.1em;
     cursor: pointer;
     transition: background-color 0.2s ease, opacity 0.2s ease;
     flex-grow: 1;
-    /* flex item이 공간을 채우도록 */
     max-width: 250px;
-    /* 개별 버튼 최대 너비 */
 }
 
 .action-button-revised svg {
     margin-right: 8px;
-    /* 아이콘과 텍스트 사이 간격 */
 }
 
-/* 다운로드 버튼 스타일 (회색) */
 .download-button-revised {
     background-color: #e0e0e0;
-    /* 연한 회색 배경 */
     color: #757575;
-    /* 텍스트 색상 */
     border: none
 }
 
@@ -147,12 +137,9 @@
     background-color: #d5d5d5;
 }
 
-/* 공유하기 버튼 스타일 (녹색) */
 .share-button-revised {
     background-color: var(--primary-green);
-    /* 초록색 배경 */
     color: #ffffff;
-    /* 흰색 텍스트 */
     border: none;
 }
 
@@ -160,7 +147,6 @@
     background-color: #00b066;
 }
 
-/* 카드 공개/비공개 토글 버튼 */
 .card-visibility-toggle {
     position: absolute;
     top: 12px;

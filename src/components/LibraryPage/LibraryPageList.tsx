@@ -21,9 +21,9 @@ const BookshelfList: React.FC<BookshelfListProps> = ({ books }) => {
       case 'READING':
         return '독서중';
       case 'DONE':
-        return '완독';
+        return '독서완료';
       case 'NOT_START':
-        return '읽기전';
+        return '독서전';
       default:
         return 'status-unknown';
     }
@@ -60,9 +60,9 @@ const BookshelfList: React.FC<BookshelfListProps> = ({ books }) => {
                   {book.status === 'READING'
                     ? '독서중'
                     : book.status === 'DONE'
-                      ? '완독'
+                      ? '독서완료'
                       : book.status === 'NOT_START'
-                        ? '읽기 전'
+                        ? '독서 전'
                         : book.status}
                 </span>
                 <span className="book-date">

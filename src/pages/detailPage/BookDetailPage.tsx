@@ -177,7 +177,7 @@ function BookDetailPage() {
         try {
             const response = await deleteBook(book.memberBookId);
             if (response.isSuccess) {
-                navigate('/my-bookshelf');
+                navigate('/library');
             } else {
                 setToast({ message: `책 삭제에 실패했습니다: ${response.message || '알 수 없는 오류'}`, type: 'error', isVisible: true });
             }
@@ -213,7 +213,6 @@ function BookDetailPage() {
         try {
             const response = await updateBookVisibility(book.memberBookId, newVisibility);
             if (response.isSuccess && response.result) {
-                // API 응답의 결과로 상태 업데이트 (idPublic 또는 isPublic 필드 확인)
                 const updatedIsPublic = (response.result as any).isPublic ?? response.result.idPublic;
                 setIsPublic(updatedIsPublic);
                 

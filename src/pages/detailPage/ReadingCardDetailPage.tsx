@@ -366,7 +366,7 @@ function ReadingCardDetailPage() {
           <button className="book-title-for-card-button" onClick={handleBookTitleClick}>
             <p>
               {cardDetail.book?.title || '책 정보 없음'}
-              {!cardDetail.book && <span className="no-book-info-message"> (책 정보 없음)</span>}
+              {!cardDetail.book && <span className="no-book-info-message"></span>}
             </p>
           </button>
 

@@ -4,15 +4,15 @@ import './ReadingStatusModal.css';
 interface ReadingStatusModalProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedStatuses: string[];
-  onStatusChange: (statuses: string[]) => void;
-  buttonRef: React.RefObject<HTMLButtonElement | null>;
+  selectedStatus: string | null;
+  onStatusChange: (status: string | null) => void;
+  buttonRef: React.RefObject<HTMLElement | null>;
 }
 
 const ReadingStatusModal: React.FC<ReadingStatusModalProps> = ({
   isOpen,
   onClose,
-  selectedStatuses,
+  selectedStatus,
   onStatusChange,
   buttonRef
 }) => {
@@ -45,14 +45,9 @@ const ReadingStatusModal: React.FC<ReadingStatusModalProps> = ({
     };
   }, [isOpen, onClose, buttonRef]);
 
-  const handleStatusToggle = (status: string) => {
-    let newStatuses;
-    if (selectedStatuses.includes(status)) {
-      newStatuses = selectedStatuses.filter(s => s !== status);
-    } else {
-      newStatuses = [...selectedStatuses, status];
-    }
-    onStatusChange(newStatuses);
+  // 단일 선택: 같은 항목 클릭 시 해제, 다른 항목 클릭 시 해당 항목만 선택
+  const handleStatusSelect = (status: string) => {
+    onStatusChange(selectedStatus === status ? null : status);
   };
 
   if (!isOpen) return null;
@@ -60,32 +55,46 @@ const ReadingStatusModal: React.FC<ReadingStatusModalProps> = ({
   return (
     <div className="reading-status-modal" ref={modalRef}>
         <div className="status-option">
-          <label className="checkbox-label">
+          <label
+            className="checkbox-label"
+            onClick={(e) => {
+              e.preventDefault();
+              handleStatusSelect('READING');
+            }}
+          >
             <input
-              type="checkbox"
-              checked={selectedStatuses.includes('READING')}
-              onChange={() => handleStatusToggle('READING')}
+              type="radio"
+              name="reading-status"
+              checked={selectedStatus === 'READING'}
+              onChange={() => handleStatusSelect('READING')}
               className="hidden-checkbox"
             />
             <div className="custom-checkbox">
-              {selectedStatuses.includes('READING') && <span className="checkmark">✓</span>}
+              {selectedStatus === 'READING' && <span className="checkmark">✓</span>}
             </div>
-            <span className={`status-text ${selectedStatuses.includes('READING') ? 'selected' : ''}`}>독서중</span>
+            <span className={`status-text ${selectedStatus === 'READING' ? 'selected' : ''}`}>독서중</span>
           </label>
         </div>
         <div className="status-divider"></div>
         <div className="status-option">
-          <label className="checkbox-label">
+          <label
+            className="checkbox-label"
+            onClick={(e) => {
+              e.preventDefault();
+              handleStatusSelect('DONE');
+            }}
+          >
             <input
-              type="checkbox"
-              checked={selectedStatuses.includes('DONE')}
-              onChange={() => handleStatusToggle('DONE')}
+              type="radio"
+              name="reading-status"
+              checked={selectedStatus === 'DONE'}
+              onChange={() => handleStatusSelect('DONE')}
               className="hidden-checkbox"
             />
             <div className="custom-checkbox">
-              {selectedStatuses.includes('DONE') && <span className="checkmark">✓</span>}
+              {selectedStatus === 'DONE' && <span className="checkmark">✓</span>}
             </div>
-            <span className={`status-text ${selectedStatuses.includes('DONE') ? 'selected' : ''}`}>독서완료</span>
+            <span className={`status-text ${selectedStatus === 'DONE' ? 'selected' : ''}`}>독서완료</span>
           </label>
         </div>
     </div>

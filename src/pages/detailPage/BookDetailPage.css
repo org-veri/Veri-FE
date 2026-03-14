@@ -14,18 +14,15 @@
     display: flex;
 }
 
-/* 밍큐트 아이콘 스타일링 */
 .white-header-left-arrow .mgc_left_fill {
     font-size: 30px;
     color: #fff !important;
 }
 
-/* 더 구체적인 선택자로 색상 강제 적용 */
 .white-header-left-arrow .mgc_left_fill::before {
     color: #fff !important;
 }
 
-/* BookDetailPage 전용: 흰색 텍스트 */
 .book-detail-title {
     color: var(--white, #FFF);
 }

@@ -23,7 +23,7 @@ function ReadingCardPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
-    const [activeTab, setActiveTab] = useState<'image' | 'text'>('image');
+    const [activeTab, setActiveTab] = useState<'image' | 'text'>('text');
     const [searchQuery, setSearchQuery] = useState<string>('');
 
     const handleSearch = useCallback((query: string) => {
@@ -42,14 +42,14 @@ function ReadingCardPage() {
     const fetchCards = useCallback(async () => {
         setIsLoading(true);
         setError(null);
-        
+
         try {
             const queryParams: GetMyCardsQueryParams = {
                 page: 1,
                 size: 20,
                 sort: sortOrder,
             };
-            
+
             const response = await getMyCards(queryParams);
 
             if (response.isSuccess && response.result?.cards) {
@@ -61,7 +61,7 @@ function ReadingCardPage() {
                     thumbnailUrl: card.image,
                     isPublic: card.isPublic,
                 }));
-                
+
                 setReadingCards(basicCards);
                 setFilteredCards(basicCards);
                 setIsLoading(false);
@@ -152,50 +152,63 @@ function ReadingCardPage() {
 
     return (
         <div className="page-container">
-            <div className="reading-card-hero-section">
-                <TopBar 
-                    onSearchClick={handleSearchClick}
-                    onProfileClick={handleProfileClick}
-                />
-                
-                <div className="header-margin" />
-                
-                <nav className="tab-navigation">
-                    <button
-                        className={`tab-button ${activeTab === 'image' ? 'active' : ''}`}
-                        onClick={() => handleTabClick('image')}
-                    >
-                        이미지
-                    </button>
-                    <button
-                        className={`tab-button ${activeTab === 'text' ? 'active' : ''}`}
-                        onClick={() => handleTabClick('text')}
-                    >
-                        텍스트
-                    </button>
-                </nav>
-                
-                {activeTab === 'text' && (
-                    <div className="reading-card-search-input-container">
-                        <input
-                            type="text"
-                            placeholder="텍스트를 입력하세요"
-                            value={searchQuery}
-                            onChange={(e) => handleSearch(e.target.value)}
-                            className="card-search-input"
-                        />
-                        <span className="mgc_search_2_fill"></span>
-                    </div>
-                )}
+            <TopBar
+                onSearchClick={handleSearchClick}
+                onProfileClick={handleProfileClick}
+            />
 
-                <div className="sort-options">
-                    <span 
-                        className="sort-button" 
-                        onClick={handleSortClick}
-                    >
-                        {sortOrder === 'newest' ? '최신순' : '오래된순'}
-                        <span className={sortOrder === 'newest' ? 'mgc_down_fill' : 'mgc_up_fill'}></span>
-                    </span>
+            <div className="header-margin" />
+
+            <div className="reading-card-content-wrapper">
+                <div className="reading-card-title-section-wrapper">
+                    <div className="reading-card-title-section">
+                        <h2 className="reading-card-title">
+                            독서카드 <span className="reading-card-count">{filteredCards.length}</span>
+                        </h2>
+                        <div className="view-toggle-buttons">
+                            <button
+                                className={`view-toggle-btn ${activeTab === 'text' ? 'active' : ''}`}
+                                onClick={() => handleTabClick('text')}
+                                aria-label="텍스트 보기"
+                            >
+                                <span className="mgc_rows_3_fill"></span>
+                            </button>
+                            <button
+                                className={`view-toggle-btn ${activeTab === 'image' ? 'active' : ''}`}
+                                onClick={() => handleTabClick('image')}
+                                aria-label="이미지 보기"
+                            >
+                                <span className="mgc_layout_grid_fill"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="filter-search-section">
+                        <div className="left-filters">
+                            <div className="sort-options">
+                                <span
+                                    className="list-sort-button"
+                                    onClick={handleSortClick}
+                                >
+                                    <span className="mgc_filter_2_fill"></span>
+                                    {sortOrder === 'newest' ? '최신순' : '오래된순'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {activeTab === 'text' && (
+                        <div className="reading-card-search-input-container">
+                            <input
+                                type="text"
+                                placeholder="텍스트를 입력하세요"
+                                value={searchQuery}
+                                onChange={(e) => handleSearch(e.target.value)}
+                                className="card-search-input"
+                            />
+                            <span className="mgc_search_2_fill"></span>
+                        </div>
+                    )}
                 </div>
 
                 {activeTab === 'image' && (
@@ -251,7 +264,7 @@ function ReadingCardPage() {
 
             <div className='main-page-margin'>
             </div>
-            
+
             <div className="create-button-container">
                 <button className="create-button" onClick={handleCreateCardClick}>
                     + 등록하기

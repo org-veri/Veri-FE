@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 160px); /* 헤더 높이(80px)와 마진(80px) 고려 */
+    min-height: calc(100vh - 160px);
     padding: 20px;
     box-sizing: border-box;
 }

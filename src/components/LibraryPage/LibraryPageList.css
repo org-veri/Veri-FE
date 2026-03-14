@@ -29,7 +29,6 @@
     height: 135px;
     flex-shrink: 0;
     margin-right: 15px;
-    background-color: #f0f0f0;
 }
 
 .bookshelf-item-full .book-cover-large img {
@@ -102,6 +101,10 @@
 }
 .book-status-info .book-status.독서완료 {
     background-color: #547a99;
+}
+.book-status-info .book-status.독서전 {
+    background-color: rgba(106, 113, 123, 0.15);
+    color: rgba(106, 113, 123, 0.85);
 }
 
 .book-status-info .book-date {

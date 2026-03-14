@@ -112,6 +112,16 @@ const MyPage: React.FC = () => {
     return content.substring(0, maxLength) + '...';
   };
 
+  const getPostImageUrl = (post: Post): string | null => {
+    const p = post as Post & { imageUrl?: string; cardImage?: string; images?: string[] };
+    const firstImage = p.images?.[0];
+    if (firstImage && firstImage.trim() !== '') return firstImage;
+    if (post.thumbnail && post.thumbnail.trim() !== '') return post.thumbnail;
+    if (p.imageUrl && p.imageUrl.trim() !== '') return p.imageUrl;
+    if (p.cardImage && p.cardImage.trim() !== '') return p.cardImage;
+    return null;
+  };
+
   if (isLoading) {
     return <div className="loading-page-container">
       <div className="loading-spinner"></div>
@@ -191,17 +201,23 @@ const MyPage: React.FC = () => {
           </div>
         ) : (
           <div className="my-posts-list">
-            {myPosts.map((post) => (
+            {myPosts.map((post) => {
+              const imageUrl = getPostImageUrl(post);
+              return (
               <div
                 key={post.postId}
                 className="my-post-item"
                 onClick={() => handlePostClick(post.postId)}
               >
-                {post.thumbnail && (
-                  <div className="my-post-image">
-                    <img src={post.thumbnail} alt="게시글 이미지" />
-                  </div>
-                )}
+                <div className="my-post-image">
+                  {imageUrl ? (
+                    <img src={imageUrl} alt="게시글 이미지" />
+                  ) : (
+                    <div className="my-post-no-image-placeholder">
+                      <span>이미지 없음</span>
+                    </div>
+                  )}
+                </div>
 
                 <div className="my-post-header">
                   <h4 className="my-post-title">{post.title}</h4>
@@ -237,7 +253,8 @@ const MyPage: React.FC = () => {
                   </div>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

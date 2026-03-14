@@ -31,7 +31,7 @@ const StarRatingInput: React.FC<StarRatingInputProps> = ({ initialRating, onRati
   };
 
   return (
-    <div className="star-rating-input">
+    <div className="bem-star-input">
       {[...Array(5)].map((_, index) => {
         index += 1; // 별점은 1부터 시작
         const isFilled = index <= (hoverRating || currentRating);
@@ -39,7 +39,7 @@ const StarRatingInput: React.FC<StarRatingInputProps> = ({ initialRating, onRati
           <button
             type="button"
             key={index}
-            className={`star-button ${isFilled ? "on" : "off"}`} // 클래스명 일관성 유지
+            className={`bem-star-btn ${isFilled ? "on" : "off"}`}
             onClick={() => handleClick(index)}
             onMouseEnter={() => setHoverRating(index)}
             onMouseLeave={() => setHoverRating(0)}
@@ -47,7 +47,7 @@ const StarRatingInput: React.FC<StarRatingInputProps> = ({ initialRating, onRati
             <img
               src={isFilled ? starFillIcon : starLineIcon}
               alt={isFilled ? "채워진 별" : "빈 별"}
-              className="star-icon"
+              className="bem-star-icon"
             />
           </button>
         );
@@ -153,14 +153,15 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="bottom-edit-modal-overlay">
-      <div className="bottom-edit-modal">
-        <div className="modal-header">
-          <p className="modal-title">{bookTitle}</p>
-          <p className="modal-author">{bookAuthor}</p>
+    <div className="bem-overlay">
+      <div className="bem-modal">
+        <div className="bem-header">
+          <p className="bem-title">{bookTitle}</p>
+          <p className="bem-author">{bookAuthor}</p>
         </div>
 
-        <div className="star-rating-container">
+        <div className="bem-sections">
+        <div className="bem-star-rating">
           <h3>나의 별점</h3>
           <StarRatingInput
             initialRating={score}
@@ -168,36 +169,37 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
           />
         </div>
 
-        <div className="status-inputs-container">
+        <div className="bem-status-inputs">
           <h3>독서 기간</h3>
-          <div className="date-inputs">
-            <div className="start-time">
+          <div className="bem-date-inputs">
+            <div className="bem-start-time">
               <p>시작일</p>
               <input
-                className='date-input'
+                className="bem-date-input"
                 type="date"
                 value={startedAt ? startedAt.split('T')[0] : ''}
                 onChange={handleStartDateChange}
               />
             </div>
-            <div className="end-time">
+            <div className="bem-end-time">
               <p>종료일</p>
               <input
-                className='date-input'
+                className="bem-date-input"
                 type="date"
                 value={endedAt ? endedAt.split('T')[0] : ''}
-                max={new Date().toISOString().split('T')[0]} // 오늘 날짜까지만 선택 가능
+                max={new Date().toISOString().split('T')[0]}
                 onChange={handleEndDateChange}
               />
             </div>
           </div>
         </div>
+        </div>
 
-        <div className="edit-modal-button-container">
-          <button onClick={onClose} className='cancel-button'>
+        <div className="bem-actions">
+          <button onClick={onClose} className="bem-cancel-btn">
             취소
           </button>
-          <button onClick={handleSave} disabled={isSaving} className='complete-button'>
+          <button onClick={handleSave} disabled={isSaving} className="bem-complete-btn">
             {isSaving ? '저장 중...' : '완료'}
           </button>
         </div>

@@ -72,10 +72,10 @@ function LibraryPage() {
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'rating'>('newest');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedReadingStatuses, setSelectedReadingStatuses] = useState<string[]>([]);
+  const [selectedReadingStatus, setSelectedReadingStatus] = useState<string | null>(null);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
-  const statusButtonRef = useRef<HTMLButtonElement>(null);
+  const statusButtonRef = useRef<HTMLSpanElement>(null);
   const sortButtonRef = useRef<HTMLSpanElement>(null);
 
   // fetchBooks 함수를 useCallback으로 감싸고, sortOrder가 변경될 때마다 재생성되도록 합니다.
@@ -93,7 +93,7 @@ function LibraryPage() {
 
       if (response.isSuccess) {
         setBooks(response.result.memberBooks);
-        applyFilters(response.result.memberBooks, searchQuery, selectedReadingStatuses);
+        applyFilters(response.result.memberBooks, searchQuery, selectedReadingStatus);
       } else {
         setError(response.message || "책 목록을 가져오는데 실패했습니다.");
       }
@@ -102,10 +102,10 @@ function LibraryPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [sortOrder, searchQuery, selectedReadingStatuses]);
+  }, [sortOrder, searchQuery, selectedReadingStatus]);
 
   // 필터링 함수 통합
-  const applyFilters = useCallback((bookList: Book[], query: string, statusFilters: string[]) => {
+  const applyFilters = useCallback((bookList: Book[], query: string, statusFilter: string | null) => {
     let filtered = bookList;
 
     // 텍스트 검색 필터
@@ -116,12 +116,9 @@ function LibraryPage() {
       );
     }
 
-    // 독서 상태 필터 - 선택된 상태들만 표시
-    if (statusFilters.length > 0) {
-      filtered = filtered.filter(book => {
-        // Book 타입의 status 속성 사용 (NOT_START, READING, DONE)
-        return statusFilters.includes(book.status);
-      });
+    // 독서 상태 필터 - 선택 시에만 적용 (독서중/독서완료 중 하나)
+    if (statusFilter != null) {
+      filtered = filtered.filter(book => book.status === statusFilter);
     }
 
     // 정렬 적용 (클라이언트 사이드)
@@ -149,21 +146,21 @@ function LibraryPage() {
   // 검색 필터링 함수
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
-    applyFilters(books, query, selectedReadingStatuses);
-  }, [books, selectedReadingStatuses, applyFilters]);
+    applyFilters(books, query, selectedReadingStatus);
+  }, [books, selectedReadingStatus, applyFilters]);
 
   // 독서 상태 필터 변경
-  const handleReadingStatusChange = useCallback((statuses: string[]) => {
-    setSelectedReadingStatuses(statuses);
-    applyFilters(books, searchQuery, statuses);
+  const handleReadingStatusChange = useCallback((status: string | null) => {
+    setSelectedReadingStatus(status);
+    applyFilters(books, searchQuery, status);
   }, [books, searchQuery, applyFilters]);
 
   // sortOrder 변경 시 필터 재적용
   useEffect(() => {
     if (books.length > 0) {
-      applyFilters(books, searchQuery, selectedReadingStatuses);
+      applyFilters(books, searchQuery, selectedReadingStatus);
     }
-  }, [sortOrder, books, searchQuery, selectedReadingStatuses, applyFilters]);
+  }, [sortOrder, books, searchQuery, selectedReadingStatus, applyFilters]);
 
   useEffect(() => {
     fetchBooks();
@@ -180,6 +177,10 @@ function LibraryPage() {
       case 'rating': return '별점순';
       default: return '최신순';
     }
+  };
+
+  const getReadingStatusLabel = (status: string) => {
+    return status === 'READING' ? '독서중' : '독서완료';
   };
 
   const handleCreateBookClick = useCallback(() => {
@@ -232,11 +233,11 @@ function LibraryPage() {
             <div className="reading-status-filters">
               <span
                 ref={statusButtonRef}
-                className={`list-sort-button ${selectedReadingStatuses.length > 0 ? 'active' : ''}`}
+                className={`list-sort-button ${selectedReadingStatus != null ? 'active' : ''}`}
                 onClick={() => setIsStatusModalOpen(!isStatusModalOpen)}
               >
                 <div className="mgc_filter_fill"></div>
-                독서상태
+                {selectedReadingStatus != null && getReadingStatusLabel(selectedReadingStatus)}
               </span>
             </div>
             <div className="sort-options">
@@ -272,7 +273,7 @@ function LibraryPage() {
           <div className="no-books-message">
             {searchQuery ? (
               <p>검색 결과가 없습니다.</p>
-            ) : selectedReadingStatuses.length > 0 ? (
+            ) : selectedReadingStatus != null ? (
               <p>선택한 독서상태의 책이 없습니다.</p>
             ) : (
               <p>등록된 책이 없습니다. 새로운 책을 등록해보세요!</p>
@@ -301,7 +302,7 @@ function LibraryPage() {
       <ReadingStatusModal
         isOpen={isStatusModalOpen}
         onClose={() => setIsStatusModalOpen(false)}
-        selectedStatuses={selectedReadingStatuses}
+        selectedStatus={selectedReadingStatus}
         onStatusChange={handleReadingStatusChange}
         buttonRef={statusButtonRef}
       />
