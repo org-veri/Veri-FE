@@ -8,7 +8,8 @@
     "mock": "cross-env VITE_ENABLE_MSW=true vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "git config core.hooksPath .githooks"
   },
   "dependencies": {
     "@iconify-icons/mingcute": "^1.2.9",
