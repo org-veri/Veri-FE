@@ -9,7 +9,7 @@ import '../../styles/components/book-list.css';
 import './CardBookSearchPage.css';
 import type { BookItem, BookSearchResponseResult } from '../../api/bookSearchApi';
 import { searchBooks } from '../../api/bookSearchApi';
-import { createBook, searchMyBook, getAllBooks, type Book } from '../../api/bookApi';
+import { createBook, getAllBooks, type Book } from '../../api/bookApi';
 import type { CreateBookRequest } from '../../api/bookApi';
 import Toast from '../../components/Toast';
 import BookIcon from '../../assets/icons/book.svg';
@@ -295,32 +295,15 @@ const CardBookSearchPage: React.FC = () => {
         };
 
         try {
-            let memberBookId: number | null = null;
+            const createResponse = await createBook(payload);
 
-            try {
-                const searchResponse = await searchMyBook({
-                    title: book.title.trim(),
-                    author: book.author.trim(),
-                });
-                if (searchResponse.isSuccess && searchResponse.result?.memberBookId > 0) {
-                    memberBookId = searchResponse.result.memberBookId;
-                    showToast('기존 책에 독서카드가 추가됩니다.', 'info');
-                }
-            } catch {
-                // 내 책장 검색 실패(400 등) 시 무시하고 새로 추가 진행
+            if (!createResponse.isSuccess || !createResponse.result?.memberBookId) {
+                setSubmitError(createResponse.message || '책 등록에 실패했습니다.');
+                setIsSubmitting(false);
+                return;
             }
 
-            if (memberBookId == null) {
-                const createResponse = await createBook(payload);
-                if (!createResponse.isSuccess || !createResponse.result?.memberBookId) {
-                    setSubmitError(createResponse.message || '책 등록에 실패했습니다.');
-                    setIsSubmitting(false);
-                    return;
-                }
-                memberBookId = createResponse.result.memberBookId;
-                showToast('새로운 책이 등록되었습니다! 독서카드에 추가됩니다.', 'success');
-            }
-
+            const memberBookId = createResponse.result.memberBookId;
             setSubmitSuccess(true);
 
             navigate('/card-complete', {
