@@ -52,12 +52,10 @@ const CardCustomizationCompletePage: React.FC = () => {
                         setBookTitle(response.result.title);
                         setBookDetail(response.result);
                     } else {
-                        console.error('Failed to fetch book details:', response.message);
                         setBookTitle('책 제목 불러오기 실패');
                         setBookDetail(null);
                     }
-                } catch (err) {
-                    console.error('Error fetching book details:', err);
+                } catch {
                     setBookTitle('책 제목 불러오기 실패');
                     setBookDetail(null);
                 }
@@ -87,7 +85,6 @@ const CardCustomizationCompletePage: React.FC = () => {
             navigate('/download-card', { state: { cardDetail: cardDataForDownloadPage, action: 'download' } });
         } else {
             alert('다운로드 페이지로 이동할 정보를 준비하는 데 실패했습니다. (이미지, 텍스트, 책 정보 확인)');
-            console.error('다운로드 페이지 이동 실패: 필수 데이터 누락', { image, extractedText, memberBookId, bookDetail });
         }
     }, [image, extractedText, memberBookId, bookDetail, navigate, textPosition]);
 
@@ -108,21 +105,18 @@ const CardCustomizationCompletePage: React.FC = () => {
             navigate('/download-card', { state: { cardDetail: cardDataForDownloadPage, action: 'share' } });
         } else {
             alert('공유 페이지로 이동할 정보를 준비하는 데 실패했습니다. (이미지, 텍스트, 책 정보 확인)');
-            console.error('공유 페이지 이동 실패: 필수 데이터 누락', { image, extractedText, memberBookId, bookDetail });
         }
     }, [image, extractedText, memberBookId, bookDetail, navigate, textPosition]);
 
     const handleSave = useCallback(async () => {
         if (hasSaved.current || isSaving || !extractedText || memberBookId === undefined) {
             if (!hasSaved.current && !isSaving) {
-                console.error('카드를 저장하는 데 필요한 정보가 부족합니다. (텍스트 또는 책 ID)');
                 setSaveError('카드 저장에 필요한 정보가 부족합니다.');
             }
             return;
         }
 
         if (!image) {
-            console.error('카드를 저장하는 데 필요한 이미지 URL이 없습니다.');
             setSaveError('카드 저장에 필요한 이미지 URL이 없습니다.');
             return;
         }
@@ -134,13 +128,11 @@ const CardCustomizationCompletePage: React.FC = () => {
         try {
             let imageUrlToSave = image;
 
-            // base64 이미지인 경우 S3에 업로드
             if (image.startsWith('data:image')) {
                 try {
                     showToast('이미지를 업로드하는 중입니다...', 'info');
                     
-                    // base64를 Blob으로 변환
-                    const base64Data = image.split(',')[1]; // data:image/png;base64, 부분 제거
+                    const base64Data = image.split(',')[1];
                     if (!base64Data) {
                         throw new Error('base64 데이터를 추출할 수 없습니다.');
                     }
@@ -152,15 +144,10 @@ const CardCustomizationCompletePage: React.FC = () => {
                     const byteArray = new Uint8Array(byteNumbers);
                     const blob = new Blob([byteArray], { type: 'image/png' });
                     
-                    // Blob을 File로 변환
                     const file = new File([blob], 'card-image.png', { type: 'image/png' });
                     
-                    // S3에 업로드하고 publicUrl 받기
                     imageUrlToSave = await uploadImageAndGetUrl(file);
-                    
-                    console.log('이미지 업로드 완료:', imageUrlToSave);
                 } catch (uploadError: any) {
-                    console.error('이미지 업로드 실패:', uploadError);
                     setSaveError(`이미지 업로드 실패: ${uploadError.message || '알 수 없는 오류'}`);
                     setIsSaving(false);
                     hasSaved.current = false;
@@ -174,12 +161,10 @@ const CardCustomizationCompletePage: React.FC = () => {
                 imageUrl: imageUrlToSave,
             });
 
-            console.log('카드가 성공적으로 저장되었어요! 카드 ID:', response.result.cardId);
             setSavedCardId(response.result.cardId);
             showToast('독서카드가 성공적으로 생성 및 저장되었습니다!', 'success');
 
         } catch (saveError: any) {
-            console.error('카드 메타데이터 저장 중 오류:', saveError);
             setSaveError(`카드 저장 실패: ${saveError.message || '알 수 없는 오류'}`);
             hasSaved.current = false;
         } finally {
@@ -191,7 +176,6 @@ const CardCustomizationCompletePage: React.FC = () => {
         if (image && extractedText && memberBookId !== undefined && !hasSaved.current) {
             handleSave();
         } else if (!image || !extractedText || memberBookId === undefined) {
-            console.error('자동 저장을 위한 필수 데이터가 누락되었습니다. 카드 생성 페이지로 리디렉션합니다.');
             navigate('/make-card');
         }
     }, [image, extractedText, memberBookId, navigate, handleSave]);
@@ -266,7 +250,6 @@ const CardCustomizationCompletePage: React.FC = () => {
                             onError={(e) => {
                                 e.currentTarget.src = 'https://placehold.co/350x500/cccccc/333333?text=Image+Load+Failed';
                                 e.currentTarget.alt = '이미지 로드 실패';
-                                console.error('Failed to load image for display:', image);
                             }}
                         />
                     </div>

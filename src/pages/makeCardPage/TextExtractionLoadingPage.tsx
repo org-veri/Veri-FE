@@ -33,7 +33,6 @@ const TextExtractionLoadingPage: React.FC = () => {
     useEffect(() => {
         const performOcrAndNavigate = async () => {
             if (!image) {
-                console.error('TextExtractionLoadingPage: 필수 데이터 (이미지 URL) 누락, make-card로 리디렉션.');
                 showToast('이미지 데이터를 불러올 수 없습니다. 카드 생성 페이지로 돌아갑니다.', 'error');
                 navigate('/make-card', { replace: true });
                 return;
@@ -94,10 +93,9 @@ const TextExtractionLoadingPage: React.FC = () => {
                         extractedText,
                         bookId,
                     },
-                    replace: true // 히스토리에서 현재 페이지를 교체
+                    replace: true
                 });
             } catch (err: any) {
-                console.error('OCR 처리 중 오류 발생:', err);
                 const errorMessage = `텍스트 추출 중 오류가 발생했습니다: ${err.message || '알 수 없는 오류'}.`;
                 showToast(errorMessage, 'error');
                 sessionStorage.setItem(`ocr_result_${image}`, JSON.stringify({

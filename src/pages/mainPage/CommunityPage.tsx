@@ -20,7 +20,6 @@ function CommunityPage() {
 
   const observer = useRef<IntersectionObserver | null>(null);
 
-  // IntersectionObserver를 위한 ref callback
   const lastPostElementRef = useCallback((node: HTMLDivElement | null) => {
     if (loadingMore || isLoading) return;
 
@@ -39,7 +38,6 @@ function CommunityPage() {
     }
   }, [loadingMore, isLoading, hasMore]);
 
-  // 게시글 데이터 로드
   const loadPosts = useCallback(async (page: number = 1, reset: boolean = false) => {
     try {
       if (reset) {
@@ -74,21 +72,18 @@ function CommunityPage() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.';
       setError(errorMessage);
-      console.error('게시글 로드 실패:', err);
     } finally {
       setIsLoading(false);
       setLoadingMore(false);
     }
   }, []);
 
-  // 추가 게시글 로드
   const loadMorePosts = useCallback(async () => {
     if (loadingMore || isLoading || !hasMore) return;
 
     await loadPosts(currentPage, false);
   }, [currentPage, loadingMore, isLoading, hasMore, loadPosts]);
 
-  // 카드 데이터 로드
   const loadCards = useCallback(async () => {
     try {
       setCardsLoading(true);
@@ -103,11 +98,8 @@ function CommunityPage() {
       
       if (response.isSuccess && response.result) {
         setCards(response.result.cards);
-      } else {
-        console.error('카드 로드 실패:', response.message);
       }
-    } catch (err) {
-      console.error('카드 로드 실패:', err);
+    } catch {
     } finally {
       setCardsLoading(false);
     }

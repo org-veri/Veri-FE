@@ -23,7 +23,6 @@ const decodeJwt = (token: string): JwtPayload | null => {
   try {
     const parts = token.split('.');
     if (parts.length < 2 || typeof parts[1] !== 'string') {
-      console.error("유효하지 않은 JWT 형식");
       return null;
     }
 
@@ -42,15 +41,13 @@ const decodeJwt = (token: string): JwtPayload | null => {
     } catch (decodeError) {
       try {
         jsonPayload = atob(base64);
-      } catch (simpleError) {
-        console.error("JWT 페이로드 디코딩 실패:", simpleError);
+      } catch {
         return null;
       }
     }
 
     return JSON.parse(jsonPayload);
-  } catch (error) {
-    console.error("JWT 디코딩 실패:", error);
+  } catch {
     return null;
   }
 };
@@ -97,8 +94,6 @@ const makeApiRequest = async (endpoint: string, options: RequestInit = {}): Prom
     const data = await handleApiResponse(response);
     return data.result.accessToken;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
-    console.error('API 요청 실패:', errorMessage);
     throw error;
   }
 };
@@ -119,11 +114,8 @@ const handleReissueResponse = async (response: Response): Promise<ReissueRespons
   if (!response.ok) {
     try {
       errorData = await responseClone.json();
-    } catch {
-      // JSON 파싱 실패 시 빈 객체 유지
-    }
+    } catch {}
 
-    // 상태 코드별 에러 메시지 처리
     const statusMessages: Record<number, string> = {
       400: errorData.message || '잘못된 요청입니다. 리프레시 토큰을 확인해주세요.',
       409: errorData.message || '토큰 재발급 중 충돌이 발생했습니다.',
@@ -158,8 +150,6 @@ export const handleSocialLoginCallback = async (provider: string, code: string, 
       accessToken: data.result.accessToken,
     };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
-    console.error('소셜 로그인 콜백 처리 실패:', errorMessage);
     throw error;
   }
 };
@@ -176,14 +166,12 @@ export const getAccessToken = (): string | null => {
     if (!token) return null;
 
     if (isTokenExpired(token)) {
-      console.warn('액세스 토큰이 만료되었습니다.');
       removeAccessToken();
       return null;
     }
 
     return token;
-  } catch (error) {
-    console.error('토큰 검증 중 오류:', error);
+  } catch {
     removeAccessToken();
     return null;
   }
@@ -196,26 +184,20 @@ export const getAccessTokenAsync = async (autoReissue: boolean = true): Promise<
     let token = localStorage.getItem('accessToken');
     if (!token && autoReissue) {
       try {
-        console.log('액세스 토큰이 없습니다. 쿠키로 토큰 재발급을 시도합니다.');
         token = await reissueToken();
         return token;
       } catch (reissueError) {
-        console.warn('토큰 재발급 실패 (로그인 필요):', reissueError);
         return null;
       }
     }
     if (!token) return null;
 
     if (isTokenExpired(token)) {
-      console.warn('액세스 토큰이 만료되었습니다.');
-
       if (autoReissue) {
         try {
-          console.log('토큰을 자동으로 재발급합니다.');
           const newToken = await reissueToken();
           return newToken;
         } catch (reissueError) {
-          console.error('토큰 자동 재발급 실패:', reissueError);
           removeAccessToken();
           return null;
         }
@@ -226,8 +208,7 @@ export const getAccessTokenAsync = async (autoReissue: boolean = true): Promise<
     }
 
     return token;
-  } catch (error) {
-    console.error('토큰 검증 중 오류:', error);
+  } catch {
     removeAccessToken();
     return null;
   }
@@ -242,9 +223,7 @@ export const setAccessToken = (token: string): void => {
     } else {
       localStorage.removeItem('accessToken');
     }
-  } catch (error) {
-    console.error('토큰 저장 중 오류:', error);
-  }
+  } catch {}
 };
 
 export const removeAccessToken = (): void => {
@@ -269,11 +248,7 @@ export const reissueToken = async (): Promise<string> => {
     setAccessToken(newAccessToken);
     return newAccessToken;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
-    console.error('토큰 재발급 실패:', errorMessage);
-
     removeAccessToken();
-
     throw error;
   }
 };
@@ -281,13 +256,11 @@ export const reissueToken = async (): Promise<string> => {
 export const getCurrentUserId = (): number | null => {
   const token = getAccessToken();
   if (!token) {
-    console.warn('[getCurrentUserId] Access token not found');
     return null;
   }
 
   const payload = decodeJwt(token);
   if (!payload) {
-    console.warn('[getCurrentUserId] Failed to decode JWT payload');
     return null;
   }
 
@@ -304,20 +277,11 @@ export const getCurrentUserId = (): number | null => {
     }
   }
 
-  if (import.meta.env.DEV) {
-    console.warn('[getCurrentUserId] User ID not found in payload. Available keys:', Object.keys(payload));
-  }
-
   return null;
 };
 
-// 토큰 재발급 중복 요청 방지용 Promise
 let reissuePromise: Promise<string> | null = null;
 
-/**
- * 인증이 필요한 API 요청을 수행합니다.
- * 401 에러 발생 시 자동으로 토큰을 재발급하고 요청을 재시도합니다.
- */
 export const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
   let accessToken = getAccessToken();
 
@@ -326,8 +290,6 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
     ...(options.headers as Record<string, string>),
   };
   if (!accessToken) {
-    console.log('[fetchWithAuth] Access token 없음. 토큰 재발급을 시도합니다.');
-
     if (!reissuePromise) {
       reissuePromise = reissueToken().finally(() => {
         reissuePromise = null;
@@ -336,9 +298,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
 
     try {
       accessToken = await reissuePromise;
-      console.log('[fetchWithAuth] 토큰 재발급 성공.');
-    } catch (reissueError) {
-      console.error('[fetchWithAuth] 토큰 재발급 실패:', reissueError);
+    } catch {
       removeAccessToken();
       throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
     }
@@ -346,8 +306,6 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
 
   if (accessToken) {
     headers['Authorization'] = `Bearer ${accessToken}`;
-  } else {
-    console.warn(`[fetchWithAuth] Access token is missing for URL: ${url}`);
   }
 
   let response = await fetch(url, {
@@ -355,11 +313,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
     headers: headers as HeadersInit,
   });
 
-  // 401 에러 발생 시 토큰 재발급 후 재요청
   if (response.status === 401) {
-    console.warn('[fetchWithAuth] 401 Unauthorized. 토큰 재발급을 시도합니다.');
-
-    // 재발급이 이미 진행 중이면 해당 Promise를 재사용 (중복 요청 방지)
     if (!reissuePromise) {
       reissuePromise = reissueToken().finally(() => {
         reissuePromise = null;
@@ -368,7 +322,6 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
 
     try {
       accessToken = await reissuePromise;
-      console.log('[fetchWithAuth] 토큰 재발급 성공. 요청을 재시도합니다.');
       headers['Authorization'] = `Bearer ${accessToken}`;
       response = await fetch(url, {
         ...options,
@@ -376,11 +329,9 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
       });
 
       if (!response.ok && response.status === 401) {
-        console.error('[fetchWithAuth] 토큰 재발급 후에도 401 응답. 리프레시 토큰이 만료되었습니다.');
         removeAccessToken();
       }
-    } catch (reissueError) {
-      console.error('[fetchWithAuth] 토큰 재발급 실패:', reissueError);
+    } catch {
       removeAccessToken();
       throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
     }

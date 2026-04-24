@@ -51,7 +51,6 @@ const PostBookSearchPage: React.FC = () => {
             
             setMyBooks(response.result.memberBooks);
         } catch (error: any) {
-            console.error('내 책장 로드 중 오류:', error);
             setMyBooksError(`내 책장 로드 중 오류: ${error.message}`);
         } finally {
             setIsLoadingMyBooks(false);

@@ -76,11 +76,9 @@ export async function uploadImage(file: File): Promise<string> {
             throw new Error(`S3 직접 업로드 실패: ${uploadResponse.statusText}`);
         }
 
-        console.log('이미지 S3 업로드 성공. Public URL:', publicUrl);
         return publicUrl;
 
     } catch (error: any) {
-        console.error('이미지 업로드 과정에서 오류 발생:', error);
         throw new Error(`이미지 업로드 실패: ${error.message}`);
     }
 }
@@ -102,7 +100,6 @@ export async function extractTextFromImage(imageUrl: string): Promise<OcrRespons
 
         return data;
     } catch (error: any) {
-        console.error(`Failed to perform OCR for image ${imageUrl}:`, error);
         if (error.message && error.message.includes('API call failed')) {
             throw new Error('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
         }

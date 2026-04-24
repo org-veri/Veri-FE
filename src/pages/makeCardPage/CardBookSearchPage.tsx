@@ -30,8 +30,7 @@ const CardBookSearchPage: React.FC = () => {
         try {
             const storedSearches = localStorage.getItem('recentSearches');
             return storedSearches ? JSON.parse(storedSearches) : [];
-        } catch (error) {
-            console.error("Failed to load recent searches from localStorage", error);
+        } catch {
             return [];
         }
     });
@@ -97,9 +96,7 @@ const CardBookSearchPage: React.FC = () => {
     useEffect(() => {
         try {
             localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
-        } catch (error) {
-            console.error("Failed to save recent searches to localStorage", error);
-        }
+        } catch {}
     }, [recentSearches]);
 
     useEffect(() => {
@@ -146,7 +143,6 @@ const CardBookSearchPage: React.FC = () => {
 
             return response.result;
         } catch (error: any) {
-            console.error('책 검색 중 예상치 못한 오류:', error);
             setSearchError(`검색 중 오류 발생: ${error.message}`);
             return { books: [], totalPages: 0, page: 1, size: size, totalElements: 0 };
         }
@@ -156,7 +152,7 @@ const CardBookSearchPage: React.FC = () => {
         setIsLoadingMyBooks(true);
         setMyBooksError(null);
         try {
-            const response = await getAllBooks({ page: 1, size: 100 }); // 충분히 많은 수로 설정
+            const response = await getAllBooks({ page: 1, size: 100 });
             
             if (!response.isSuccess || !response.result) {
                 setMyBooksError(response.message || '내 책장을 불러오는데 실패했습니다.');
@@ -165,7 +161,6 @@ const CardBookSearchPage: React.FC = () => {
             
             setMyBooks(response.result.memberBooks);
         } catch (error: any) {
-            console.error('내 책장 로드 중 오류:', error);
             setMyBooksError(`내 책장 로드 중 오류: ${error.message}`);
         } finally {
             setIsLoadingMyBooks(false);
@@ -243,8 +238,8 @@ const CardBookSearchPage: React.FC = () => {
             title: book.title,
             author: book.author,
             imageUrl: book.imageUrl,
-            publisher: '', // Book 타입에는 publisher가 없으므로 빈 문자열
-            isbn: '' // Book 타입에는 isbn이 없으므로 빈 문자열
+            publisher: '',
+            isbn: ''
         };
         setSelectedBook(bookItem);
     }, []);
@@ -268,7 +263,6 @@ const CardBookSearchPage: React.FC = () => {
                 }
             });
         } catch (err: any) {
-            console.error('책 등록 중 예상치 못한 오류:', err);
             setSubmitError('책 등록 중 오류가 발생했습니다: ' + (err.message || '알 수 없는 오류'));
         } finally {
             setIsSubmitting(false);
@@ -316,7 +310,6 @@ const CardBookSearchPage: React.FC = () => {
                 }
             });
         } catch (err: any) {
-            console.error('책 등록 중 예상치 못한 오류:', err);
             setSubmitError('책 등록 중 오류가 발생했습니다: ' + (err.message || '알 수 없는 오류'));
         } finally {
             setIsSubmitting(false);

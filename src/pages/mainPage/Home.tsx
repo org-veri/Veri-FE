@@ -29,12 +29,10 @@ function LibraryPage() {
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState<string | null>(() => {
-    // localStorage에서 프로필 이미지 가져오기
     const storedImage = localStorage.getItem('profileImage');
     return storedImage || null;
   });
   
-  // 이미지 에러 핸들링을 위한 refs
   const heroBackgroundErrorRef = useRef(false);
   const heroBookSampleErrorRef = useRef(false);
   const profileImageErrorRef = useRef(false);
@@ -52,7 +50,6 @@ function LibraryPage() {
             numOfReadBook: userResponse.result.numOfReadBook,
             numOfCard: userResponse.result.numOfCard,
           });
-          // localStorage에 프로필 이미지 저장
           if (imageUrl) {
             localStorage.setItem('profileImage', imageUrl);
             setProfileImage(imageUrl);
@@ -64,14 +61,12 @@ function LibraryPage() {
           setError(userResponse.message || "사용자 프로필을 가져오는데 실패했습니다.");
         }
       } catch (err: any) {
-        console.error('사용자 프로필 로딩 오류:', err);
         setError('사용자 프로필을 불러오는 데 실패했습니다: ' + err.message);
       } finally {
         setIsUserDataLoading(false);
       }
     };
 
-    // userData는 항상 가져오되, 프로필 이미지는 localStorage에서 우선 사용
     fetchUserProfile();
 
     const fetchRecentBook = async () => {
@@ -90,13 +85,10 @@ function LibraryPage() {
             setBookImageUrl(mostRecentBook.imageUrl);
           }
         }
-      } catch (err: any) {
-        console.error('최근 책 데이터 로딩 오류:', err);
-        // 책 데이터는 실패해도 사용자에게 오류를 보여주지 않음
+      } catch {
       }
     };
 
-    // 병렬로 데이터 fetch
     fetchUserProfile();
     fetchRecentBook();
   }, []);
@@ -116,12 +108,10 @@ function LibraryPage() {
   const handleProfileClick = () => navigate('/my-page');
   const handleSearchClick = () => navigate('/book-search');
 
-  // 에러 상태 처리
   if (error) {
     return <div className="loading-page-container"><p style={{ color: 'red' }}>{error}</p></div>;
   }
 
-  // 사용자 데이터 로딩 중이거나 데이터 없음 상태 처리
   if (isUserDataLoading || !userData) {
     return (
       <div className="page-container">
@@ -133,14 +123,12 @@ function LibraryPage() {
     );
   }
 
-  // 이미지 경로 설정
   const heroBackgroundImageSrc = bookImageUrl || sampleBookBackground;
   const heroBookSampleImageSrc = bookImageUrl || sampleBook;
   const hasValidProfileImage = userData.image &&
     userData.image.trim() !== '' &&
     userData.image !== 'https://example.com/image.jpg';
 
-  // 이미지 에러 핸들러
   const handleHeroBackgroundError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     if (!heroBackgroundErrorRef.current && e.currentTarget.src !== sampleBookBackground) {
       heroBackgroundErrorRef.current = true;
@@ -158,7 +146,6 @@ function LibraryPage() {
   const handleProfileImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     if (!profileImageErrorRef.current) {
       profileImageErrorRef.current = true;
-      // 프로필 이미지 에러 시 placeholder로 전환
       e.currentTarget.style.display = 'none';
       const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
       if (placeholder && placeholder.classList.contains('profile-placeholder')) {

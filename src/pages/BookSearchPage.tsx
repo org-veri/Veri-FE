@@ -18,8 +18,7 @@ const BookSearchPage: React.FC = () => {
         try {
             const storedSearches = localStorage.getItem('recentSearches');
             return storedSearches ? JSON.parse(storedSearches) : [];
-        } catch (error) {
-            console.error("Failed to load recent searches from localStorage", error);
+        } catch {
             return [];
         }
     });
@@ -59,9 +58,7 @@ const BookSearchPage: React.FC = () => {
     useEffect(() => {
         try {
             localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
-        } catch (error) {
-            console.error("Failed to save recent searches to localStorage", error);
-        }
+        } catch {}
     }, [recentSearches]);
 
     useEffect(() => {
@@ -79,7 +76,6 @@ const BookSearchPage: React.FC = () => {
     }, []);
 
     const handleInputBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-        // 'X' 버튼을 클릭한 경우에는 blur 이벤트 무시 (즉, 포커스 상태 유지)
         if (e.relatedTarget && (e.relatedTarget as HTMLElement).classList.contains('clear-search-button')) {
             return;
         }
@@ -109,7 +105,6 @@ const BookSearchPage: React.FC = () => {
 
             return response.result;
         } catch (error: any) {
-            console.error('책 검색 중 예상치 못한 오류:', error);
             setSearchError(`검색 중 오류 발생: ${error.message}`);
             return { books: [], totalPages: 0, page: 1, size: size, totalElements: 0 };
         }

@@ -36,7 +36,6 @@ const LoginPage: React.FC = () => {
 
   const handleKakaoLogin = async () => {
     const kakaoAuthUrl = `${BASE_URL}/oauth2/authorization/kakao`;
-    console.log('Redirecting to backend for Kakao login:', kakaoAuthUrl);
     window.location.href = kakaoAuthUrl;
   };
 
@@ -58,10 +57,6 @@ const LoginPage: React.FC = () => {
             <span className="kakao-social-text">카카오 로그인</span>
           </button>
 
-          {/* <button className="social-login-button naver" onClick={handleNaverLogin}>
-            <img src={naverIcon} alt="naver-logo" className="naver-social-icon" />
-            <span className="naver-social-text">네이버 로그인</span>
-          </button> */}
         </div>
       </div>
     </div>

@@ -78,8 +78,7 @@ const EditMyNamePage: React.FC = () => {
                 URL.revokeObjectURL(url);
                 setPreviewUrl(uploadedUrl);
                 showToast('이미지가 업로드되었습니다.', 'success');
-            } catch (error: any) {
-                console.error('이미지 업로드 실패:', error);
+            } catch {
                 showToast('이미지 업로드에 실패했습니다.', 'error');
                 URL.revokeObjectURL(url);
                 setPreviewUrl(null);

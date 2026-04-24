@@ -1,4 +1,3 @@
-// src/api/bookApi.ts
 import { fetchWithAuth } from './auth';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
@@ -145,8 +144,6 @@ export interface RateBookRequest {
   score: number;
 }
 
-// fetchWithAuth는 auth.ts에서 관리됩니다 (401 시 자동 토큰 재발급 지원)
-
 const makeApiRequest = async <T>(
   endpoint: string, 
   options: RequestInit = {}
@@ -269,14 +266,6 @@ export const searchMyBook = async (
   return makeApiRequest<SearchMyBookResponse>(url.pathname + url.search);
 };
 
-/**
- * 독서 공개 여부 수정
- * 비공개시 해당 독서에 대한 모든 독서카드도 비공개로 설정됩니다.
- * 
- * @param readingId - 독서 기록 ID (memberBookId)
- * @param isPublic - 공개 여부 (true: 공개, false: 비공개)
- * @returns 수정 결과
- */
 export const updateBookVisibility = async (
   readingId: number,
   isPublic: boolean
@@ -298,7 +287,6 @@ export const updateBookVisibility = async (
     }
     return data;
   } catch (error) {
-    console.error('독서 공개 여부 수정 중 오류:', error);
     throw error;
   }
 };

@@ -22,12 +22,10 @@ const OAuthCallbackPage: React.FC = () => {
           setAccessToken(accessToken);
           navigate('/');
         } catch (error) {
-          console.error('로그인 실패:', error);
           alert(`로그인 처리 중 오류가 발생했습니다.\n\n${(error as Error).message}`);
           navigate('/login');
         }
       } else {
-        console.error('인가 코드를 찾을 수 없습니다.');
         alert('인가 코드가 유효하지 않습니다. 다시 시도해주세요.');
         navigate('/login');
       }

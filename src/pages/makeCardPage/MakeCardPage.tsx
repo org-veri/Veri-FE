@@ -68,8 +68,7 @@ const MakeCardPage: React.FC = () => {
         setIsVideoReady(true);
       };
 
-      videoRef.current.play().catch(err => {
-        console.error('비디오 재생 에러:', err);
+      videoRef.current.play().catch(() => {
         setCameraError('비디오 재생에 실패했습니다.');
       });
     }
@@ -102,7 +101,6 @@ const MakeCardPage: React.FC = () => {
       setIsUploading(true);
       try {
         const uploadedUrl = await uploadImage(file);
-        console.log('갤러리 이미지 업로드 성공:', uploadedUrl);
         navigate('/use-photo', {
           state: { image: uploadedUrl }
         });
@@ -124,7 +122,6 @@ const MakeCardPage: React.FC = () => {
       setIsCameraActive(true);
       setCurrentImageIndex(0);
     } catch (err: any) {
-      console.error('카메라 접근 에러:', err);
       if (err instanceof DOMException && err.name === 'NotAllowedError') {
         setCameraError('카메라 접근 권한이 거부되었습니다. 브라우저 설정을 확인해주세요.');
       } else if (err instanceof DOMException && (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError')) {
@@ -179,7 +176,6 @@ const MakeCardPage: React.FC = () => {
         });
 
         if (!imageBlob) {
-          console.error('캔버스에서 이미지 Blob 생성 실패.');
           return;
         }
 
@@ -190,12 +186,10 @@ const MakeCardPage: React.FC = () => {
           const uploadedUrl = await uploadImage(photoFile);
           stopCameraStream();
           setCameraError(null);
-          console.log('촬영된 사진 업로드 성공:', uploadedUrl);
           navigate('/use-photo', {
             state: { image: uploadedUrl }
           });
         } catch (err: any) {
-          console.error('촬영된 사진 업로드 실패:', err);
           showToast(`사진 업로드 실패: ${err.message}`, 'error');
           setIsUploading(false);
         }
@@ -246,7 +240,6 @@ const MakeCardPage: React.FC = () => {
               src={imagesToDisplay[currentImageIndex]}
               alt="카드 이미지"
               className="preview-image"
-              onLoad={() => console.log('Image loaded:', imagesToDisplay[currentImageIndex])}
               onError={e => {
                 e.currentTarget.src = 'https://placehold.co/350x500/cccccc/333333?text=Image+Load+Failed';
                 e.currentTarget.alt = '이미지 로드 실패';

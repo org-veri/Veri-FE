@@ -8,6 +8,7 @@ import Toast from './Toast';
 interface BottomEditModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSaveSuccess?: () => void;
   memberBookId: number;
   defaultScore: number;
   defaultStartedAt: string | null;
@@ -59,6 +60,7 @@ const StarRatingInput: React.FC<StarRatingInputProps> = ({ initialRating, onRati
 const BottomEditModal: React.FC<BottomEditModalProps> = ({
   isOpen,
   onClose,
+  onSaveSuccess,
   memberBookId,
   defaultScore,
   defaultStartedAt,
@@ -139,9 +141,9 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
       setToastMessage('책 정보가 성공적으로 수정되었습니다.');
       setToastType('success');
       setShowToast(true);
+      onSaveSuccess?.();
       onClose();
-    } catch (error) {
-      console.error('저장 중 오류가 발생했습니다:', error);
+    } catch {
       setToastMessage('저장 중 오류가 발생했습니다.');
       setToastType('error');
       setShowToast(true);

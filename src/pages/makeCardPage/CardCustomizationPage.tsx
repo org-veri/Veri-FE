@@ -220,12 +220,10 @@ const CardCustomizationPage: React.FC = () => {
         const newX = clientX - rect.left - dragOffset.x;
         const newY = clientY - rect.top - dragOffset.y;
         
-        // 컨테이너 전체 영역에서 드래그 가능하도록 설정
         const textElement = document.querySelector('.overlay-text') as HTMLElement;
         const textWidth = textElement ? textElement.offsetWidth : 200;
         const textHeight = textElement ? textElement.offsetHeight : 100;
         
-        // 컨테이너 전체를 기준으로 제한
         const maxX = rect.width - textWidth;
         const maxY = rect.height - textHeight;
         
@@ -239,7 +237,6 @@ const CardCustomizationPage: React.FC = () => {
         setIsDragging(false);
     };
 
-    // 마우스 이벤트
     const handleMouseDown = (e: React.MouseEvent) => {
         e.preventDefault();
         handleStart(e.clientX, e.clientY, e.currentTarget as HTMLElement);
@@ -255,7 +252,6 @@ const CardCustomizationPage: React.FC = () => {
         handleEnd();
     };
 
-    // 터치 이벤트
     const handleTouchStart = (e: React.TouchEvent) => {
         e.preventDefault();
         const touch = e.touches[0];
@@ -383,8 +379,7 @@ const CardCustomizationPage: React.FC = () => {
                     effectIntensity: effectIntensity,
                 },
             });
-        } catch (error) {
-            console.error('캡쳐 실패 상세:', error);
+        } catch {
             showToast('이미지 보안 정책(CORS)으로 인해 저장이 불가능할 수 있습니다. 직접 올린 사진을 사용해 보세요.', 'error');
         }
     };

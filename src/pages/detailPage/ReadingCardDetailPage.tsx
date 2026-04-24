@@ -84,7 +84,6 @@ function ReadingCardDetailPage() {
           setError(response.message || "독서 카드 상세 정보를 가져오는데 실패했습니다.");
         }
       } catch (err: any) {
-        console.error('독서 카드 상세 정보를 불러오는 중 오류 발생:', err);
         setError(`독서 카드 상세 정보를 불러오는 데 실패했습니다: ${err.message}`);
       } finally {
         setIsLoading(false);
@@ -133,7 +132,6 @@ function ReadingCardDetailPage() {
         setToast({ message: `독서 카드 삭제에 실패했습니다: ${response.message || '알 수 없는 오류'}`, type: 'error', isVisible: true });
       }
     } catch (err: any) {
-      console.error('독서 카드 삭제 중 오류 발생:', err);
       setToast({ message: `독서 카드 삭제 중 오류가 발생했습니다: ${err.message}`, type: 'error', isVisible: true });
     } finally {
       setIsProcessing(false);
@@ -169,8 +167,7 @@ function ReadingCardDetailPage() {
             });
             setIsPublic(response.result.isPublic !== undefined ? response.result.isPublic : false);
           }
-        } catch (err) {
-          console.error('카드 정보 업데이트 후 재로드 중 오류:', err);
+        } catch {
         }
       };
       fetchCardDetail(Number(id));
@@ -225,7 +222,6 @@ function ReadingCardDetailPage() {
         });
       }
     } catch (err: any) {
-      console.error('카드 공개 여부 변경 중 오류 발생:', err);
       let errorMessage = err.message || '카드 공개 여부 변경 중 오류가 발생했습니다.';
       if (err.code === 'C1005') {
         errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -259,8 +255,7 @@ function ReadingCardDetailPage() {
       const hour = (`0${date.getHours()}`).slice(-2);
       const minute = (`0${date.getMinutes()}`).slice(-2);
       return `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
-    } catch (error) {
-      console.error('날짜 오류:', error);
+    } catch {
       return null;
     }
   };

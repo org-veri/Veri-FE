@@ -47,8 +47,7 @@ const MyPage: React.FC = () => {
         } else {
           setError(response.message || '사용자 데이터를 불러오는 데 실패했습니다.');
         }
-      } catch (err) {
-        console.error('Error fetching user data:', err);
+      } catch {
         setError('사용자 데이터를 불러오는 중 네트워크 오류가 발생했습니다.');
       } finally {
         setIsLoading(false);
@@ -71,8 +70,7 @@ const MyPage: React.FC = () => {
         } else {
           setPostsError(response.message || '게시글을 불러오는 데 실패했습니다.');
         }
-      } catch (err) {
-        console.error('Error fetching my posts:', err);
+      } catch {
         setPostsError('게시글을 불러오는 중 네트워크 오류가 발생했습니다.');
       } finally {
         setIsLoadingPosts(false);
@@ -81,10 +79,6 @@ const MyPage: React.FC = () => {
 
     fetchMyPosts();
   }, []);
-
-  const handleProfileClick = () => {
-    console.log('프로필 상세 페이지로 이동');
-  };
 
   const goToEditMyName = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -142,7 +136,7 @@ const MyPage: React.FC = () => {
 
       <div className="header-margin" />
 
-      <div className="my-page-profile-section" onClick={handleProfileClick}>
+      <div className="my-page-profile-section">
         <div className="profile-left">
           <div className="profile-avatar">
             {userData.profileImageUrl ? (

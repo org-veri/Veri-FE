@@ -78,8 +78,7 @@ function ReadingCardPage() {
                                     bookTitle: detailResponse.result.book.title
                                 };
                             }
-                        } catch (detailErr) {
-                            console.error(`카드 상세 정보 가져오기 실패 (ID: ${card.cardId}):`, detailErr);
+                        } catch {
                         }
                         return null;
                     });
@@ -110,7 +109,6 @@ function ReadingCardPage() {
                 }
             }
         } catch (err: any) {
-            console.error('독서 카드 데이터 로딩 오류:', err);
             setError(`독서 카드를 불러오는 데 실패했습니다: ${err.message}`);
         } finally {
             setIsLoading(false);
@@ -125,7 +123,6 @@ function ReadingCardPage() {
         handleSearch(searchQuery);
     }, [readingCards, searchQuery, handleSearch]);
 
-    // 이벤트 핸들러들
     const handleSortClick = useCallback(() => {
         setSortOrder(prevOrder => prevOrder === 'newest' ? 'oldest' : 'newest');
     }, []);

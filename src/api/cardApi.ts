@@ -2,8 +2,6 @@ import { fetchWithAuth } from './auth';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
-// fetchWithAuth는 auth.ts에서 관리됩니다 (401 시 자동 토큰 재발급 지원)
-
 export interface CardBookDetail {
   id: number;
   title: string;
@@ -163,7 +161,6 @@ export async function getMyCards(params: GetMyCardsQueryParams = {}): Promise<Ge
     }
     return data;
   } catch (error) {
-    console.error('Failed to fetch my cards:', error);
     throw error;
   }
 }
@@ -179,7 +176,6 @@ export async function getCardDetailById(cardId: number): Promise<GetCardDetailBy
     }
     return data;
   } catch (error) {
-    console.error(`Failed to fetch card detail for ID ${cardId}:`, error);
     throw error;
   }
 }
@@ -200,7 +196,6 @@ export async function createCard(body: CreateCardRequest): Promise<CreateCardRes
     }
     return data;
   } catch (error) {
-    console.error('카드 생성 중 오류:', error);
     throw error;
   }
 }
@@ -221,7 +216,6 @@ export async function getPresignedUrlForImageUpload(body: GetPresignedUrlRequest
     }
     return data;
   } catch (error) {
-    console.error('Presigned URL 요청 중 오류:', error);
     throw error;
   }
 }
@@ -250,10 +244,8 @@ export async function uploadImageAndGetUrl(file: File): Promise<string> {
       throw new Error(`S3 직접 업로드 실패: ${uploadResponse.statusText || 'Unknown S3 error'}`);
     }
 
-    console.log('이미지 S3 업로드 성공. Public URL:', publicUrl);
     return publicUrl;
   } catch (error: any) {
-    console.error('이미지 업로드 과정에서 오류 발생:', error);
     throw new Error(`이미지 업로드 실패: ${error.message || "알 수 없는 오류"}`);
   }
 }
@@ -276,7 +268,6 @@ export async function deleteCard(cardId: number): Promise<DeleteCardResponse> {
     }
     return data;
   } catch (error) {
-    console.error('독서 카드 삭제 중 오류:', error);
     throw error;
   }
 }
@@ -291,7 +282,6 @@ export async function getMyCardsCount(): Promise<GetMyCardsCountResponse> {
     }
     return data;
   } catch (error) {
-    console.error('내 독서카드 개수 조회 중 오류:', error);
     throw error;
   }
 }
@@ -312,7 +302,6 @@ export async function updateCard(cardId: number, body: UpdateCardRequest): Promi
     }
     return data;
   } catch (error) {
-    console.error('카드 수정 중 오류:', error);
     throw error;
   }
 }
@@ -335,7 +324,6 @@ export async function updateCardVisibility(cardId: number, isPublic: boolean): P
     }
     return data;
   } catch (error) {
-    console.error('카드 공개 여부 수정 중 오류:', error);
     throw error;
   }
 }

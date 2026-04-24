@@ -106,7 +106,6 @@ function CommunityPostDetailPage() {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.';
         setError(errorMessage);
-        console.error('게시글 상세 로드 실패:', err);
       } finally {
         setLoading(false);
       }
@@ -122,20 +121,17 @@ function CommunityPostDetailPage() {
   const handleLike = async () => {
     if (!postId || isLiking || !post) return;
 
-    // Trigger animation
     setIsLikeAnimating(true);
     setTimeout(() => setIsLikeAnimating(false), 400);
 
     try {
       setIsLiking(true);
 
-      // 현재 좋아요 상태에 따라 API 호출
       const response = isLiked
         ? await unlikePost(parseInt(postId))
         : await likePost(parseInt(postId));
 
       if (response.isSuccess && response.result) {
-        // API 응답으로 상태 업데이트
         setIsLiked(response.result.isLiked);
         setPost(prev => prev ? {
           ...prev,
@@ -148,8 +144,7 @@ function CommunityPostDetailPage() {
           isVisible: true
         });
       }
-    } catch (err) {
-      console.error('좋아요 처리 실패:', err);
+    } catch {
       setToast({
         message: '좋아요 처리 중 오류가 발생했습니다.',
         type: 'error',
@@ -167,7 +162,6 @@ function CommunityPostDetailPage() {
     try {
       setSubmittingComment(true);
 
-      // 일반 댓글 작성
       const response = await createComment({
         postId: parseInt(postId),
         content: newComment.trim()
@@ -193,8 +187,7 @@ function CommunityPostDetailPage() {
       } else {
         setToast({ message: response.message || '댓글 작성에 실패했습니다.', type: 'error', isVisible: true });
       }
-    } catch (err) {
-      console.error('댓글 작성 실패:', err);
+    } catch {
       setToast({ message: '댓글 작성 중 오류가 발생했습니다.', type: 'error', isVisible: true });
     } finally {
       setSubmittingComment(false);
@@ -237,8 +230,7 @@ function CommunityPostDetailPage() {
       } else {
         setToast({ message: response.message || '답글 작성에 실패했습니다.', type: 'error', isVisible: true });
       }
-    } catch (err) {
-      console.error('답글 작성 실패:', err);
+    } catch {
       setToast({ message: '답글 작성 중 오류가 발생했습니다.', type: 'error', isVisible: true });
     } finally {
       setSubmittingComment(false);
@@ -257,7 +249,6 @@ function CommunityPostDetailPage() {
       const response = await deleteComment(commentId);
 
       if (response.isSuccess) {
-        // 댓글 삭제 성공 후 게시글 다시 로드
         const updatedPost = await getPostDetail(parseInt(postId));
         if (updatedPost.isSuccess && updatedPost.result) {
           const currentUserId = getCurrentUserId();
@@ -276,8 +267,7 @@ function CommunityPostDetailPage() {
       } else {
         setToast({ message: response.message || '댓글 삭제에 실패했습니다.', type: 'error', isVisible: true });
       }
-    } catch (err) {
-      console.error('댓글 삭제 실패:', err);
+    } catch {
       setToast({ message: '댓글 삭제 중 오류가 발생했습니다.', type: 'error', isVisible: true });
     }
   };
@@ -301,7 +291,6 @@ function CommunityPostDetailPage() {
       });
 
       if (response.isSuccess) {
-        // 댓글 수정 성공 후 게시글 다시 로드
         setEditingCommentId(null);
         setEditingContent('');
         const updatedPost = await getPostDetail(parseInt(postId));
@@ -322,13 +311,11 @@ function CommunityPostDetailPage() {
       } else {
         setToast({ message: response.message || '댓글 수정에 실패했습니다.', type: 'error', isVisible: true });
       }
-    } catch (err) {
-      console.error('댓글 수정 실패:', err);
+    } catch {
       setToast({ message: '댓글 수정 중 오류가 발생했습니다.', type: 'error', isVisible: true });
     }
   };
 
-  // 게시글 삭제 핸들러
   const handleDeletePost = () => {
     if (!post || !post.postId) {
       setToast({ message: '삭제할 게시글 정보가 없습니다.', type: 'error', isVisible: true });
@@ -338,7 +325,6 @@ function CommunityPostDetailPage() {
     setIsDeleteConfirmModalOpen(true);
   };
 
-  // 게시글 삭제 확인 핸들러
   const confirmDeletePost = async () => {
     if (!post || !post.postId) {
       setToast({ message: '삭제할 게시글 정보가 없습니다.', type: 'error', isVisible: true });
@@ -356,7 +342,6 @@ function CommunityPostDetailPage() {
         setToast({ message: `게시글 삭제에 실패했습니다: ${response.message || '알 수 없는 오류'}`, type: 'error', isVisible: true });
       }
     } catch (err: any) {
-      console.error('게시글 삭제 중 오류 발생:', err);
       setToast({ message: `게시글 삭제 중 오류가 발생했습니다: ${err.message}`, type: 'error', isVisible: true });
     } finally {
       setIsProcessing(false);
@@ -364,7 +349,6 @@ function CommunityPostDetailPage() {
     }
   };
 
-  // 게시글 수정 핸들러
   const handleEditPost = () => {
     if (!post) return;
     setMenuOpen(false);
@@ -381,10 +365,7 @@ function CommunityPostDetailPage() {
         const currentUserId = getCurrentUserId();
         const postData = response.result;
 
-        // 게시글의 isMine 계산
         const isMyPost = currentUserId !== null && postData.author.id === currentUserId;
-
-        // 댓글들에 isMine 추가
         const commentsWithIsMine = addIsMineToComments(postData.comments, currentUserId);
 
         setPost({
@@ -393,22 +374,18 @@ function CommunityPostDetailPage() {
           comments: commentsWithIsMine
         });
 
-        // API 응답에서 isPublic 가져오기
         const responseResult = postData as any;
         setIsPublic(responseResult.isPublic !== undefined ? responseResult.isPublic : true);
       }
-    } catch (err) {
-      console.error('게시글 업데이터 후 재로드 실패:', err);
+    } catch {
     }
   };
 
-  // 게시글 공개/비공개 토글 핸들러
   const handleToggleVisibility = async () => {
     if (!post || !post.postId || isUpdatingVisibility || isProcessing) {
       return;
     }
 
-    // 현재 공개 상태를 명확히 확인하고 반대로 토글
     const currentIsPublic = isPublic === true;
     const newVisibility = !currentIsPublic;
 
@@ -438,7 +415,6 @@ function CommunityPostDetailPage() {
         });
       }
     } catch (err: any) {
-      console.error('게시글 공개 여부 변경 중 오류 발생:', err);
       let errorMessage = err.message || '게시글 공개 여부 변경 중 오류가 발생했습니다.';
       if (err.code === 'C1005') {
         errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -641,7 +617,6 @@ function CommunityPostDetailPage() {
             </div>
           </div>
 
-          {/* 게시물 내용 */}
           <div className="detail-post-content">
             <p className="detail-post-summary">{post.content}</p>
           </div>
@@ -659,7 +634,6 @@ function CommunityPostDetailPage() {
           <div className="detail-post-date">{formatDate(post.createdAt)}</div>
         </div>
 
-        {/* 댓글 섹션 */}
         <CommentList
           comments={post.comments}
           editingCommentId={editingCommentId}
