@@ -38,17 +38,6 @@ export const PATHS_WITH_TAB_BAR: string[] = [
   PATH.MY_PAGE,
 ];
 
-export const PATHS_HIDING_FLOATING_CAMERA: string[] = [
-  PATH.MAKE_CARD,
-  PATH.TEXT_EXTRACTION_LOADING,
-  PATH.TEXT_EXTRACTION_RESULT,
-  PATH.CUSTOMIZE_CARD,
-  PATH.CARD_COMPLETE,
-  PATH.BOOK_SEARCH,
-  PATH.BOOK_ADD,
-  PATH.DOWNLOAD_CARD,
-];
-
 export function shouldShowTabBar(pathname: string): boolean {
   return PATHS_WITH_TAB_BAR.includes(pathname);
 }
@@ -57,6 +46,7 @@ export function shouldShowSidebar(pathname: string): boolean {
   return !PATHS_PUBLIC.includes(pathname);
 }
 
-export function shouldShowFloatingCamera(pathname: string): boolean {
-  return shouldShowTabBar(pathname) && !PATHS_HIDING_FLOATING_CAMERA.includes(pathname);
+export function shouldShowFloatingCamera(_pathname: string): boolean {
+  /* 중앙 탭 카메라로 이동 — 별도 플로팅 촬영 버튼 비활성 */
+  return false;
 }

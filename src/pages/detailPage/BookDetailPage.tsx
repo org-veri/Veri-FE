@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './BookDetailPage.css';
-import DeleteConfirmationModal from '../../components/DeleteConfirmationModal';
+import ConfirmationModal from '../../components/ConfirmationModal';
 import BottomEditModal from '../../components/BottomEditModal';
 import Toast from '../../components/Toast';
 import { MdKeyboardArrowRight } from 'react-icons/md';
@@ -362,13 +362,15 @@ function BookDetailPage() {
                 bookId={book.memberBookId}
             />
 
-            <DeleteConfirmationModal
+            <ConfirmationModal
                 isOpen={isDeleteConfirmModalOpen}
                 onClose={() => setIsDeleteConfirmModalOpen(false)}
                 onConfirm={confirmDeleteBook}
                 isLoading={isSavingChanges}
                 question="내 책장에서 제거하시겠어요?"
                 info="책장에서 제거된 책의 독서카드는 독서카드 페이지에 그대로 남아있어요 :)"
+                confirmLabel="제거하기"
+                confirmPendingLabel="제거 중..."
             />
 
             <BottomEditModal

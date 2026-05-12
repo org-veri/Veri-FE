@@ -21,5 +21,10 @@
 
   --grey-2: #E7E9EF;
   --grey-900: #18181B;
+
+  /* Home / mobile frame (390 artboard): inset 20, block gap 30 */
+  --home-inline: 20px;
+  --home-section-gap: 30px;
+  --home-canvas: #F4F4F5;
 }
 

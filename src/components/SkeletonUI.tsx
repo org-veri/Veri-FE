@@ -39,15 +39,12 @@ export const SkeletonReadingCardGrid: React.FC = () => (
 );
 
 export const SkeletonHeroSection: React.FC = () => (
-  <div className="skeleton-hero-section">
-    <div className="skeleton-hero-background"></div>
-    <div className="skeleton-hero-content">
-      <div className="skeleton-profile-circle"></div>
-      <div className="skeleton-welcome-text">
-        <div className="skeleton-welcome-title"></div>
-        <div className="skeleton-welcome-subtitle"></div>
-      </div>
-      <div className="skeleton-hero-book"></div>
+  <div className="skeleton-library-hero">
+    <div className="skeleton-library-hero-card skeleton-shimmer" />
+    <div className="skeleton-library-hero-thumbs">
+      {Array.from({ length: 5 }, (_, i) => (
+        <div key={i} className="skeleton-library-hero-thumb skeleton-shimmer" />
+      ))}
     </div>
   </div>
 );

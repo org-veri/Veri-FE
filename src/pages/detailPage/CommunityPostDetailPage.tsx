@@ -6,7 +6,7 @@ import { createComment, deleteComment, updateComment, createReply } from '../../
 import { getCurrentUserId } from '../../api/auth';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-import DeleteConfirmationModal from '../../components/DeleteConfirmationModal';
+import ConfirmationModal from '../../components/ConfirmationModal';
 import CommentList from '../../components/CommunityPostDetailPage/CommentList';
 import CommentInput from '../../components/CommunityPostDetailPage/CommentInput';
 import Toast from '../../components/Toast';
@@ -679,13 +679,15 @@ function CommunityPostDetailPage() {
         onUpdateSuccess={handlePostUpdateSuccess}
       />
 
-      <DeleteConfirmationModal
+      <ConfirmationModal
         isOpen={isDeleteConfirmModalOpen}
         onClose={() => setIsDeleteConfirmModalOpen(false)}
         onConfirm={confirmDeletePost}
         isLoading={isProcessing}
         question="게시글을 삭제하시겠어요?"
         info="삭제된 게시글은 복구할 수 없어요"
+        confirmLabel="삭제하기"
+        confirmPendingLabel="삭제 중..."
       />
     </div>
   );

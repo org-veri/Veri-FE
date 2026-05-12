@@ -8,6 +8,14 @@
   opacity: 1;
 }
 
+.page-container.home-page {
+  background-color: var(--home-canvas);
+}
+
+.page-container.home-page .header-margin {
+  background-color: var(--home-canvas);
+}
+
 .page-container.loading {
   opacity: 0.7;
 }
@@ -118,7 +126,8 @@
 }
 
 .main-layout--with-tab-bar {
-  padding-bottom: 70px;
+  /* 떠 있는 탭바(높이 ~74px + bottom 12px + 여유) */
+  padding-bottom: 96px;
 }
 
 .main-page-margin {

@@ -7,7 +7,7 @@ import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { getCardDetailById, deleteCard, updateCardVisibility, type Card } from '../../api/cardApi';
 import { getCurrentUserId } from '../../api/auth';
 import ReadingCardEditModal from '../../components/ReadingCardEditModal';
-import DeleteConfirmationModal from '../../components/DeleteConfirmationModal';
+import ConfirmationModal from '../../components/ConfirmationModal';
 import Toast from '../../components/Toast';
 import './ReadingCardDetailPage.css';
 
@@ -26,6 +26,7 @@ function ReadingCardDetailPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] = useState(false);
+  const [visibilityChoiceModal, setVisibilityChoiceModal] = useState<'toPrivate' | 'toPublic' | null>(null);
   const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info'; isVisible: boolean }>({
     message: '',
@@ -182,60 +183,69 @@ function ReadingCardDetailPage() {
     }
   };
 
-  const handleToggleVisibility = useCallback(async () => {
-    if (!cardDetail || !cardDetail.cardId || isUpdatingVisibility || isProcessing) {
-      return;
-    }
+  const applyCardVisibility = useCallback(
+    async (nextPublic: boolean) => {
+      if (!cardDetail?.cardId || isUpdatingVisibility || isProcessing) {
+        return;
+      }
 
-    const currentIsPublic = isPublic === true;
-    const newVisibility = !currentIsPublic;
-    
-    setIsUpdatingVisibility(true);
+      setIsUpdatingVisibility(true);
 
-    try {
-      const response = await updateCardVisibility(cardDetail.cardId, newVisibility);
-      
-      if (response.isSuccess && response.result) {
-        const result = response.result as any;
-        const updatedIsPublic = result.idPublic === true || result.isPublic === true;
-        
-        setIsPublic(updatedIsPublic);
-        setCardDetail(prev => {
-          if (!prev) return null;
-          return { ...prev, isPublic: updatedIsPublic };
-        });
-        
-        setToast({ 
-          message: updatedIsPublic ? '카드가 공개되었습니다.' : '카드가 비공개되었습니다.', 
-          type: 'success', 
-          isVisible: true 
-        });
-      } else {
-        let errorMessage = response.message || '카드 공개 여부 변경에 실패했습니다.';
-        if (response.code === 'C1005') {
+      try {
+        const response = await updateCardVisibility(cardDetail.cardId, nextPublic);
+
+        if (response.isSuccess && response.result) {
+          const result = response.result as { idPublic?: boolean; isPublic?: boolean };
+          const updatedIsPublic = result.idPublic === true || result.isPublic === true;
+
+          setIsPublic(updatedIsPublic);
+          setCardDetail((prev) => {
+            if (!prev) return null;
+            return { ...prev, isPublic: updatedIsPublic };
+          });
+
+          setToast({
+            message: updatedIsPublic ? '카드가 공개되었습니다.' : '카드가 비공개되었습니다.',
+            type: 'success',
+            isVisible: true,
+          });
+          setVisibilityChoiceModal(null);
+        } else {
+          let errorMessage = response.message || '카드 공개 여부 변경에 실패했습니다.';
+          if (response.code === 'C1005') {
+            errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
+          }
+          setToast({
+            message: errorMessage,
+            type: 'error',
+            isVisible: true,
+          });
+        }
+      } catch (err: unknown) {
+        const errObj = err as { code?: string; message?: string };
+        let errorMessage = errObj?.message || '카드 공개 여부 변경 중 오류가 발생했습니다.';
+        if (errObj?.code === 'C1005') {
           errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
         }
-        setToast({ 
-          message: errorMessage, 
-          type: 'error', 
-          isVisible: true 
+
+        setToast({
+          message: errorMessage,
+          type: 'error',
+          isVisible: true,
         });
+      } finally {
+        setIsUpdatingVisibility(false);
       }
-    } catch (err: any) {
-      let errorMessage = err.message || '카드 공개 여부 변경 중 오류가 발생했습니다.';
-      if (err.code === 'C1005') {
-        errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
-      }
-      
-      setToast({ 
-        message: errorMessage, 
-        type: 'error', 
-        isVisible: true 
-      });
-    } finally {
-      setIsUpdatingVisibility(false);
+    },
+    [cardDetail, isUpdatingVisibility, isProcessing]
+  );
+
+  const openVisibilityChoiceModal = useCallback(() => {
+    if (!cardDetail?.cardId || isUpdatingVisibility || isProcessing) {
+      return;
     }
-  }, [cardDetail, isPublic, isUpdatingVisibility, isProcessing]);
+    setVisibilityChoiceModal(isPublic === true ? 'toPrivate' : 'toPublic');
+  }, [cardDetail?.cardId, isPublic, isUpdatingVisibility, isProcessing]);
 
   const formatDateTime = (isoDate: string | null | undefined) => {
     if (!isoDate) {
@@ -345,7 +355,7 @@ function ReadingCardDetailPage() {
           {isMyCard && isPublic !== null && (
             <button 
               className={`card-visibility-toggle ${isPublic === true ? 'public' : 'private'}`}
-              onClick={handleToggleVisibility}
+              onClick={openVisibilityChoiceModal}
               disabled={isUpdatingVisibility || isProcessing}
               aria-label={isPublic === true ? '공개된 카드' : '비공개된 카드'}
             >
@@ -399,13 +409,52 @@ function ReadingCardDetailPage() {
         />
       )}
 
-      <DeleteConfirmationModal
+      <ConfirmationModal
+        isOpen={visibilityChoiceModal !== null}
+        onClose={() => {
+          if (!isUpdatingVisibility) setVisibilityChoiceModal(null);
+        }}
+        actionLayout="twin"
+        question={
+          visibilityChoiceModal === 'toPrivate'
+            ? '독서카드를 비공개로 전환할까요?'
+            : '독서카드를 공개로 전환할까요?'
+        }
+        info={
+          visibilityChoiceModal === 'toPrivate'
+            ? '비공개로 전환하면 커뮤니티에서\n회원님의 독서카드가 사라져요'
+            : visibilityChoiceModal === 'toPublic'
+              ? '공개로 전환하면 커뮤니티에서\n회원님의 독서카드가 표시돼요'
+              : null
+        }
+        twinLeftLabel="나만 볼래요"
+        twinRightLabel="공개 할래요"
+        onTwinLeft={() => {
+          if (visibilityChoiceModal === 'toPrivate') {
+            void applyCardVisibility(false);
+          } else {
+            setVisibilityChoiceModal(null);
+          }
+        }}
+        onTwinRight={() => {
+          if (visibilityChoiceModal === 'toPublic') {
+            void applyCardVisibility(true);
+          } else {
+            setVisibilityChoiceModal(null);
+          }
+        }}
+        isLoading={isUpdatingVisibility}
+      />
+
+      <ConfirmationModal
         isOpen={isDeleteConfirmModalOpen}
         onClose={() => setIsDeleteConfirmModalOpen(false)}
         onConfirm={confirmDeleteCard}
         isLoading={isProcessing}
         question="독서카드를 삭제하시겠어요?"
         info="삭제된 독서카드는 복구할 수 없어요"
+        confirmLabel="삭제하기"
+        confirmPendingLabel="삭제 중..."
       />
 
       <Toast

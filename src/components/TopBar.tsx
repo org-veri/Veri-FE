@@ -48,8 +48,7 @@ const TopBar: React.FC<TopBarProps> = ({
       }
     }
   }, [showProfile]);
-
-  // 프로필 수정 후 반영: 커스텀 이벤트 수신
+  
   useEffect(() => {
     const onProfileUpdated = (e: Event) => {
       const url = (e as CustomEvent<{ profileImageUrl: string }>).detail?.profileImageUrl;

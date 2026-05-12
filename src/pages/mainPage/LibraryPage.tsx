@@ -14,13 +14,10 @@ import SortOptionsModal from '../../components/SortOptionsModal';
 
 
 export const StarRatingFullPage: React.FC<{ rating: number }> = ({ rating }) => {
-  // 별점 계산 로직 (기존과 동일)
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
   const starElements = [];
-
-  // 채워진 별
   for (let i = 0; i < fullStars; i++) {
     starElements.push(
       <img

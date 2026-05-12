@@ -1,85 +1,118 @@
 .tab-bar-container {
   position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 450px;
-  background-color: #fff;
+  bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  left: max(12px, env(safe-area-inset-left, 0px));
+  right: max(12px, env(safe-area-inset-right, 0px));
+  transform: none;
+  z-index: 1000;
+  box-sizing: border-box;
+  width: auto;
+  padding: clamp(8px, 2.2vw, 10px) clamp(10px, 4vw, 20px);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
-  padding: 4px 20px 16px 20px;
-  height: 80px;
-  border-top: 1px solid var(--border-color);
-  box-shadow: 0 -2px 10px var(--shadow-color);
-  z-index: 1000;
-  box-sizing: border-box;
-  border-radius: 15px;
+  align-items: stretch;
+  gap: clamp(2px, 1vw, 8px);
+  background: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  border-radius: clamp(14px, 4vw, 20px);
 }
 
-.tab-item {
+.tab-bar-container .tab-item {
+  box-sizing: border-box;
   flex: 1 1 0;
   min-width: 0;
-  display: flex;
+  width: auto;
+  min-height: clamp(48px, 14vw, 60px);
+  display: inline-flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  gap: clamp(4px, 1.2vw, 6px);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
   cursor: pointer;
-  color: var(--grey-2) !important;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: clamp(10px, 2.8vw, 12px);
+  line-height: 1.4;
   text-align: center;
-  font-family: Pretendard;
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 140%;
-  transition: color 0.3s ease;
-  position: relative;
-  gap: 5px;
+  color: #c9cacf;
+  font-weight: 400;
 }
 
-.tab-item.active {
-  color: var(--grey-900) !important;
-  font-weight: 500;
+.tab-bar-container .tab-item.active {
+  color: #18181b;
+  font-weight: 600;
 }
 
-.tab-item-icon {
-  width: 26px;
-  height: 26px;
-  min-width: 26px;
-  min-height: 26px;
-  margin-bottom: 4px;
-  transition: color 0.3s ease;
-  color: var(--grey-2) !important;
-  flex-shrink: 0;
+.tab-bar-container .tab-item-icon {
+  width: 1em;
+  height: 1em;
+  min-width: 0;
+  min-height: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: clamp(17px, 5vw, 20px);
+  color: #e4e4e7 !important;
+  flex-shrink: 0;
 }
 
-.tab-item-icon::before {
+.tab-bar-container .tab-item-icon::before {
   color: inherit !important;
 }
 
-.tab-item.active .tab-item-icon,
-.tab-item.active .tab-item-icon::before {
-  color: var(--grey-900) !important;
+.tab-bar-container .tab-item.active .tab-item-icon,
+.tab-bar-container .tab-item.active .tab-item-icon::before {
+  color: #18181b !important;
 }
 
-.tab-item-text {
+.tab-bar-container .tab-item-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
 }
 
-.dummy-tab-item {
-  flex: 1 1 0;
+/* 디자인 비율: 카메라 슬롯 90 : 일반 탭 60 ≈ 1.5 : 1 */
+.tab-bar-container .tab-bar-camera {
+  box-sizing: border-box;
+  flex: 1.5 1 0;
   min-width: 0;
-  height: 40px;
-  background-color: transparent;
-  pointer-events: none;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  z-index: 1000;
+  overflow: visible;
+}
+
+.tab-bar-container .tab-bar-camera-inner {
+  width: min(54px, 100%);
+  max-width: 100%;
+  aspect-ratio: 1;
+  height: auto;
+  max-height: min(54px, 100%);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #0c0c0e 0%, #474752 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tab-bar-container .tab-bar-camera-icon {
+  font-size: clamp(20px, 6vw, 24px);
+  color: #fff !important;
+}
+
+.tab-bar-container .tab-bar-camera-icon::before {
+  color: #fff !important;
 }

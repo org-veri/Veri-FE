@@ -1,16 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import './Home.css';
 import MyReadingCardSection from '../../components/HomePage/MyReadingCard';
 import TodaysRecommendationSection from '../../components/HomePage/TodaysRecommendation';
 import { useNavigate } from 'react-router-dom';
 import { getMemberProfile } from '../../api/memberApi';
-import { getAllBooks, type GetAllBooksQueryParams } from '../../api/bookApi';
+import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookApi';
 import { SkeletonHeroSection } from '../../components/SkeletonUI';
-import unionIcon from '../../assets/icons/TopBar/union.svg';
-import profileIcon from '../../assets/icons/TopBar/profile.svg';
+import TopBar from '../../components/TopBar';
 import sampleBookBackground from '../../assets/images/profileSample/sample_book_background.jpg';
 import sampleBook from '../../assets/images/profileSample/sample_book.jpg';
-import sampleUser from '../../assets/images/profileSample/sample_user.png';
+
+const RECENT_BOOK_SLOTS = 5;
 
 interface UserData {
   email: string;
@@ -23,17 +23,10 @@ interface UserData {
 function LibraryPage() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [bookImageUrl, setBookImageUrl] = useState<string | null>(null);
+  const [recentBooks, setRecentBooks] = useState<Book[]>([]);
+  const [selectedRecentIndex, setSelectedRecentIndex] = useState(0);
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [profileImage, setProfileImage] = useState<string | null>(() => {
-    const storedImage = localStorage.getItem('profileImage');
-    return storedImage || null;
-  });
-
-  const heroBackgroundErrorRef = useRef(false);
-  const heroBookSampleErrorRef = useRef(false);
-  const profileImageErrorRef = useRef(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -50,10 +43,11 @@ function LibraryPage() {
           });
           if (imageUrl) {
             localStorage.setItem('profileImage', imageUrl);
-            setProfileImage(imageUrl);
+            window.dispatchEvent(
+              new CustomEvent('profileUpdated', { detail: { profileImageUrl: imageUrl } })
+            );
           } else {
             localStorage.removeItem('profileImage');
-            setProfileImage(null);
           }
         } else {
           setError(userResponse.message || "사용자 프로필을 가져오는데 실패했습니다.");
@@ -65,35 +59,37 @@ function LibraryPage() {
       }
     };
 
-    const fetchRecentBook = async () => {
+    const fetchRecentBooks = async () => {
       try {
-        const recentBooksParams: GetAllBooksQueryParams = {
+        const params: GetAllBooksQueryParams = {
           page: 1,
-          size: 1,
+          size: RECENT_BOOK_SLOTS,
           sort: 'newest',
         };
-        const recentBooksResponse = await getAllBooks(recentBooksParams);
-
-        if (recentBooksResponse.isSuccess &&
-          recentBooksResponse.result?.memberBooks.length > 0) {
-          const mostRecentBook = recentBooksResponse.result.memberBooks[0];
-          if (mostRecentBook) {
-            setBookImageUrl(mostRecentBook.imageUrl);
-          }
+        const res = await getAllBooks(params);
+        if (res.isSuccess && res.result?.memberBooks?.length) {
+          setRecentBooks(res.result.memberBooks);
         }
       } catch {
+        // keep empty list
       }
     };
 
     fetchUserProfile();
-    fetchRecentBook();
+    fetchRecentBooks();
   }, []);
-  
+
+  useEffect(() => {
+    setSelectedRecentIndex((prev) => {
+      if (recentBooks.length === 0) return 0;
+      return Math.min(prev, recentBooks.length - 1);
+    });
+  }, [recentBooks]);
+
   useEffect(() => {
     const onProfileUpdated = (e: Event) => {
       const url = (e as CustomEvent<{ profileImageUrl: string }>).detail?.profileImageUrl;
       if (url) {
-        setProfileImage(url);
         setUserData((prev) => (prev ? { ...prev, image: url } : null));
       }
     };
@@ -104,143 +100,134 @@ function LibraryPage() {
   const handleProfileClick = () => navigate('/my-page');
   const handleSearchClick = () => navigate('/book-search');
 
+  const featured = recentBooks[selectedRecentIndex];
+  const heroCoverSrc = featured?.imageUrl || sampleBook;
+  const heroBlurSrc = featured?.imageUrl || sampleBookBackground;
+
+  const handleHeroBlurError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (e.currentTarget.src !== sampleBookBackground) {
+      e.currentTarget.src = sampleBookBackground;
+    }
+  };
+
+  const handleHeroCoverError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (e.currentTarget.src !== sampleBook) {
+      e.currentTarget.src = sampleBook;
+    }
+  };
+
+  const handleThumbError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (e.currentTarget.src !== sampleBook) {
+      e.currentTarget.src = sampleBook;
+    }
+  };
+
+  const handleContinueReading = () => {
+    if (featured) {
+      navigate(`/book-detail/${featured.memberBookId}`);
+    } else {
+      navigate('/book-search');
+    }
+  };
+
   if (error) {
     return <div className="loading-page-container"><p style={{ color: 'red' }}>{error}</p></div>;
   }
 
   if (isUserDataLoading || !userData) {
     return (
-      <div className="page-container">
-        <SkeletonHeroSection />
-        <MyReadingCardSection />
-        <TodaysRecommendationSection />
+      <div className="page-container home-page">
+        <TopBar onSearchClick={handleSearchClick} onProfileClick={handleProfileClick} />
+        <div className="header-margin" />
+        <div className="home-main">
+          <SkeletonHeroSection />
+          <MyReadingCardSection />
+          <TodaysRecommendationSection />
+        </div>
         <div className='main-page-margin' />
       </div>
     );
   }
 
-  const heroBackgroundImageSrc = bookImageUrl || sampleBookBackground;
-  const heroBookSampleImageSrc = bookImageUrl || sampleBook;
-  const hasValidProfileImage = userData.image &&
-    userData.image.trim() !== '' &&
-    userData.image !== 'https://example.com/image.jpg';
-
-  const handleHeroBackgroundError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    if (!heroBackgroundErrorRef.current && e.currentTarget.src !== sampleBookBackground) {
-      heroBackgroundErrorRef.current = true;
-      e.currentTarget.src = sampleBookBackground;
-    }
-  };
-
-  const handleHeroBookSampleError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    if (!heroBookSampleErrorRef.current && e.currentTarget.src !== sampleBook) {
-      heroBookSampleErrorRef.current = true;
-      e.currentTarget.src = sampleBook;
-    }
-  };
-
-  const handleProfileImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    if (!profileImageErrorRef.current) {
-      profileImageErrorRef.current = true;
-      e.currentTarget.style.display = 'none';
-      const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
-      if (placeholder && placeholder.classList.contains('profile-placeholder')) {
-        placeholder.style.display = 'block';
-      }
-    }
-  };
-
   return (
-    <div className="page-container">
-      <div className="library-hero-section">
-        <img
-          src={heroBackgroundImageSrc}
-          className="hero-background"
-          alt="Hero background"
-          onError={handleHeroBackgroundError}
-        />
-        <header className="hero-header">
-          <button 
-            type="button" 
-            className="main-icon" 
-            onClick={() => navigate('/')}
-            aria-label="홈으로 이동"
-          >
-            <img src={unionIcon} alt="홈" />
-          </button>
-          <div className="header-icons">
-            <button
-              type="button"
-              className="search-button"
-              aria-label="검색"
-              onClick={handleSearchClick}
-            >
-              <span className="mgc_search_2_fill"></span>
-            </button>
-            <button
-              type="button"
-              className="notification-button"
-              aria-label="알림"
-            >
-              <span className="mgc_notification_fill"></span>
-            </button>
-            <button
-              type="button"
-              className="my-page-button"
-              aria-label="프로필 보기"
-              onClick={handleProfileClick}
-            >
-              {profileImage ? (
-                <img src={profileImage} alt="프로필" className="profile-image" />
-              ) : (
-                <img src={profileIcon} alt="프로필" />
-              )}
-            </button>
-          </div>
-        </header>
-
-        <div className="hero-content">
-          <div className="hero-profile-row">
-            <button
-              className="profile-circle"
-              onClick={handleProfileClick}
-              aria-label="프로필 보기"
-            >
-              {hasValidProfileImage ? (
-                <>
-                  <img 
-                    src={userData.image} 
-                    className="profile-image" 
-                    alt="프로필 이미지"
-                    onError={handleProfileImageError}
-                  />
-                  <div
-                    className="profile-placeholder"
-                    style={{ backgroundImage: `url(${sampleUser})`, display: 'none' }}
-                  />
-                </>
-              ) : (
-                <div
-                  className="profile-placeholder"
-                  style={{ backgroundImage: `url(${sampleUser})` }}
-                />
-              )}
-            </button>
-            <div className="welcome-text">
-              <h2>반가워요, {userData.nickname}님!</h2>
+    <div className="page-container home-page">
+      <TopBar onSearchClick={handleSearchClick} onProfileClick={handleProfileClick} />
+      <div className="home-main">
+        <div className="library-hero-section">
+          <div className="library-hero-stack">
+            <div className="library-hero-card">
+            <img
+              className="library-hero-card-blur"
+              src={heroBlurSrc}
+              alt=""
+              onError={handleHeroBlurError}
+            />
+            <div className="library-hero-card-dim" aria-hidden />
+            <img
+              className="library-hero-card-cover"
+              src={heroCoverSrc}
+              alt=""
+              onError={handleHeroCoverError}
+            />
+            <div className="library-hero-card-text">
+              <div className="library-hero-card-text-top">
+                <div className="library-hero-name-row">
+                  <span className="library-hero-nickname-pill">{userData.nickname}</span>
+                  <span className="library-hero-nim">님</span>
+                </div>
+                <p className="library-hero-title">
+                  {featured?.title ?? '최근에 읽은 책이 없어요'}
+                </p>
+                {featured ? (
+                  <p className="library-hero-reading-line">을 읽고 계시네요!</p>
+                ) : (
+                  <p className="library-hero-reading-line library-hero-reading-line--muted">
+                    책을 검색해 독서를 시작해보세요
+                  </p>
+                )}
+              </div>
+              <button
+                type="button"
+                className="library-hero-cta"
+                onClick={handleContinueReading}
+              >
+                <span>이어서 읽으러 가기</span>
+                <span className="library-hero-cta-chevron" aria-hidden />
+              </button>
             </div>
           </div>
-          <img
-            src={heroBookSampleImageSrc}
-            className="hero-book-sample"
-            alt="Hero book sample"
-            onError={handleHeroBookSampleError}
-          />
+
+          <div className="library-hero-thumbs" role="group" aria-label="최근 읽은 책">
+            {Array.from({ length: RECENT_BOOK_SLOTS }, (_, i) => {
+              const book = recentBooks[i];
+              const isActive = i === selectedRecentIndex;
+              return (
+                <button
+                  key={book?.memberBookId ?? `slot-${i}`}
+                  type="button"
+                  className={`library-hero-thumb${isActive ? ' library-hero-thumb--active' : ''}${!book ? ' library-hero-thumb--empty' : ''}`}
+                  disabled={!book}
+                  aria-pressed={book ? isActive : undefined}
+                  aria-label={book ? `${book.title} 선택` : '빈 슬롯'}
+                  onClick={() => book && setSelectedRecentIndex(i)}
+                >
+                  {book ? (
+                    <img
+                      src={book.imageUrl}
+                      alt=""
+                      onError={handleThumbError}
+                    />
+                  ) : null}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      <MyReadingCardSection />
-      <TodaysRecommendationSection />
+        <MyReadingCardSection />
+        <TodaysRecommendationSection />
+      </div>
 
       <div className='main-page-margin'>
       </div>
