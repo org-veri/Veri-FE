@@ -1,6 +1,3 @@
-// src/mocks/data.ts
-// 중앙 집중식 목업 데이터와 헬퍼들
-
 export interface MockApiResponse<T> {
   isSuccess: boolean;
   code: string;

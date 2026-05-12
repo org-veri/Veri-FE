@@ -22,7 +22,7 @@ export interface Post {
   content: string;
   thumbnail: string | null;
   author: AuthorInfo;
-  book?: BookInfo; // 선택적 속성으로 변경
+  book?: BookInfo;
   likeCount: number;
   commentCount: number;
   createdAt: string;
@@ -75,7 +75,6 @@ export interface MyPostsResponse {
   count: number;
 }
 
-// 카드 관련 타입들
 export interface CardMember {
   id: number;
   nickname: string;
@@ -130,7 +129,6 @@ export interface GetCardsQueryParams {
   sort?: 'newest' | 'oldest' | 'popular';
 }
 
-// 게시글 작성 요청 타입
 export interface CreatePostRequest {
   title: string;
   content: string;
@@ -202,13 +200,6 @@ const makeApiRequest = async <T>(
   return response.json();
 };
 
-/**
- * 전체 게시글 목록 조회
- * 모든 사용자의 게시글 목록을 페이지네이션과 정렬 기준으로 조회합니다.
- * 
- * @param params - 쿼리 파라미터 (page, size, sort)
- * @returns 게시글 목록과 페이지네이션 정보
- */
 export const getPostFeed = async (
   params: GetPostFeedQueryParams = {}
 ): Promise<GetPostFeedResponse> => {
@@ -220,13 +211,6 @@ export const getPostFeed = async (
   return makeApiRequest<GetPostFeedResponse>(url.pathname + url.search);
 };
 
-/**
- * 전체 카드 목록 조회
- * 모든 사용자의 공개된 카드 목록을 페이지네이션과 정렬 기준으로 조회합니다.
- * 
- * @param params - 쿼리 파라미터 (page, size, sort)
- * @returns 카드 목록과 페이지네이션 정보
- */
 export const getCards = async (
   params: GetCardsQueryParams = {}
 ): Promise<GetCardsResponse> => {
@@ -238,36 +222,16 @@ export const getCards = async (
   return makeApiRequest<GetCardsResponse>(url.pathname + url.search);
 };
 
-/**
- * 게시글 상세 조회
- * 게시글 ID로 게시글의 상세 정보를 조회합니다.
- * 
- * @param postId - 조회할 게시글 ID
- * @returns 게시글 상세 정보
- */
 export const getPostDetail = async (
   postId: number
 ): Promise<GetPostDetailResponse> => {
   return makeApiRequest<GetPostDetailResponse>(`/api/v1/posts/${postId}`);
 };
 
-/**
- * 내 게시글 목록 조회
- * 로그인한 사용자의 게시글 목록을 조회합니다.
- * 
- * @returns 내 게시글 목록과 개수
- */
 export const getMyPosts = async (): Promise<GetMyPostsResponse> => {
   return makeApiRequest<GetMyPostsResponse>('/api/v1/posts/my');
 };
 
-/**
- * 새 게시글 작성
- * 새로운 게시글을 작성합니다.
- * 
- * @param postData - 게시글 작성 데이터 (title, content, images, bookId)
- * @returns 생성된 게시글 ID
- */
 export const createPost = async (
   postData: CreatePostRequest
 ): Promise<CreatePostResponse> => {
@@ -277,14 +241,6 @@ export const createPost = async (
   });
 };
 
-/**
- * 게시글 수정
- * 게시글을 수정합니다.
- * 
- * @param postId - 수정할 게시글 ID
- * @param postData - 게시글 수정 데이터 (title, content, images)
- * @returns 수정 결과
- */
 export interface UpdatePostRequest {
   title: string;
   content: string;
@@ -303,13 +259,6 @@ export const updatePost = async (
   });
 };
 
-/**
- * 게시글 삭제
- * 게시글을 삭제합니다.
- * 
- * @param postId - 삭제할 게시글 ID
- * @returns 삭제 결과
- */
 export const deletePost = async (
   postId: number
 ): Promise<DeletePostResponse> => {
@@ -318,13 +267,6 @@ export const deletePost = async (
   });
 };
 
-/**
- * 게시글 좋아요
- * 게시글에 좋아요를 추가합니다.
- * 
- * @param postId - 좋아요를 추가할 게시글 ID
- * @returns 좋아요 수와 좋아요 상태
- */
 export const likePost = async (
   postId: number
 ): Promise<LikePostResponse> => {
@@ -333,13 +275,6 @@ export const likePost = async (
   });
 };
 
-/**
- * 게시글 좋아요 취소
- * 게시글의 좋아요를 취소합니다.
- * 
- * @param postId - 좋아요를 취소할 게시글 ID
- * @returns 좋아요 수와 좋아요 상태
- */
 export const unlikePost = async (
   postId: number
 ): Promise<LikePostResponse> => {
@@ -348,13 +283,6 @@ export const unlikePost = async (
   });
 };
 
-/**
- * 게시글 공개
- * 게시글을 공개합니다.
- * 
- * @param postId - 공개할 게시글 ID
- * @returns 공개 결과
- */
 export const publishPost = async (
   postId: number
 ): Promise<PublishPostResponse> => {
@@ -363,13 +291,6 @@ export const publishPost = async (
   });
 };
 
-/**
- * 게시글 비공개
- * 게시글을 비공개합니다.
- * 
- * @param postId - 비공개할 게시글 ID
- * @returns 비공개 결과
- */
 export const unpublishPost = async (
   postId: number
 ): Promise<UnpublishPostResponse> => {

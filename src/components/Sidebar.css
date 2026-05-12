@@ -1,25 +1,5 @@
-/* Sidebar.css */
-/* Mobile: Hide Sidebar */
 .sidebar-container {
     display: none;
-}
-
-/* Desktop: Show Sidebar */
-@media screen and (min-width: 768px) {
-    .sidebar-container {
-        display: flex;
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 250px;
-        height: 100vh;
-        background-color: #fff;
-        border-right: 1px solid var(--border-color, #eee);
-        flex-direction: column;
-        padding: 20px;
-        box-sizing: border-box;
-        z-index: 1000;
-    }
 }
 
 .sidebar-header {
@@ -81,11 +61,9 @@
     border-top: 1px solid #eee;
 }
 
-/* Make Card Button Special Style */
 .sidebar-item.sidebar-make-card-btn {
     background: linear-gradient(163deg, #0CE189 11.43%, #0EB36F 95.34%);
     margin-bottom: 10px;
-    /* Separate a bit */
 }
 
 .sidebar-item.sidebar-make-card-btn .sidebar-text {

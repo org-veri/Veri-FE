@@ -12,7 +12,6 @@ import type { BookItem } from '../../api/bookSearchApi';
 import BookIcon from '../../assets/icons/book.svg';
 import BookActiveIcon from '../../assets/icons/book_active.svg';
 
-// 선택된 책 정보 타입 (memberBookId 포함)
 interface SelectedBookInfo extends BookItem {
     bookId?: number;
     memberBookId?: number;

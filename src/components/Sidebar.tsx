@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Sidebar.css';
 
-// Import icons
 import LibraryActiveIcon from '../assets/icons/NavBar/Active/library.svg';
 import LibraryDeactiveIcon from '../assets/icons/NavBar/Deactive/library.svg';
 import ReadingCardActiveIcon from '../assets/icons/NavBar/Active/reading_card.svg';

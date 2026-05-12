@@ -1,5 +1,3 @@
-/* src/components/HomePage/MyReadingCard.css */
-
 .sectionHeader {
     display: flex;
     justify-content: space-between;
@@ -100,7 +98,6 @@
     font-weight: normal;
 }
 
-/* 로딩, 에러, 데이터 없음 메시지 */
 .loadingMessage,
 .errorMessage,
 .noCardsMessage {

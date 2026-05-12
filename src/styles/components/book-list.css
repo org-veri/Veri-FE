@@ -1,5 +1,3 @@
-/* 책 목록 관련 스타일 */
-
 .book-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));

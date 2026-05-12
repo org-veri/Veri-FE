@@ -1,13 +1,9 @@
-// src/App.tsx
-
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import TabBar from './components/TabBar';
-import Sidebar from './components/Sidebar';
 import FloatingCameraButton from './components/FloatingCameraButton';
 import './App.css';
 
-// Import page components
 import HomePage from './pages/mainPage/Home';
 import ReadingCardPage from './pages/mainPage/ReadingCardPage';
 import CommunityPage from './pages/mainPage/CommunityPage';
@@ -36,7 +32,6 @@ import WritePostPage from './pages/WritePostPage/WritePostPage';
 import PostBookSearchPage from './pages/WritePostPage/PostBookSearchPage';
 import CommunityMoreReadingCardPage from './pages/CommunityMoreReadingCardPage';
 
-// 인증 상태를 확인하는 헬퍼 함수 (로직은 그대로 유지)
 const isAuthenticated = () => {
   const token = localStorage.getItem('accessToken');
   return !!token;
@@ -76,14 +71,8 @@ function App() {
   ].includes(location.pathname);
 
 
-  const showSidebar = ![
-    '/login',
-    '/oauth/callback/kakao'
-  ].includes(location.pathname);
-
   return (
-    <div className={`App ${showSidebar ? 'has-sidebar' : ''}`}>
-      {showSidebar && <Sidebar />}
+    <div className="App">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<HomePage />} />
@@ -112,7 +101,6 @@ function App() {
         <Route path="/write-post" element={<WritePostPage />} />
         <Route path="/post-book-search" element={<PostBookSearchPage />} />
         <Route path="/community/reading-cards" element={<CommunityMoreReadingCardPage />} />
-        {/* 404 페이지 */}
         <Route path="*" element={<div style={{ padding: '20px', textAlign: 'center' }}><h2>404 - Page Not Found</h2></div>} />
       </Routes>
       {showTabBar && <TabBar />}

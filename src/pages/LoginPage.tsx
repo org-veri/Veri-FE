@@ -64,8 +64,8 @@ const LoginPage: React.FC = () => {
     <div className="page-container">
       <div className="login-content-wrapper">
         <div className="login-logo-container">
-          <p className="login-tagline">나만의 문장을 수확하다,</p>
           <img src={veriLogo} alt="VERi Logo" className="login-logo" />
+          <p className="login-tagline">나만의 문장을 수확하다,</p>
         </div>
         <div 
           className="login-buttons-container"
@@ -76,11 +76,6 @@ const LoginPage: React.FC = () => {
             <img src={kakaoIcon} alt="kakao-logo" className="kakao-social-icon" />
             <span className="kakao-social-text">카카오 로그인</span>
           </button>
-
-          {/* <button className="social-login-button naver" onClick={handleNaverLogin}>
-            <img src={naverIcon} alt="naver-logo" className="naver-social-icon" />
-            <span className="naver-social-text">네이버 로그인</span>
-          </button> */}
         </div>
       </div>
     </div>

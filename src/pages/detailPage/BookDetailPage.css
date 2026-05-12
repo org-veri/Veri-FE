@@ -1,6 +1,3 @@
-/* src/pages/detailPage/BookDetailPage.css */
-/* 공통 스타일은 src/styles/components/book-detail.css에서 import됨 */
-
 .back-icon {
     width: 18px;
     height: 18px;
@@ -14,18 +11,15 @@
     display: flex;
 }
 
-/* 밍큐트 아이콘 스타일링 */
 .white-header-left-arrow .mgc_left_fill {
     font-size: 30px;
     color: #fff !important;
 }
 
-/* 더 구체적인 선택자로 색상 강제 적용 */
 .white-header-left-arrow .mgc_left_fill::before {
     color: #fff !important;
 }
 
-/* BookDetailPage 전용: 흰색 텍스트 */
 .book-detail-title {
     color: var(--white, #FFF);
 }
@@ -74,17 +68,13 @@
 }
 
 .star-rating-full-page {
-    /* MyBookshelfPage에서 임포트한 컴포넌트의 스타일 */
     margin-right: 10px;
-    /* 별점과 수정 아이콘 사이 간격 */
     display: flex;
-    /* 별 아이콘들을 가로로 나열 */
     align-items: center;
 }
 
 .star-rating-full-page .star {
     font-size: 20px;
-    /* 상세 페이지에서는 별을 더 크게 */
     margin-right: 2px;
     height: 20px;
     width: 20px;
@@ -137,7 +127,6 @@
     line-height: normal;
     color: #333;
     margin: 0;
-    /* 기본 마진 제거 */
 }
 
 .my-reading-card-section .see-all-button {
@@ -168,18 +157,14 @@
 .my-reading-card-section .card-list {
     display: flex;
     overflow-x: auto;
-    /* 가로 스크롤 */
     -webkit-overflow-scrolling: touch;
-    /* iOS 부드러운 스크롤 */
     gap: 10px;
-    /* 카드 사이 간격 */
     padding-bottom: 10px;
-    /* 스크롤바를 위한 하단 여백 */
     padding-right: 10px;
-    /* 오른쪽 끝 여백 */
+    scrollbar-width: thin;
+    scrollbar-color: #ffffff #f1f1f1;
 }
 
-/* 스크롤바 스타일링 (Chrome, Edge, Safari) */
 .my-reading-card-section .card-list::-webkit-scrollbar {
     height: 8px;
 }
@@ -198,19 +183,10 @@
     background: #999;
 }
 
-/* Firefox 스크롤바 스타일링 */
-.my-reading-card-section .card-list {
-    scrollbar-width: thin;
-    scrollbar-color: #ffffff #f1f1f1;
-}
-
 .my-reading-card-section .card-item-container {
     flex-shrink: 0;
-    /* 카드가 줄어들지 않고 고정 너비 유지 */
     width: 130px;
-    /* 카드 이미지 너비 */
     height: 130px;
-    /* 카드 이미지 높이 */
     border-radius: 8px;
     overflow: hidden;
     background-color: #f0f0f0;
@@ -224,10 +200,9 @@
     display: block;
 }
 
-/* 독서 기록 공개/비공개 토글 버튼 */
 .book-visibility-toggle {
     position: absolute;
-    top: 92px; /* 헤더 높이(80px) + 여백(12px) */
+    top: 92px;
     left: 12px;
     display: flex;
     align-items: center;

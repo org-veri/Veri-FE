@@ -1,4 +1,3 @@
-// src/components/CommunityPostDetailPage/CommentItem.tsx
 import type { Comment } from '../../api/communityApi';
 import './CommentItem.css';
 

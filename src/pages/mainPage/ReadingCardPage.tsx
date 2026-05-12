@@ -7,7 +7,6 @@ import { getMyCards, getCardDetailById, type MyCardItem, type GetMyCardsQueryPar
 import TopBar from '../../components/TopBar';
 import { SkeletonList, SkeletonReadingCard, SkeletonReadingCardGrid } from '../../components/SkeletonUI';
 
-// 독서 카드 아이템 타입 정의
 export interface ReadingCardItemType {
     id: string;
     title: string | undefined;

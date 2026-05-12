@@ -1,8 +1,6 @@
-// src/components/TabBar.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-// SVG 아이콘들을 import합니다.
 import LibraryActiveIcon from '../assets/icons/NavBar/Active/library.svg';
 import LibraryDeactiveIcon from '../assets/icons/NavBar/Deactive/library.svg';
 import ReadingCardActiveIcon from '../assets/icons/NavBar/Active/reading_card.svg';
@@ -35,14 +33,6 @@ const CommunityIcon = ({ active }: { active: boolean }) => (
         className="tab-item-icon"
     />
 );
-
-// const MyPageIcon = ({ active }: { active: boolean }) => (
-//     <img 
-//         src={active ? MyPageActiveIcon : MyPageDeactiveIcon} 
-//         alt="마이페이지" 
-//         className="tab-item-icon"
-//     />
-// );
 
 const HomeIcon = ({ active }: { active: boolean }) => (
     <img 

@@ -1,5 +1,3 @@
-// src/components/BottomEditModal.tsx
-
 import React, { useState } from 'react';
 import './BottomEditModal.css';
 import { updateBookStatus } from '../api/bookApi';
@@ -18,7 +16,6 @@ interface BottomEditModalProps {
   bookAuthor: string;
 }
 
-// StarRatingInput 컴포넌트
 interface StarRatingInputProps {
   initialRating: number;
   onRatingChange: (rating: number) => void;

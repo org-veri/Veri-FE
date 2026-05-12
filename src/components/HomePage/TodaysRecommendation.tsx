@@ -1,4 +1,3 @@
-// src/pages/LibraryPage/TodaysRecommendation.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -53,7 +52,6 @@ const SingleRecommendedBookItem: React.FC<RecommendedBookType> = ({ title, image
   );
 };
 
-// '오늘의 추천' 섹션 전체를 담당하는 컴포넌트
 const TodaysRecommendationSection: React.FC = () => {
   const [recommendedBooks, setRecommendedBooks] = useState<RecommendedBookType[]>([]);
   const [isLoading, setIsLoading] = useState(true);

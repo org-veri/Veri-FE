@@ -23,13 +23,6 @@ export type ApiResponse<T> = {
     result?: T;
 }
 
-/**
- * 책을 검색하는 API 호출 함수
- * @param query 검색어 (책 제목, 저자, ISBN 등)
- * @param page 검색할 페이지 번호 (Default: 1)
- * @param size 페이지 당 아이템 수 (Default: 10)
- * @returns 검색 결과 책 목록과 페이징 정보 또는 오류 메시지
- */
 export const searchBooks = async (query: string, page: number = 1, size: number = 10): Promise<ApiResponse<BookSearchResponseResult>> => {
     try {
         const accessToken = getAccessToken();
