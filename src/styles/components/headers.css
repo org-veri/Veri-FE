@@ -68,8 +68,8 @@
 }
 
 .header-right-wrapper {
+  width: 30px;
   position: relative;
-  width: 40px;
 }
 
 .header-dropdown-menu {

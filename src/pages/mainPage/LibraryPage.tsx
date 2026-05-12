@@ -72,10 +72,10 @@ function LibraryPage() {
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'rating'>('newest');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedReadingStatuses, setSelectedReadingStatuses] = useState<string[]>([]);
+  const [selectedReadingStatus, setSelectedReadingStatus] = useState<string | null>(null);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
-  const statusButtonRef = useRef<HTMLButtonElement>(null);
+  const statusButtonRef = useRef<HTMLSpanElement>(null);
   const sortButtonRef = useRef<HTMLSpanElement>(null);
 
   // fetchBooks 함수를 useCallback으로 감싸고, sortOrder가 변경될 때마다 재생성되도록 합니다.
@@ -93,7 +93,7 @@ function LibraryPage() {
 
       if (response.isSuccess) {
         setBooks(response.result.memberBooks);
-        applyFilters(response.result.memberBooks, searchQuery, selectedReadingStatuses);
+        applyFilters(response.result.memberBooks, searchQuery, selectedReadingStatus);
       } else {
         setError(response.message || "책 목록을 가져오는데 실패했습니다.");
       }
@@ -102,10 +102,10 @@ function LibraryPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [sortOrder, searchQuery, selectedReadingStatuses]);
+  }, [sortOrder, searchQuery, selectedReadingStatus]);
 
   // 필터링 함수 통합
-  const applyFilters = useCallback((bookList: Book[], query: string, statusFilters: string[]) => {
+  const applyFilters = useCallback((bookList: Book[], query: string, statusFilter: string | null) => {
     let filtered = bookList;
 
     // 텍스트 검색 필터
@@ -116,12 +116,9 @@ function LibraryPage() {
       );
     }
 
-    // 독서 상태 필터 - 선택된 상태들만 표시
-    if (statusFilters.length > 0) {
-      filtered = filtered.filter(book => {
-        // Book 타입의 status 속성 사용 (NOT_START, READING, DONE)
-        return statusFilters.includes(book.status);
-      });
+    // 독서 상태 필터 - 선택 시에만 적용 (독서중/독서완료 중 하나)
+    if (statusFilter != null) {
+      filtered = filtered.filter(book => book.status === statusFilter);
     }
 
     // 정렬 적용 (클라이언트 사이드)
@@ -149,21 +146,21 @@ function LibraryPage() {
   // 검색 필터링 함수
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
-    applyFilters(books, query, selectedReadingStatuses);
-  }, [books, selectedReadingStatuses, applyFilters]);
+    applyFilters(books, query, selectedReadingStatus);
+  }, [books, selectedReadingStatus, applyFilters]);
 
   // 독서 상태 필터 변경
-  const handleReadingStatusChange = useCallback((statuses: string[]) => {
-    setSelectedReadingStatuses(statuses);
-    applyFilters(books, searchQuery, statuses);
+  const handleReadingStatusChange = useCallback((status: string | null) => {
+    setSelectedReadingStatus(status);
+    applyFilters(books, searchQuery, status);
   }, [books, searchQuery, applyFilters]);
 
   // sortOrder 변경 시 필터 재적용
   useEffect(() => {
     if (books.length > 0) {
-      applyFilters(books, searchQuery, selectedReadingStatuses);
+      applyFilters(books, searchQuery, selectedReadingStatus);
     }
-  }, [sortOrder, books, searchQuery, selectedReadingStatuses, applyFilters]);
+  }, [sortOrder, books, searchQuery, selectedReadingStatus, applyFilters]);
 
   useEffect(() => {
     fetchBooks();
@@ -180,6 +177,10 @@ function LibraryPage() {
       case 'rating': return '별점순';
       default: return '최신순';
     }
+  };
+
+  const getReadingStatusLabel = (status: string) => {
+    return status === 'READING' ? '독서중' : '독서완료';
   };
 
   const handleCreateBookClick = useCallback(() => {
@@ -206,88 +207,88 @@ function LibraryPage() {
 
       <div className="header-margin"></div>
 
-      {/* 책장 제목과 책 수 */}
-      <div className="library-title-section">
-        <h2 className="library-title">나의책장 <span className="book-count">{filteredBooks.length}</span></h2>
-        <div className="view-toggle-buttons">
-          <button
-            className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-            onClick={() => handleViewModeToggle('list')}
-            aria-label="리스트 보기"
-          >
-            <span className="mgc_rows_3_fill"></span>
-          </button>
-          <button
-            className={`view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
-            onClick={() => handleViewModeToggle('grid')}
-            aria-label="그리드 보기"
-          >
-            <span className="mgc_layout_grid_fill"></span>
-          </button>
-        </div>
-      </div>
-
-      {/* 필터와 검색 섹션 */}
-      <div className="filter-search-section">
-        <div className="left-filters">
-          <div className="reading-status-filters">
-            <span
-              ref={statusButtonRef}
-              className={`sort-button ${selectedReadingStatuses.length > 0 ? 'active' : ''}`}
-              onClick={() => setIsStatusModalOpen(!isStatusModalOpen)}
+      <div className="library-content-wrapper">
+        <div className="library-title-section">
+          <h2 className="library-title">나의책장 <span className="book-count">{filteredBooks.length}</span></h2>
+          <div className="view-toggle-buttons">
+            <button
+              className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={() => handleViewModeToggle('list')}
+              aria-label="리스트 보기"
             >
-              <div className="mgc_filter_fill"></div>
-              독서상태
-            </span>
-          </div>
-          <div className="sort-options">
-            <span
-              ref={sortButtonRef}
-              className="sort-button"
-              onClick={() => setIsSortModalOpen(!isSortModalOpen)}
+              <span className="mgc_rows_3_fill"></span>
+            </button>
+            <button
+              className={`view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => handleViewModeToggle('grid')}
+              aria-label="그리드 보기"
             >
-              <div className="mgc_filter_2_fill"></div>
-              {getSortDisplayText(sortOrder)}
-            </span>
+              <span className="mgc_layout_grid_fill"></span>
+            </button>
           </div>
         </div>
-        <div className="search-input-container">
-          <input
-            type="text"
-            placeholder="텍스트를 입력하세요"
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="book-search-input"
-          />
-          <span className="mgc_search_2_fill"></span>
-        </div>
-      </div>
 
-      {isLoading ? (
-        <div className="books-container list-view">
-          <SkeletonList count={5}>
-            <SkeletonCard />
-          </SkeletonList>
+        <div className="filter-search-section">
+          <div className="left-filters">
+            <div className="reading-status-filters">
+              <span
+                ref={statusButtonRef}
+                className={`list-sort-button ${selectedReadingStatus != null ? 'active' : ''}`}
+                onClick={() => setIsStatusModalOpen(!isStatusModalOpen)}
+              >
+                <div className="mgc_filter_fill"></div>
+                {selectedReadingStatus != null && getReadingStatusLabel(selectedReadingStatus)}
+              </span>
+            </div>
+            <div className="sort-options">
+              <span
+                ref={sortButtonRef}
+                className="list-sort-button"
+                onClick={() => setIsSortModalOpen(!isSortModalOpen)}
+              >
+                <div className="mgc_filter_2_fill"></div>
+                {getSortDisplayText(sortOrder)}
+              </span>
+            </div>
+          </div>
+          <div className="search-input-container">
+            <input
+              type="text"
+              placeholder="텍스트를 입력하세요"
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              className="book-search-input"
+            />
+            <span className="mgc_search_2_fill"></span>
+          </div>
         </div>
-      ) : filteredBooks.length === 0 && !error ? (
-        <div className="no-books-message">
-          {searchQuery ? (
-            <p>검색 결과가 없습니다.</p>
-          ) : selectedReadingStatuses.length > 0 ? (
-            <p>선택한 독서상태의 책이 없습니다.</p>
-          ) : (
-            <p>등록된 책이 없습니다. 새로운 책을 등록해보세요!</p>
-          )}
-        </div>
-      ) : (
-        <div className={`books-container ${viewMode === 'grid' ? 'grid-view' : 'list-view'}`}>
-          {viewMode === 'list' ? (
-            <BookshelfList books={filteredBooks} />
-          ) : (
-            <LibraryPageGrid books={filteredBooks} />
-          )}
-        </div>
-      )}
+
+        {isLoading ? (
+          <div className="books-container list-view">
+            <SkeletonList count={5}>
+              <SkeletonCard />
+            </SkeletonList>
+          </div>
+        ) : filteredBooks.length === 0 && !error ? (
+          <div className="no-books-message">
+            {searchQuery ? (
+              <p>검색 결과가 없습니다.</p>
+            ) : selectedReadingStatus != null ? (
+              <p>선택한 독서상태의 책이 없습니다.</p>
+            ) : (
+              <p>등록된 책이 없습니다. 새로운 책을 등록해보세요!</p>
+            )}
+          </div>
+        ) : (
+          <div className={`books-container ${viewMode === 'grid' ? 'grid-view' : 'list-view'}`}>
+            {viewMode === 'list' ? (
+              <BookshelfList books={filteredBooks} />
+            ) : (
+              <LibraryPageGrid books={filteredBooks} />
+            )}
+          </div>
+        )}
+      </div>
 
       <div className='main-page-margin'>
       </div>
@@ -301,7 +302,7 @@ function LibraryPage() {
       <ReadingStatusModal
         isOpen={isStatusModalOpen}
         onClose={() => setIsStatusModalOpen(false)}
-        selectedStatuses={selectedReadingStatuses}
+        selectedStatus={selectedReadingStatus}
         onStatusChange={handleReadingStatusChange}
         buttonRef={statusButtonRef}
       />

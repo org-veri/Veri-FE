@@ -112,7 +112,7 @@
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    min-height: 42px; /* 빈 상태에서도 공간 유지 */
+    min-height: 42px;
 }
 
 .category-tabs::-webkit-scrollbar {

@@ -120,7 +120,6 @@ function CommunityMoreReadingCardPage() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.';
       setError(errorMessage);
-      console.error('독서카드 로드 실패:', err);
     } finally {
       setIsLoading(false);
       setLoadingMore(false);
@@ -160,7 +159,6 @@ function CommunityMoreReadingCardPage() {
   };
 
   const handleCardClick = (cardId: number) => {
-    // 독서카드 상세 페이지로 이동 (실제 구현 시 해당 페이지로 연결)
     navigate(`/reading-card-detail/${cardId}`);
   };
 

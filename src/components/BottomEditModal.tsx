@@ -8,6 +8,7 @@ import Toast from './Toast';
 interface BottomEditModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSaveSuccess?: () => void;
   memberBookId: number;
   defaultScore: number;
   defaultStartedAt: string | null;
@@ -31,7 +32,7 @@ const StarRatingInput: React.FC<StarRatingInputProps> = ({ initialRating, onRati
   };
 
   return (
-    <div className="star-rating-input">
+    <div className="bem-star-input">
       {[...Array(5)].map((_, index) => {
         index += 1; // 별점은 1부터 시작
         const isFilled = index <= (hoverRating || currentRating);
@@ -39,7 +40,7 @@ const StarRatingInput: React.FC<StarRatingInputProps> = ({ initialRating, onRati
           <button
             type="button"
             key={index}
-            className={`star-button ${isFilled ? "on" : "off"}`} // 클래스명 일관성 유지
+            className={`bem-star-btn ${isFilled ? "on" : "off"}`}
             onClick={() => handleClick(index)}
             onMouseEnter={() => setHoverRating(index)}
             onMouseLeave={() => setHoverRating(0)}
@@ -47,7 +48,7 @@ const StarRatingInput: React.FC<StarRatingInputProps> = ({ initialRating, onRati
             <img
               src={isFilled ? starFillIcon : starLineIcon}
               alt={isFilled ? "채워진 별" : "빈 별"}
-              className="star-icon"
+              className="bem-star-icon"
             />
           </button>
         );
@@ -59,6 +60,7 @@ const StarRatingInput: React.FC<StarRatingInputProps> = ({ initialRating, onRati
 const BottomEditModal: React.FC<BottomEditModalProps> = ({
   isOpen,
   onClose,
+  onSaveSuccess,
   memberBookId,
   defaultScore,
   defaultStartedAt,
@@ -74,9 +76,7 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'warning' | 'error'>('warning');
 
-  // 날짜 유효성 검사 함수
   const validateDates = (start: string | null, end: string | null) => {
-    // 둘 중 하나라도 null이면 유효성 검사 통과
     if (!start || !end) return true;
     
     const startDateStr = start.split('T')[0];
@@ -87,21 +87,17 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
     const startDate = new Date(startDateStr);
     const endDate = new Date(endDateStr);
     const today = new Date();
-    
-    // 모든 날짜의 시간을 00:00:00으로 설정하여 날짜만 비교
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
-    
-    // 종료일이 현재 날짜보다 미래인지 검사
+
     if (endDate > today) {
       setToastMessage('종료일은 현재 날짜보다 과거이거나 오늘이어야 합니다.');
       setToastType('warning');
       setShowToast(true);
       return false;
     }
-    
-    // 종료일이 시작일보다 빠른지 검사
+
     if (endDate < startDate) {
       setToastMessage('종료일은 시작일보다 늦어야 합니다.');
       setToastType('warning');
@@ -116,8 +112,6 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
     const value = e.target.value;
     const newStartDate = value ? new Date(value).toISOString() : null;
     setStartedAt(newStartDate);
-    
-    // 시작일 변경 시 종료일과 비교 (둘 다 값이 있을 때만)
     if (newStartDate && endedAt) {
       validateDates(newStartDate, endedAt);
     }
@@ -127,15 +121,12 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
     const value = e.target.value;
     const newEndDate = value ? new Date(value).toISOString() : null;
     setEndedAt(newEndDate);
-    
-    // 종료일 변경 시 시작일과 비교 (둘 다 값이 있을 때만)
     if (startedAt && newEndDate) {
       validateDates(startedAt, newEndDate);
     }
   };
 
   const handleSave = async () => {
-    // 저장 전 최종 날짜 유효성 검사
     if (!validateDates(startedAt, endedAt)) {
       return;
     }
@@ -150,10 +141,9 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
       setToastMessage('책 정보가 성공적으로 수정되었습니다.');
       setToastType('success');
       setShowToast(true);
-      // 수정 완료 시 바로 모달 닫기
+      onSaveSuccess?.();
       onClose();
-    } catch (error) {
-      console.error('저장 중 오류가 발생했습니다:', error);
+    } catch {
       setToastMessage('저장 중 오류가 발생했습니다.');
       setToastType('error');
       setShowToast(true);
@@ -165,14 +155,15 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="bottom-edit-modal-overlay">
-      <div className="bottom-edit-modal">
-        <div className="modal-header">
-          <p className="modal-title">{bookTitle}</p>
-          <p className="modal-author">{bookAuthor}</p>
+    <div className="bem-overlay">
+      <div className="bem-modal">
+        <div className="bem-header">
+          <p className="bem-title">{bookTitle}</p>
+          <p className="bem-author">{bookAuthor}</p>
         </div>
 
-        <div className="star-rating-container">
+        <div className="bem-sections">
+        <div className="bem-star-rating">
           <h3>나의 별점</h3>
           <StarRatingInput
             initialRating={score}
@@ -180,36 +171,37 @@ const BottomEditModal: React.FC<BottomEditModalProps> = ({
           />
         </div>
 
-        <div className="status-inputs-container">
+        <div className="bem-status-inputs">
           <h3>독서 기간</h3>
-          <div className="date-inputs">
-            <div className="start-time">
+          <div className="bem-date-inputs">
+            <div className="bem-start-time">
               <p>시작일</p>
               <input
-                className='date-input'
+                className="bem-date-input"
                 type="date"
                 value={startedAt ? startedAt.split('T')[0] : ''}
                 onChange={handleStartDateChange}
               />
             </div>
-            <div className="end-time">
+            <div className="bem-end-time">
               <p>종료일</p>
               <input
-                className='date-input'
+                className="bem-date-input"
                 type="date"
                 value={endedAt ? endedAt.split('T')[0] : ''}
-                max={new Date().toISOString().split('T')[0]} // 오늘 날짜까지만 선택 가능
+                max={new Date().toISOString().split('T')[0]}
                 onChange={handleEndDateChange}
               />
             </div>
           </div>
         </div>
+        </div>
 
-        <div className="edit-modal-button-container">
-          <button onClick={onClose} className='cancel-button'>
+        <div className="bem-actions">
+          <button onClick={onClose} className="bem-cancel-btn">
             취소
           </button>
-          <button onClick={handleSave} disabled={isSaving} className='complete-button'>
+          <button onClick={handleSave} disabled={isSaving} className="bem-complete-btn">
             {isSaving ? '저장 중...' : '완료'}
           </button>
         </div>

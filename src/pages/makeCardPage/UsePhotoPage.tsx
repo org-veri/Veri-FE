@@ -25,7 +25,6 @@ const UsePhotoPage: React.FC = () => {
         setToast(prev => ({ ...prev, isVisible: false }));
     };
 
-    // OCR 실패로 돌아온 경우 에러 메시지 처리
     useEffect(() => {
         const errorMessage = location.state?.errorMessage as string | undefined;
         const errorType = location.state?.errorType as 'success' | 'error' | 'warning' | 'info' | undefined;
@@ -37,7 +36,6 @@ const UsePhotoPage: React.FC = () => {
     }, [location.state, navigate, image]);
 
     const handleUsePhoto = () => {
-        // OCR 페이지로 이동
         navigate('/text-extraction-loading', {
             state: { image }
         });

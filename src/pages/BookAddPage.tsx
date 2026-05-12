@@ -62,7 +62,6 @@ function BookAddPage() {
                 setSubmitError(response.message || '책 등록에 실패했습니다.');
             }
         } catch (err: any) {
-            console.error('책 등록 중 예상치 못한 오류:', err);
             setSubmitError('책 등록 중 오류가 발생했습니다: ' + (err.message || '알 수 없는 오류'));
         } finally {
             setIsSubmitting(false);

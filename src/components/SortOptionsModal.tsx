@@ -23,7 +23,6 @@ const SortOptionsModal: React.FC<SortOptionsModalProps> = ({
       const buttonRect = buttonRef.current.getBoundingClientRect();
       const modal = modalRef.current;
       
-      // 버튼 바로 아래에 모달 위치 설정
       modal.style.top = `${buttonRect.bottom + 8}px`;
       modal.style.left = `${buttonRect.left}px`;
     }

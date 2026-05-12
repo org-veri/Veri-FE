@@ -10,7 +10,7 @@ let commentCounter = 1000;
 
 export const communityCommentsHandlers = [
   http.post('*/api/v1/comments', async () => {
-    const body = createMockResponse(++commentCounter, 'Mock 댓글 작성 성공');
+    const body = createMockResponse({ commentId: ++commentCounter }, 'Mock 댓글 작성 성공');
     return withDelay(body);
   }),
   http.delete('*/api/v1/comments/:commentId', async () => {
@@ -22,7 +22,7 @@ export const communityCommentsHandlers = [
     return withDelay(body);
   }),
   http.post('*/api/v1/comments/reply', async () => {
-    const body = createMockResponse(++commentCounter, 'Mock 대댓글 작성 성공');
+    const body = createMockResponse({ commentId: ++commentCounter }, 'Mock 대댓글 작성 성공');
     return withDelay(body);
   }),
 ];

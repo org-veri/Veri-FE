@@ -1,4 +1,4 @@
-import { fetchWithAuth } from './cardApi';
+import { fetchWithAuth } from './auth';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
@@ -46,7 +46,7 @@ export interface CheckNicknameExistsResponse {
     isSuccess: boolean;
     code: string;
     message: string;
-    result: boolean;
+    result: { exists: boolean };
 }
 
 export async function getMemberProfile(): Promise<GetMemberProfileResponse> {
@@ -69,13 +69,6 @@ export async function getMemberProfile(): Promise<GetMemberProfileResponse> {
     }
 }
 
-/**
- * 내 정보 수정
- * 로그인한 사용자의 닉네임과 프로필 이미지를 수정합니다. null인 값은 변경하지 않습니다.
- * 
- * @param updateData - 수정할 정보 (nickname, profileImageUrl)
- * @returns 수정된 회원 정보
- */
 export async function updateMemberInfo(
     updateData: UpdateMemberInfoRequest
 ): Promise<GetMemberInfoUpdateResponse> {
@@ -102,13 +95,6 @@ export async function updateMemberInfo(
     }
 }
 
-/**
- * 닉네임 중복 확인
- * 닉네임이 이미 사용 중인지 확인합니다.
- * 
- * @param nickname - 확인할 닉네임
- * @returns 중복 여부 (true: 사용 중, false: 사용 가능)
- */
 export async function checkNicknameExists(
     nickname: string
 ): Promise<CheckNicknameExistsResponse> {

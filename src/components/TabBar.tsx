@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+<<<<<<< HEAD
 
 import LibraryActiveIcon from '../assets/icons/NavBar/Active/library.svg';
 import LibraryDeactiveIcon from '../assets/icons/NavBar/Deactive/library.svg';
@@ -41,21 +42,24 @@ const HomeIcon = ({ active }: { active: boolean }) => (
         className="tab-item-icon"
     />
 );
+=======
+import './TabBar.css';
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 
 interface TabItem {
     id: string;
     name: string;
-    icon: React.ComponentType<{ active: boolean }>;
+    iconClass: string;
     path: string;
     isDummy?: boolean;
 }
 
 const currentTabs: TabItem[] = [
-    { id: 'home', name: '홈', icon: HomeIcon, path: '/' },
-    { id: 'library', name: '책장', icon: LibraryIcon, path: '/library' },
-    { id: 'camera', name: '', icon: () => null, path: '', isDummy: true },
-    { id: 'readingCard', name: '독서카드', icon: ReadingCardIcon, path: '/reading-card' },
-    { id: 'community', name: '커뮤니티', icon: CommunityIcon, path: '/community' },
+    { id: 'home', name: '홈', iconClass: 'mgc_home_4_line', path: '/' },
+    { id: 'library', name: '책장', iconClass: 'mgc_book_3_fill', path: '/library' },
+    { id: 'camera', name: '', iconClass: '', path: '', isDummy: true },
+    { id: 'readingCard', name: '독서카드', iconClass: 'mgc_notebook_2_fill', path: '/reading-card' },
+    { id: 'community', name: '커뮤니티', iconClass: 'mgc_book_5_fill', path: '/community' },
 ];
 
 function TabBar() {
@@ -86,7 +90,6 @@ function TabBar() {
         <div className="tab-bar-container">
             {currentTabs.map((tab) => {
                 const isActive = activeTab === tab.id || location.pathname === tab.path;
-                const IconComponent = tab.icon;
 
                 return (
                     <div
@@ -96,7 +99,7 @@ function TabBar() {
                     >
                         {!tab.isDummy && (
                             <>
-                                <IconComponent active={isActive} />
+                                <span className={`tab-item-icon ${tab.iconClass}`} aria-hidden />
                                 <span className='tab-item-text'>{tab.name}</span>
                             </>
                         )}

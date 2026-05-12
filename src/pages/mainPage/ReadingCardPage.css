@@ -1,54 +1,111 @@
-/* 메인 섹션 */
-.reading-card-hero-section {
-  padding: 0 15px 80px;
+.reading-card-content-wrapper {
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 80px;
 }
 
-/* 헤더 */
-.reading-card-header {
+.reading-card-title-section-wrapper {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.reading-card-title-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background-color: var(--background-white);
-  border-bottom: 1px solid var(--hover-gray);
-  box-shadow: 0 1px 3px var(--shadow-light);
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  margin-bottom: 14px;
+  padding: 0;
 }
 
-.reading-card-header h3 {
+.reading-card-title {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 600;
+  color: var(--text-dark);
   margin: 0;
 }
 
-.reading-card-header .header-right-icons {
-  display: flex;
-  gap: 10px;
+.reading-card-count {
+  font-size: 14px;
+  color: var(--text-light);
+  font-weight: 400;
+  margin-left: 4px;
 }
 
-.reading-card-header .header-right-icons .icon-search,
-.reading-card-header .header-right-icons .icon-more {
+.view-toggle-buttons {
+  display: flex;
+}
+
+.view-toggle-btn {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  font-size: 16px;
+  color: var(--text-light);
+  transition: all 0.2s ease;
 }
 
-/* 뷰 모드 */
-.reading-card-grid-view {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 4px;
+.view-toggle-btn.active {
+  background: none;
+  color: black;
+  border: none;
 }
 
-.reading-card-text-view {
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  width: 100%;
+.view-toggle-btn:hover {
+  background: none;
+  color: black;
+}
+
+.view-toggle-btn.active:hover {
+  color: black;
+}
+
+.view-toggle-btn .mgc_rows_3_fill,
+.view-toggle-btn .mgc_layout_grid_fill {
+  font-size: 18px;
+}
+
+.view-toggle-btn .mgc_rows_3_fill::before,
+.view-toggle-btn .mgc_layout_grid_fill::before {
+  font-size: 18px;
+  color: inherit;
+}
+
+.sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-dark);
+  font-family: Pretendard;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.sort-button:hover {
+  color: var(--primary-color);
+}
+
+.sort-button .mgc_down_fill::before,
+.sort-button .mgc_up_fill::before {
+  font-size: 16px;
+  color: inherit;
 }
 
 .reading-card-search-input-container {
-  margin-top: 20px;
+  margin-top: 16px;
   position: relative;
   display: flex;
   align-items: center;
@@ -59,8 +116,10 @@
   padding: 12px 16px;
   border: none;
   border-radius: 8px;
-  font-size: 16px; /* 모바일 자동 줌인 방지를 위해 16px로 변경 */
-  font-family: Pretendard;
+  display: flex;
+  height: 44px;
+  justify-content: space-between;
+  align-items: center;
   background-color: #F4F5F7;
   color: var(--text-dark);
   box-sizing: border-box;
@@ -92,7 +151,33 @@
   color: #666 !important;
 }
 
-/* 메시지 스타일 */
+.reading-card-grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 4px;
+}
+
+.reading-card-text-view {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.reading-card-page-message {
+  font-size: 14px;
+  font-family: Pretendard;
+}
+
+.reading-card-page-error {
+  color: #dc3545;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .no-cards-message {
   text-align: center;
   color: var(--text-light);
@@ -101,45 +186,6 @@
   margin: 40px 0;
 }
 
-/* 탭 네비게이션 */
-.tab-navigation {
-  display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  border-bottom: 1px solid var(--border-gray);
-}
-
-.tab-button {
-  margin: 0 10px;
-  background: none;
-  border: none;
-  padding: 5px 5px;
-  color: var(--text-light);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 140%;
-  cursor: pointer;
-  position: relative;
-  transition: color 0.2s ease;
-}
-
-.tab-button.active {
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-.tab-button.active::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--secondary-color);
-  border-radius: 1px;
-}
-
-/* 버튼 호버 효과 */
 .create-card-button:hover {
   background-color: var(--hover-dark);
   transform: translateY(-2px);

@@ -40,8 +40,7 @@ function DownloadCardPage() {
                     const blobUrl = URL.createObjectURL(blob);
                     return blobUrl;
                 }
-            } catch (err: any) {
-                console.warn('이미지를 blob으로 변환 실패 (CORS 오류일 수 있음), 원본 URL 사용:', err);
+            } catch {
             }
         }
         return imageUrl;
@@ -87,7 +86,6 @@ function DownloadCardPage() {
                 setError(response.message || "독서 카드 상세 정보를 가져오는데 실패했습니다.");
             }
         } catch (err: any) {
-            console.error('독서 카드 상세 정보를 불러오는 중 오류 발생:', err);
             setError(`독서 카드 상세 정보를 불러오는 데 실패했습니다: ${err.message}`);
         }
     }, []);
@@ -97,7 +95,6 @@ function DownloadCardPage() {
         
         setIsProcessing(true);
         try {
-            // 이미지가 완전히 로드될 때까지 대기
             const imgElement = cardContentRef.current.querySelector('.download-card-main-image') as HTMLImageElement;
             if (imgElement && !imgElement.complete) {
                 await new Promise((resolve, reject) => {
@@ -107,13 +104,11 @@ function DownloadCardPage() {
                 });
             }
 
-            // 카드 미리보기 컨테이너만 캡처 (블러 배경 제외)
             const cardPreviewElement = cardContentRef.current.querySelector('.download-card-preview-container');
             if (!cardPreviewElement) {
                 throw new Error('카드 미리보기 요소를 찾을 수 없습니다.');
             }
 
-            // 블러 배경을 임시로 숨김
             const blurBackground = cardContentRef.current.querySelector('.download-card-blurred-background') as HTMLElement;
             const originalDisplay = blurBackground?.style.display;
             if (blurBackground) {
@@ -131,7 +126,6 @@ function DownloadCardPage() {
                 removeContainer: true,
             });
 
-            // 블러 배경을 다시 표시
             if (blurBackground) {
                 (blurBackground as HTMLElement).style.display = originalDisplay || '';
             }
@@ -147,7 +141,6 @@ function DownloadCardPage() {
             
             alert('독서카드가 다운로드되었습니다!');
         } catch (err: any) {
-            console.error('독서카드 다운로드 실패:', err);
             const errorMessage = err.name === 'SecurityError' || err.message?.includes('CORS')
                 ? '이미지 로드에 문제가 발생했습니다 (CORS 오류일 수 있습니다).'
                 : err.message;
@@ -162,7 +155,6 @@ function DownloadCardPage() {
         
         setIsProcessing(true);
         try {
-            // 이미지가 완전히 로드될 때까지 대기
             const imgElement = cardContentRef.current.querySelector('.download-card-main-image') as HTMLImageElement;
             if (imgElement && !imgElement.complete) {
                 await new Promise((resolve, reject) => {
@@ -172,13 +164,11 @@ function DownloadCardPage() {
                 });
             }
 
-            // 카드 미리보기 컨테이너만 캡처 (블러 배경 제외)
             const cardPreviewElement = cardContentRef.current.querySelector('.download-card-preview-container');
             if (!cardPreviewElement) {
                 throw new Error('카드 미리보기 요소를 찾을 수 없습니다.');
             }
 
-            // 블러 배경을 임시로 숨김
             const blurBackground = cardContentRef.current.querySelector('.download-card-blurred-background') as HTMLElement;
             const originalDisplay = blurBackground?.style.display;
             if (blurBackground) {
@@ -196,14 +186,12 @@ function DownloadCardPage() {
                 removeContainer: true,
             });
 
-            // 블러 배경을 다시 표시
             if (blurBackground) {
                 blurBackground.style.display = originalDisplay || '';
             }
             
             canvas.toBlob(async (blob) => {
                 if (!blob) {
-                    console.error('Blob 생성에 실패했습니다.');
                     alert('독서카드 공유에 실패했습니다.');
                     setIsProcessing(false);
                     return;
@@ -218,9 +206,7 @@ function DownloadCardPage() {
                             text: cardDetail?.content || '나만의 독서카드를 공유해요!',
                             files: [file],
                         });
-                        console.log('독서카드 공유 성공');
                     } catch (error: any) {
-                        console.error('독서카드 공유 실패:', error);
                         if (error.name !== 'AbortError') {
                             alert(`독서카드 공유에 실패했습니다: ${error.message}`);
                         }
@@ -231,7 +217,6 @@ function DownloadCardPage() {
                 setIsProcessing(false);
             }, 'image/png');
         } catch (err: any) {
-            console.error('독서카드 공유 준비 실패:', err);
             alert(`독서카드 공유 준비에 실패했습니다: ${err.message}`);
             setIsProcessing(false);
         }
@@ -258,8 +243,7 @@ function DownloadCardPage() {
                         const blobUrl = await loadImageAsBlob(state.cardDetail.imageUrl);
                         setImageBlobUrl(blobUrl);
                         setIsImageLoaded(true);
-                    } catch (err) {
-                        console.error('이미지 로드 실패:', err);
+                    } catch {
                         setIsImageLoaded(true);
                     }
                 } else {
@@ -282,8 +266,7 @@ function DownloadCardPage() {
             loadImageAsBlob(cardDetail.imageUrl).then(blobUrl => {
                 setImageBlobUrl(blobUrl);
                 setIsImageLoaded(true);
-            }).catch(err => {
-                console.error('이미지 로드 실패:', err);
+            }).catch(() => {
                 setIsImageLoaded(true);
             });
         }

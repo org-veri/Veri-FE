@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookApi';
 
 interface BookshelfItemType {
-  id: string; // bookId
-  coverUrl: string; // imageUrl
+  id: string;
+  coverUrl: string;
   title: string;
   author: string;
 }

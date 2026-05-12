@@ -47,8 +47,7 @@ const MyPage: React.FC = () => {
         } else {
           setError(response.message || '사용자 데이터를 불러오는 데 실패했습니다.');
         }
-      } catch (err) {
-        console.error('Error fetching user data:', err);
+      } catch {
         setError('사용자 데이터를 불러오는 중 네트워크 오류가 발생했습니다.');
       } finally {
         setIsLoading(false);
@@ -71,8 +70,7 @@ const MyPage: React.FC = () => {
         } else {
           setPostsError(response.message || '게시글을 불러오는 데 실패했습니다.');
         }
-      } catch (err) {
-        console.error('Error fetching my posts:', err);
+      } catch {
         setPostsError('게시글을 불러오는 중 네트워크 오류가 발생했습니다.');
       } finally {
         setIsLoadingPosts(false);
@@ -81,10 +79,6 @@ const MyPage: React.FC = () => {
 
     fetchMyPosts();
   }, []);
-
-  const handleProfileClick = () => {
-    console.log('프로필 상세 페이지로 이동');
-  };
 
   const goToEditMyName = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -112,7 +106,16 @@ const MyPage: React.FC = () => {
     return content.substring(0, maxLength) + '...';
   };
 
-  // 로딩 상태 처리
+  const getPostImageUrl = (post: Post): string | null => {
+    const p = post as Post & { imageUrl?: string; cardImage?: string; images?: string[] };
+    const firstImage = p.images?.[0];
+    if (firstImage && firstImage.trim() !== '') return firstImage;
+    if (post.thumbnail && post.thumbnail.trim() !== '') return post.thumbnail;
+    if (p.imageUrl && p.imageUrl.trim() !== '') return p.imageUrl;
+    if (p.cardImage && p.cardImage.trim() !== '') return p.cardImage;
+    return null;
+  };
+
   if (isLoading) {
     return <div className="loading-page-container">
       <div className="loading-spinner"></div>
@@ -123,7 +126,6 @@ const MyPage: React.FC = () => {
     return <div className="loading-page-container" style={{ color: 'red' }}>{error}</div>;
   }
 
-  // 데이터 없음 상태 처리
   if (!userData) {
     return <div className="loading-page-container">사용자 데이터를 찾을 수 없습니다.</div>;
   }
@@ -134,7 +136,7 @@ const MyPage: React.FC = () => {
 
       <div className="header-margin" />
 
-      <div className="my-page-profile-section" onClick={handleProfileClick}>
+      <div className="my-page-profile-section">
         <div className="profile-left">
           <div className="profile-avatar">
             {userData.profileImageUrl ? (
@@ -193,17 +195,23 @@ const MyPage: React.FC = () => {
           </div>
         ) : (
           <div className="my-posts-list">
-            {myPosts.map((post) => (
+            {myPosts.map((post) => {
+              const imageUrl = getPostImageUrl(post);
+              return (
               <div
                 key={post.postId}
                 className="my-post-item"
                 onClick={() => handlePostClick(post.postId)}
               >
-                {post.thumbnail && (
-                  <div className="my-post-image">
-                    <img src={post.thumbnail} alt="게시글 이미지" />
-                  </div>
-                )}
+                <div className="my-post-image">
+                  {imageUrl ? (
+                    <img src={imageUrl} alt="게시글 이미지" />
+                  ) : (
+                    <div className="my-post-no-image-placeholder">
+                      <span>이미지 없음</span>
+                    </div>
+                  )}
+                </div>
 
                 <div className="my-post-header">
                   <h4 className="my-post-title">{post.title}</h4>
@@ -239,7 +247,8 @@ const MyPage: React.FC = () => {
                   </div>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

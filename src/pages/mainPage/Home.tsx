@@ -6,8 +6,15 @@ import { useNavigate } from 'react-router-dom';
 import { getMemberProfile } from '../../api/memberApi';
 import { getAllBooks, type GetAllBooksQueryParams } from '../../api/bookApi';
 import { SkeletonHeroSection } from '../../components/SkeletonUI';
+<<<<<<< HEAD
 import unionIcon from '../../assets/icons/TopBar/union.svg';
 import profileIcon from '../../assets/icons/TopBar/profile.svg';
+=======
+
+import unionIcon from '../../assets/icons/TopBar/union.svg';
+import profileIcon from '../../assets/icons/TopBar/profile.svg';
+
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 import sampleBookBackground from '../../assets/images/profileSample/sample_book_background.jpg';
 import sampleBook from '../../assets/images/profileSample/sample_book.jpg';
 import sampleUser from '../../assets/images/profileSample/sample_user.png';
@@ -30,7 +37,11 @@ function LibraryPage() {
     const storedImage = localStorage.getItem('profileImage');
     return storedImage || null;
   });
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
   const heroBackgroundErrorRef = useRef(false);
   const heroBookSampleErrorRef = useRef(false);
   const profileImageErrorRef = useRef(false);
@@ -59,13 +70,17 @@ function LibraryPage() {
           setError(userResponse.message || "사용자 프로필을 가져오는데 실패했습니다.");
         }
       } catch (err: any) {
-        console.error('사용자 프로필 로딩 오류:', err);
         setError('사용자 프로필을 불러오는 데 실패했습니다: ' + err.message);
       } finally {
         setIsUserDataLoading(false);
       }
     };
 
+<<<<<<< HEAD
+=======
+    fetchUserProfile();
+
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
     const fetchRecentBook = async () => {
       try {
         const recentBooksParams: GetAllBooksQueryParams = {
@@ -82,13 +97,29 @@ function LibraryPage() {
             setBookImageUrl(mostRecentBook.imageUrl);
           }
         }
+<<<<<<< HEAD
       } catch (err: any) {
         console.error('최근 책 데이터 로딩 오류:', err);
+=======
+      } catch {
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
       }
     };
 
     fetchUserProfile();
     fetchRecentBook();
+  }, []);
+  
+  useEffect(() => {
+    const onProfileUpdated = (e: Event) => {
+      const url = (e as CustomEvent<{ profileImageUrl: string }>).detail?.profileImageUrl;
+      if (url) {
+        setProfileImage(url);
+        setUserData((prev) => (prev ? { ...prev, image: url } : null));
+      }
+    };
+    window.addEventListener('profileUpdated', onProfileUpdated);
+    return () => window.removeEventListener('profileUpdated', onProfileUpdated);
   }, []);
 
   const handleProfileClick = () => navigate('/my-page');
@@ -190,34 +221,35 @@ function LibraryPage() {
         </header>
 
         <div className="hero-content">
-          <button
-            className="profile-circle"
-            onClick={handleProfileClick}
-            aria-label="프로필 보기"
-          >
-            {hasValidProfileImage ? (
-              <>
-                <img 
-                  src={userData.image} 
-                  className="profile-image" 
-                  alt="프로필 이미지"
-                  onError={handleProfileImageError}
-                />
+          <div className="hero-profile-row">
+            <button
+              className="profile-circle"
+              onClick={handleProfileClick}
+              aria-label="프로필 보기"
+            >
+              {hasValidProfileImage ? (
+                <>
+                  <img 
+                    src={userData.image} 
+                    className="profile-image" 
+                    alt="프로필 이미지"
+                    onError={handleProfileImageError}
+                  />
+                  <div
+                    className="profile-placeholder"
+                    style={{ backgroundImage: `url(${sampleUser})`, display: 'none' }}
+                  />
+                </>
+              ) : (
                 <div
                   className="profile-placeholder"
-                  style={{ backgroundImage: `url(${sampleUser})`, display: 'none' }}
+                  style={{ backgroundImage: `url(${sampleUser})` }}
                 />
-              </>
-            ) : (
-              <div
-                className="profile-placeholder"
-                style={{ backgroundImage: `url(${sampleUser})` }}
-              />
-            )}
-          </button>
-          <div className="welcome-text">
-            <h2>반가워요, {userData.nickname}님!</h2>
-            <p>오늘도 책 잘 기록해 봐요...</p>
+              )}
+            </button>
+            <div className="welcome-text">
+              <h2>반가워요, {userData.nickname}님!</h2>
+            </div>
           </div>
           <img
             src={heroBookSampleImageSrc}

@@ -39,7 +39,7 @@ function MyCommunityPostDetailPage() {
     isVisible: false
   });
   const [isLikeUsersOpen, setIsLikeUsersOpen] = useState(false);
-  const [isCommentsOpen, setIsCommentsOpen] = useState(true); // 댓글은 기본적으로 열려있음
+  const [isCommentsOpen, setIsCommentsOpen] = useState(true);
   const [likeUsers, setLikeUsers] = useState<Array<{ id: number; nickname: string; profileImageUrl: string }>>([]);
   const [isLoadingLikeUsers, setIsLoadingLikeUsers] = useState(false);
   const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
@@ -73,7 +73,6 @@ function MyCommunityPostDetailPage() {
     });
   };
 
-  // 게시글 데이터 로드
   useEffect(() => {
     const loadPostDetail = async () => {
       if (!postId) {
@@ -114,7 +113,6 @@ function MyCommunityPostDetailPage() {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.';
         setError(errorMessage);
-        console.error('게시글 상세 로드 실패:', err);
       } finally {
         setLoading(false);
       }
@@ -150,7 +148,6 @@ function MyCommunityPostDetailPage() {
           profileImageUrl: member.profileImageUrl
         })));
       } else {
-        // likedMembers가 없으면 게시글 다시 로드
         const response = await getPostDetail(parseInt(postId));
         if (response.isSuccess && response.result) {
           const postData = response.result;
@@ -165,8 +162,7 @@ function MyCommunityPostDetailPage() {
           }
         }
       }
-    } catch (err) {
-      console.error('좋아요 사용자 목록 로드 실패:', err);
+    } catch {
     } finally {
       setIsLoadingLikeUsers(false);
     }
@@ -176,7 +172,7 @@ function MyCommunityPostDetailPage() {
     setIsCommentsOpen(prev => {
       const newValue = !prev;
       if (newValue) {
-        setIsLikeUsersOpen(false); // 댓글 창 열 때 좋아요 창 닫기
+        setIsLikeUsersOpen(false);
       }
       return newValue;
     });
@@ -206,7 +202,6 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
-          // likedMembers 업데이트
           if (postData.likedMembers && postData.likedMembers.length > 0) {
             setLikeUsers(postData.likedMembers.map(member => ({
               id: member.id,
@@ -218,8 +213,7 @@ function MyCommunityPostDetailPage() {
       } else {
         setToast({ message: response.message || '댓글 작성에 실패했습니다.', type: 'error', isVisible: true });
       }
-    } catch (err) {
-      console.error('댓글 작성 실패:', err);
+    } catch {
       setToast({ message: '댓글 작성 중 오류가 발생했습니다.', type: 'error', isVisible: true });
     } finally {
       setSubmittingComment(false);
@@ -254,7 +248,6 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
-          // likedMembers 업데이트
           if (postData.likedMembers && postData.likedMembers.length > 0) {
             setLikeUsers(postData.likedMembers.map(member => ({
               id: member.id,
@@ -266,8 +259,7 @@ function MyCommunityPostDetailPage() {
       } else {
         setToast({ message: response.message || '답글 작성에 실패했습니다.', type: 'error', isVisible: true });
       }
-    } catch (err) {
-      console.error('답글 작성 실패:', err);
+    } catch {
       setToast({ message: '답글 작성 중 오류가 발생했습니다.', type: 'error', isVisible: true });
     } finally {
       setSubmittingComment(false);
@@ -296,7 +288,6 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
-          // likedMembers 업데이트
           if (postData.likedMembers && postData.likedMembers.length > 0) {
             setLikeUsers(postData.likedMembers.map(member => ({
               id: member.id,
@@ -308,8 +299,7 @@ function MyCommunityPostDetailPage() {
       } else {
         setToast({ message: response.message || '댓글 삭제에 실패했습니다.', type: 'error', isVisible: true });
       }
-    } catch (err) {
-      console.error('댓글 삭제 실패:', err);
+    } catch {
       setToast({ message: '댓글 삭제 중 오류가 발생했습니다.', type: 'error', isVisible: true });
     }
   };
@@ -345,7 +335,6 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
-          // likedMembers 업데이트
           if (postData.likedMembers && postData.likedMembers.length > 0) {
             setLikeUsers(postData.likedMembers.map(member => ({
               id: member.id,
@@ -357,8 +346,7 @@ function MyCommunityPostDetailPage() {
       } else {
         setToast({ message: response.message || '댓글 수정에 실패했습니다.', type: 'error', isVisible: true });
       }
-    } catch (err) {
-      console.error('댓글 수정 실패:', err);
+    } catch {
       setToast({ message: '댓글 수정 중 오류가 발생했습니다.', type: 'error', isVisible: true });
     }
   };
@@ -389,7 +377,6 @@ function MyCommunityPostDetailPage() {
         setToast({ message: `게시글 삭제에 실패했습니다: ${response.message || '알 수 없는 오류'}`, type: 'error', isVisible: true });
       }
     } catch (err: any) {
-      console.error('게시글 삭제 중 오류 발생:', err);
       setToast({ message: `게시글 삭제 중 오류가 발생했습니다: ${err.message}`, type: 'error', isVisible: true });
     } finally {
       setIsProcessing(false);
@@ -437,8 +424,6 @@ function MyCommunityPostDetailPage() {
         });
       }
     } catch (err: any) {
-      console.error('게시글 공개 여부 변경 중 오류 발생:', err);
-      
       let errorMessage = err.message || '게시글 공개 여부 변경 중 오류가 발생했습니다.';
       if (err.code === 'C1005') {
         errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';

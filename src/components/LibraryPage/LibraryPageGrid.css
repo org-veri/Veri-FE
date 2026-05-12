@@ -1,4 +1,3 @@
-/* 그리드 뷰 스타일 - Home.css의 책장 스타일을 기반으로 함 */
 .books-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -22,7 +21,7 @@
 
 .library-book-cover-thumbnail {
   width: 100%;
-  aspect-ratio: 1 / 1.5; /* 가로 1:세로 1.5 비율 자동 조정 */
+  aspect-ratio: 1 / 1.5;
   position: relative;
   background-color: #f0f0f0;
   border-radius: 10px;

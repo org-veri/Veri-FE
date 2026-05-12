@@ -51,7 +51,6 @@ const CardBookSearchBeforePage: React.FC = () => {
                         onError={(e) => {
                             e.currentTarget.src = 'https://placehold.co/350x500/cccccc/333333?text=Image+Load+Failed';
                             e.currentTarget.alt = '이미지 로드 실패';
-                            console.error('Failed to load image for display:', image);
                         }}
                     />
                 </div>

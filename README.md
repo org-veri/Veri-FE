@@ -52,6 +52,8 @@ Use Kakao or Naver social login to sign up and log in easily.
 
 ---
 
+https://veri.me.kr/login
+
 ## Project Structure
 
 - `src/api/`: Defines functions and interfaces for backend API communication. (e.g., `bookApi.ts`, `cardApi.ts`, `memberApi.ts`, `auth.ts`)
@@ -148,3 +150,5 @@ Veri Project에 대한 제안이나 피드백은 언제든지 환영합니다!
 
 이 프로젝트는 개인 학습 및 팬 제작 목적으로 개발되었습니다.  
 모든 권리는 해당 서비스 및 저작권자에게 있습니다.
+
+https://veri.me.kr/login

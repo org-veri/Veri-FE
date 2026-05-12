@@ -32,7 +32,6 @@ export const searchBooks = async (query: string, page: number = 1, size: number 
 
         const baseUrl = import.meta.env.VITE_APP_API_BASE_URL;
         if (!baseUrl) {
-            console.error('Environment variable VITE_APP_API_BASE_URL is not defined.');
             return { isSuccess: false, code: 'ENV_ERROR', message: 'API 기본 URL이 설정되지 않았습니다.' };
         }
 
@@ -41,8 +40,6 @@ export const searchBooks = async (query: string, page: number = 1, size: number 
         url.searchParams.append('page', String(page));
         url.searchParams.append('size', String(size));
         
-        console.log("API 호출 URL:", url.toString());
-
         const response = await fetch(url.toString(), {
             method: 'GET',
             headers: {
@@ -52,12 +49,12 @@ export const searchBooks = async (query: string, page: number = 1, size: number 
         });
 
         if (!response.ok) {
+            const responseClone = response.clone();
             let errorMessage = '책 검색 실패';
             try {
-                const errorData = await response.json();
+                const errorData = await responseClone.json();
                 errorMessage = errorData.message || errorMessage;
             } catch {
-                // JSON 파싱 실패 시 기본 메시지 사용
             }
             return { isSuccess: false, code: response.status.toString(), message: errorMessage };
         }
@@ -65,7 +62,6 @@ export const searchBooks = async (query: string, page: number = 1, size: number 
         const data: ApiResponse<BookSearchResponseResult> = await response.json();
         return data;
     } catch (error: any) {
-        console.error('책 검색 API 호출 중 오류 발생:', error);
         if (error.message === 'TOKEN_EXPIRED') {
             throw error;
         }

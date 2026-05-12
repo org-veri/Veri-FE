@@ -26,25 +26,28 @@
   margin: 10px 0;
   font-family: Pretendard;
   font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
   line-height: 1.5;
-  color: #d32f2f;
+  color: var(--Black, #1A1A1A);
 }
 
 .page-container.error-state button {
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
-  background: var(--primary-purple, #391BE2);
-  color: #fff;
+  background: #0CE19A;
+  color: #FFF;
   font-family: Pretendard;
   font-size: 16px;
   font-weight: 500;
+  line-height: normal;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
 .page-container.error-state button:hover {
-  background: var(--dark-purple, #311CA8);
+  opacity: 0.9;
 }
 
 .page-transition-enter {
@@ -85,18 +88,37 @@
 }
 
 .loading-page-container p {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: Pretendard;
+  color: var(--Black, #1A1A1A);
   margin: 20px;
 }
 
 .loading-page-container button {
-  padding: 10px 30px;
+  padding: 12px 24px;
   border: none;
   border-radius: 8px;
-  background-color: #007bff;
-  color: white;
+  background: #0CE19A;
+  color: #FFF;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.loading-page-container button:hover {
+  opacity: 0.9;
+}
+
+.main-layout {
+  width: 100%;
+  min-height: 100%;
+}
+
+.main-layout--with-tab-bar {
+  padding-bottom: 70px;
 }
 
 .main-page-margin {

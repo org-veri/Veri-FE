@@ -73,4 +73,23 @@
     background-color: #d1ecf1;
     color: #0c5460;
     border-left: 4px solid #17a2b8;
+<<<<<<< HEAD
 }
+=======
+}
+
+@media (max-width: 768px) {
+    .toast {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        min-width: auto;
+        transform: translateY(-100%);
+    }
+    
+    .toast-show {
+        transform: translateY(0);
+    }
+} 
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da

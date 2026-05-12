@@ -19,7 +19,9 @@ function ReadingCardDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isMyCard, setIsMyCard] = useState<boolean>(true); // 기본값은 true (내 카드로 가정)
+  const [isMyCard, setIsMyCard] = useState<boolean>(false);
+  const [cardOwnerNickname, setCardOwnerNickname] = useState<string | null>(null);
+  const [isPublic, setIsPublic] = useState<boolean | null>(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -47,6 +49,7 @@ function ReadingCardDetailPage() {
       setIsLoading(true);
       setError(null);
       setCardDetail(null);
+      setCardOwnerNickname(null);
 
       try {
         const response = await getCardDetailById(cardId);
@@ -54,12 +57,15 @@ function ReadingCardDetailPage() {
         if (response.isSuccess && response.result) {
           const bookData = response.result.book;
           const currentUserId = getCurrentUserId();
-          const cardOwnerId = response.result.memberProfileResponse?.id;
+          const memberProfile = (response.result as any).memberProfileResponseItem || (response.result as any).memberProfileResponse;
+          const cardOwnerId = memberProfile?.id;
+          const nickname = memberProfile?.nickname ?? null;
           
-          // 현재 사용자 ID와 카드 소유자 ID를 비교하여 내 카드인지 판단
-          const isMyCardValue = currentUserId !== null && cardOwnerId !== undefined && currentUserId === cardOwnerId;
+          const mineField = (response.result as any).mine;
+          const isMyCardValue = mineField !== undefined ? mineField : (currentUserId !== null && cardOwnerId !== undefined && currentUserId === cardOwnerId);
           setIsMyCard(isMyCardValue);
-          
+          setCardOwnerNickname(nickname);
+
           setCardDetail({
             cardId: response.result.id,
             content: response.result.content,
@@ -73,11 +79,11 @@ function ReadingCardDetailPage() {
               author: bookData.author,
             } : null,
           });
+          setIsPublic(response.result.isPublic !== undefined ? response.result.isPublic : false);
         } else {
           setError(response.message || "독서 카드 상세 정보를 가져오는데 실패했습니다.");
         }
       } catch (err: any) {
-        console.error('독서 카드 상세 정보를 불러오는 중 오류 발생:', err);
         setError(`독서 카드 상세 정보를 불러오는 데 실패했습니다: ${err.message}`);
       } finally {
         setIsLoading(false);
@@ -92,7 +98,6 @@ function ReadingCardDetailPage() {
     }
   }, [id]);
 
-  // handleShare 함수를 DownloadCardPage로 이동하도록 변경
   const handleShare = useCallback(() => {
     if (cardDetail) {
       navigate('/download-card', { state: { cardDetail: cardDetail, action: 'share' } });
@@ -127,7 +132,6 @@ function ReadingCardDetailPage() {
         setToast({ message: `독서 카드 삭제에 실패했습니다: ${response.message || '알 수 없는 오류'}`, type: 'error', isVisible: true });
       }
     } catch (err: any) {
-      console.error('독서 카드 삭제 중 오류 발생:', err);
       setToast({ message: `독서 카드 삭제 중 오류가 발생했습니다: ${err.message}`, type: 'error', isVisible: true });
     } finally {
       setIsProcessing(false);
@@ -161,9 +165,9 @@ function ReadingCardDetailPage() {
                 author: bookData.author,
               } : null,
             });
+            setIsPublic(response.result.isPublic !== undefined ? response.result.isPublic : false);
           }
-        } catch (err) {
-          console.error('카드 정보 업데이트 후 재로드 중 오류:', err);
+        } catch {
         }
       };
       fetchCardDetail(Number(id));
@@ -183,8 +187,7 @@ function ReadingCardDetailPage() {
       return;
     }
 
-    // 현재 공개 상태를 명확히 확인하고 반대로 토글
-    const currentIsPublic = cardDetail.isPublic === true;
+    const currentIsPublic = isPublic === true;
     const newVisibility = !currentIsPublic;
     
     setIsUpdatingVisibility(true);
@@ -193,11 +196,10 @@ function ReadingCardDetailPage() {
       const response = await updateCardVisibility(cardDetail.cardId, newVisibility);
       
       if (response.isSuccess && response.result) {
-        // API 응답의 결과로 상태 업데이트
-        // 실제 API 응답 구조: result.idPublic (isPublic이 아님!)
         const result = response.result as any;
         const updatedIsPublic = result.idPublic === true || result.isPublic === true;
         
+        setIsPublic(updatedIsPublic);
         setCardDetail(prev => {
           if (!prev) return null;
           return { ...prev, isPublic: updatedIsPublic };
@@ -209,7 +211,6 @@ function ReadingCardDetailPage() {
           isVisible: true 
         });
       } else {
-        // 에러 코드에 따른 메시지 처리
         let errorMessage = response.message || '카드 공개 여부 변경에 실패했습니다.';
         if (response.code === 'C1005') {
           errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -221,9 +222,6 @@ function ReadingCardDetailPage() {
         });
       }
     } catch (err: any) {
-      console.error('카드 공개 여부 변경 중 오류 발생:', err);
-      
-      // 에러 코드에 따른 메시지 처리
       let errorMessage = err.message || '카드 공개 여부 변경 중 오류가 발생했습니다.';
       if (err.code === 'C1005') {
         errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -237,7 +235,7 @@ function ReadingCardDetailPage() {
     } finally {
       setIsUpdatingVisibility(false);
     }
-  }, [cardDetail, isProcessing]);
+  }, [cardDetail, isPublic, isUpdatingVisibility, isProcessing]);
 
   const formatDateTime = (isoDate: string | null | undefined) => {
     if (!isoDate) {
@@ -247,7 +245,6 @@ function ReadingCardDetailPage() {
     try {
       const date = new Date(isoDate);
 
-      // 유효하지 않은 날짜인지 확인
       if (isNaN(date.getTime())) {
         return null;
       }
@@ -258,16 +255,14 @@ function ReadingCardDetailPage() {
       const hour = (`0${date.getHours()}`).slice(-2);
       const minute = (`0${date.getMinutes()}`).slice(-2);
       return `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
-    } catch (error) {
-      console.error('날짜 오류:', error);
+    } catch {
       return null;
     }
   };
 
-  // 기존 handleGoToDownloadPage 유지
   const handleGoToDownloadPage = useCallback(() => {
     if (cardDetail) {
-      navigate('/download-card', { state: { cardDetail: cardDetail, action: 'download' } }); // action 추가
+      navigate('/download-card', { state: { cardDetail: cardDetail, action: 'download' } });
     } else {
       setToast({ message: '다운로드할 독서 카드 정보를 불러오지 못했습니다.', type: 'error', isVisible: true });
     }
@@ -305,34 +300,37 @@ function ReadingCardDetailPage() {
             className="mgc_left_fill"
           ></span>
         </button>
-        <h3>나의 독서카드</h3>
+        <h3>{isMyCard ? '나의 독서카드' : cardOwnerNickname ? `${cardOwnerNickname}의 독서카드` : '독서카드'}</h3>
         <div className="header-right-wrapper">
-          <button
-            className="header-menu-button"
-            onClick={() => setMenuOpen((prev) => !prev)}
-            disabled={isProcessing}
-          >
-            <BsThreeDotsVertical size={20} color="#333" />
-          </button>
+          {isMyCard && (
+            <>
+              <button
+                className="header-menu-button"
+                onClick={() => setMenuOpen((prev) => !prev)}
+                disabled={isProcessing}
+              >
+                <BsThreeDotsVertical size={20} color="#333" />
+              </button>
 
-          {menuOpen && (
-            <div className="header-dropdown-menu" ref={menuRef}>
-              <div className="menu-item" onClick={handleEditCard}>
-                <FiEdit2 size={16} />
-                <span>수정하기</span>
-              </div>
-              <div className="menu-item" onClick={handleDeleteCard}>
-                <FiTrash2 size={16} />
-                <span>삭제하기</span>
-              </div>
-            </div>
+              {menuOpen && (
+                <div className="header-dropdown-menu" ref={menuRef}>
+                  <div className="menu-item" onClick={handleEditCard}>
+                    <FiEdit2 size={16} />
+                    <span>수정하기</span>
+                  </div>
+                  <div className="menu-item" onClick={handleDeleteCard}>
+                    <FiTrash2 size={16} />
+                    <span>삭제하기</span>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </header>
 
       <div className="header-margin"></div>
 
-      {/* The main card content area - this will be captured by html2canvas on the download page */}
       <div className="card-content-area">
         <div className="card-image-wrapper">
           <img
@@ -344,16 +342,16 @@ function ReadingCardDetailPage() {
               e.currentTarget.alt = "이미지 로드 실패";
             }}
           />
-          {isMyCard && (
+          {isMyCard && isPublic !== null && (
             <button 
-              className={`card-visibility-toggle ${cardDetail.isPublic === true ? 'public' : 'private'}`}
+              className={`card-visibility-toggle ${isPublic === true ? 'public' : 'private'}`}
               onClick={handleToggleVisibility}
               disabled={isUpdatingVisibility || isProcessing}
-              aria-label={cardDetail.isPublic === true ? '공개된 카드' : '비공개된 카드'}
+              aria-label={isPublic === true ? '공개된 카드' : '비공개된 카드'}
             >
-              <span className={cardDetail.isPublic === true ? 'mgc_unlock_fill' : 'mgc_lock_fill'}></span>
+              <span className={isPublic === true ? 'mgc_unlock_fill' : 'mgc_lock_fill'}></span>
               <span className="visibility-text">
-                {cardDetail.isPublic === true ? '공개된 카드' : '비공개된 카드'}
+                {isPublic === true ? '공개된 카드' : '비공개된 카드'}
               </span>
             </button>
           )}
@@ -363,7 +361,7 @@ function ReadingCardDetailPage() {
           <button className="book-title-for-card-button" onClick={handleBookTitleClick}>
             <p>
               {cardDetail.book?.title || '책 정보 없음'}
-              {!cardDetail.book && <span className="no-book-info-message"> (책 정보 없음)</span>}
+              {!cardDetail.book && <span className="no-book-info-message"></span>}
             </p>
           </button>
 
@@ -382,14 +380,12 @@ function ReadingCardDetailPage() {
           <FiDownload size={24} />
           <span>다운로드</span>
         </button>
-        {/* '공유하기' 버튼도 DownloadCardPage로 이동하도록 변경 */}
         <button className="action-button-revised share-button-revised" onClick={handleShare} disabled={isProcessing}>
           <FiShare2 size={24} />
           <span>공유하기</span>
         </button>
       </div>
 
-      {/* 독서 카드 수정 모달 */}
       {cardDetail && (
         <ReadingCardEditModal
           isOpen={editModalOpen}
@@ -403,7 +399,6 @@ function ReadingCardDetailPage() {
         />
       )}
 
-      {/* 독서 카드 삭제 확인 모달 */}
       <DeleteConfirmationModal
         isOpen={isDeleteConfirmModalOpen}
         onClose={() => setIsDeleteConfirmModalOpen(false)}
@@ -413,7 +408,6 @@ function ReadingCardDetailPage() {
         info="삭제된 독서카드는 복구할 수 없어요"
       />
 
-      {/* Toast 알림 */}
       <Toast
         message={toast.message}
         type={toast.type}

@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 .comment-input-section {
   position: fixed;
   bottom: 0;
@@ -28,7 +31,7 @@
   padding: 12px 55px 12px 15px;
   border: none;
   border-radius: 6px;
-  font-size: 16px; /* 모바일 자동 줌인 방지를 위해 16px로 변경 */
+  font-size: 16px;
   outline: none;
   background-color: #f8f9fa;
 }
@@ -67,7 +70,6 @@
   cursor: not-allowed;
 }
 
-/* 반응형 디자인 */
 @media (max-width: 480px) {
   .comment-input-section {
     padding: 12px 15px;

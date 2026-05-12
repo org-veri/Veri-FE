@@ -69,8 +69,7 @@ function WritePostPage() {
         }
         
         setIsInitialLoad(false);
-      } catch (error) {
-        console.error('데이터 복원 실패:', error);
+      } catch {
         setIsInitialLoad(false);
       }
     };
@@ -89,9 +88,7 @@ function WritePostPage() {
           selectedBook
         };
         localStorage.setItem('writePostDraft', JSON.stringify(draft));
-      } catch (error) {
-        console.error('임시 저장 실패:', error);
-      }
+      } catch {}
     }
   }, [title, content, images, uploadedImageUrls, selectedBook, isInitialLoad]);
 
@@ -133,14 +130,11 @@ function WritePostPage() {
       const base64 = await base64Promise;
       newImages.push(base64);
 
-      // 즉시 업로드
       try {
         const uploadedUrl = await uploadImage(file);
         newUploadedUrls.push(uploadedUrl);
       } catch (error) {
-        console.error('이미지 업로드 실패:', error);
         showToast('일부 이미지 업로드에 실패했습니다.', 'error');
-        // 업로드 실패한 이미지는 미리보기에서도 제거
         newImages.pop();
       }
     }
@@ -154,18 +148,15 @@ function WritePostPage() {
     }
   };
 
-  // 이미지 제거 핸들러
   const handleRemoveImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
     setUploadedImageUrls(prev => prev.filter((_, i) => i !== index));
   };
 
-  // 책 선택 제거 핸들러
   const handleRemoveBook = () => {
     setSelectedBook(null);
   };
 
-  // 글 올리기 핸들러
   const handleSubmit = async () => {
     if (!title.trim()) {
       showToast('제목을 입력해주세요.', 'warning');
@@ -182,7 +173,6 @@ function WritePostPage() {
       return;
     }
 
-    // 이미지가 아직 업로드 중인 경우
     if (isUploadingImages) {
       showToast('이미지 업로드 중입니다. 잠시만 기다려주세요.', 'info');
       return;
@@ -191,31 +181,25 @@ function WritePostPage() {
     setIsSubmitting(true);
 
     try {
-      // 게시글 작성 - bookId 포함 (이미 업로드된 URL 사용)
       const postData: any = {
         title: title.trim(),
         content: content.trim(),
         images: uploadedImageUrls,
       };
 
-      // selectedBook의 memberBookId를 bookId로 전달
       if (selectedBook?.bookId) {
         postData.bookId = selectedBook.bookId;
       }
 
-      console.log('게시글 작성 데이터:', postData);
-
       const response = await createPost(postData);
 
       if (response.isSuccess) {
-        // 게시글 작성 성공 시 임시 저장 데이터 삭제
         localStorage.removeItem('writePostDraft');
         navigate('/community');
       } else {
         showToast(response.message || '게시글 작성에 실패했습니다.', 'error');
       }
-    } catch (error: any) {
-      console.error('게시글 작성 중 오류:', error);
+    } catch {
       showToast('게시글 작성 중 오류가 발생했습니다.', 'error');
     } finally {
       setIsSubmitting(false);
@@ -224,7 +208,6 @@ function WritePostPage() {
 
   return (
     <div className="page-container">
-      {/* 헤더 */}
       <header className="detail-header">
         <button className="header-left-arrow" onClick={() => navigate(-1)}>
           <span
@@ -243,7 +226,6 @@ function WritePostPage() {
       <div className="header-margin"></div>
 
       <div className="write-post-content">
-        {/* 제목 입력 */}
         <div className="form-section">
           <input
             type="text"
@@ -255,7 +237,6 @@ function WritePostPage() {
           />
         </div>
 
-        {/* 내용 입력 */}
         <div className="form-section">
           <textarea
             className="content-input"
@@ -266,10 +247,8 @@ function WritePostPage() {
           />
         </div>
 
-        {/* 이미지 섹션 */}
         <div className="image-section">
           <div className="image-grid">
-            {/* 카메라 버튼 (첫 번째 슬롯) */}
             <div className="image-upload-slot">
               <input
                 type="file"
@@ -284,7 +263,6 @@ function WritePostPage() {
               </label>
             </div>
 
-            {/* 업로드된 이미지들 */}
             {images.map((image, index) => (
               <div key={index} className="image-slot">
                 <img src={image} alt={`업로드 ${index + 1}`} />
@@ -302,7 +280,6 @@ function WritePostPage() {
           </div>
         </div>
 
-        {/* 책 선택 섹션 */}
         <div className="book-section">
           <div className="book-label-section">          
             <div className="book-label">책 선택하기</div>
@@ -335,7 +312,6 @@ function WritePostPage() {
           )}
         </div>
 
-        {/* 글 올리기 버튼 */}
         <div className="submit-section">
           <button 
             className="submit-button"

@@ -23,10 +23,9 @@ function ReadingCardPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
-    const [activeTab, setActiveTab] = useState<'image' | 'text'>('image');
+    const [activeTab, setActiveTab] = useState<'image' | 'text'>('text');
     const [searchQuery, setSearchQuery] = useState<string>('');
 
-    // 검색 필터링 함수
     const handleSearch = useCallback((query: string) => {
         setSearchQuery(query);
         if (!query.trim()) {
@@ -40,22 +39,20 @@ function ReadingCardPage() {
         }
     }, [readingCards]);
 
-    // 독서 카드 데이터 가져오기 (최적화된 버전)
     const fetchCards = useCallback(async () => {
         setIsLoading(true);
         setError(null);
-        
+
         try {
             const queryParams: GetMyCardsQueryParams = {
                 page: 1,
                 size: 20,
                 sort: sortOrder,
             };
-            
+
             const response = await getMyCards(queryParams);
 
             if (response.isSuccess && response.result?.cards) {
-                // 기본 카드 정보로 먼저 state 업데이트 (빠른 렌더링)
                 const basicCards = response.result.cards.map((card: MyCardItem) => ({
                     id: card.cardId ? String(card.cardId) : `temp-${Date.now()}-${Math.random()}`,
                     title: card.content.length > 30 ? `${card.content.substring(0, 30)}...` : card.content || "제목 없음",
@@ -64,12 +61,11 @@ function ReadingCardPage() {
                     thumbnailUrl: card.image,
                     isPublic: card.isPublic,
                 }));
-                
+
                 setReadingCards(basicCards);
                 setFilteredCards(basicCards);
-                setIsLoading(false); // 기본 데이터 로딩 완료
+                setIsLoading(false);
 
-                // 백그라운드에서 상세 정보 가져오기 (배치 처리)
                 const cardDetailPromises = response.result.cards
                     .filter(card => card.cardId)
                     .map(async (card: MyCardItem, index: number) => {
@@ -82,16 +78,12 @@ function ReadingCardPage() {
                                     bookTitle: detailResponse.result.book.title
                                 };
                             }
-                        } catch (detailErr) {
-                            console.error(`카드 상세 정보 가져오기 실패 (ID: ${card.cardId}):`, detailErr);
+                        } catch {
                         }
                         return null;
                     });
 
-                // 상세 정보를 배치로 처리
                 const detailResults = await Promise.allSettled(cardDetailPromises);
-                
-                // 성공한 상세 정보들로 카드 업데이트
                 setReadingCards(prevCards => {
                     const updatedCards = [...prevCards];
                     detailResults.forEach((result) => {
@@ -112,13 +104,11 @@ function ReadingCardPage() {
                 setReadingCards([]);
                 setFilteredCards([]);
                 if (!response.result?.cards || response.result.cards.length === 0) {
-                    // 빈 배열은 오류가 아님
                 } else {
                     setError("독서 카드를 불러왔으나, 표시할 내용이 없습니다.");
                 }
             }
         } catch (err: any) {
-            console.error('독서 카드 데이터 로딩 오류:', err);
             setError(`독서 카드를 불러오는 데 실패했습니다: ${err.message}`);
         } finally {
             setIsLoading(false);
@@ -133,7 +123,6 @@ function ReadingCardPage() {
         handleSearch(searchQuery);
     }, [readingCards, searchQuery, handleSearch]);
 
-    // 이벤트 핸들러들
     const handleSortClick = useCallback(() => {
         setSortOrder(prevOrder => prevOrder === 'newest' ? 'oldest' : 'newest');
     }, []);
@@ -154,61 +143,67 @@ function ReadingCardPage() {
         navigate('/my-page');
     };
 
-    // 에러 상태 처리
     if (error) {
-        return <div className="loading-page-container" style={{ color: 'red' }}>{error}</div>;
+        return <div className="loading-page-container reading-card-page-message reading-card-page-error">{error}</div>;
     }
 
     return (
         <div className="page-container">
-            <div className="reading-card-hero-section">
-                <TopBar 
-                    onSearchClick={handleSearchClick}
-                    onProfileClick={handleProfileClick}
-                />
-                
-                <div className="header-margin" />
-                
-                <nav className="tab-navigation">
-                    <button
-                        className={`tab-button ${activeTab === 'image' ? 'active' : ''}`}
-                        onClick={() => handleTabClick('image')}
-                    >
-                        이미지
-                    </button>
-                    <button
-                        className={`tab-button ${activeTab === 'text' ? 'active' : ''}`}
-                        onClick={() => handleTabClick('text')}
-                    >
-                        텍스트
-                    </button>
-                </nav>
-                
-                {/* 텍스트 뷰에서만 검색 입력 필드 표시 */}
-                {activeTab === 'text' && (
-                    <div className="reading-card-search-input-container">
-                        <input
-                            type="text"
-                            placeholder="텍스트를 입력하세요"
-                            value={searchQuery}
-                            onChange={(e) => handleSearch(e.target.value)}
-                            className="card-search-input"
-                        />
-                        <span className="mgc_search_2_fill"></span>
-                    </div>
-                )}
+            <TopBar
+                onSearchClick={handleSearchClick}
+                onProfileClick={handleProfileClick}
+            />
 
-                <div className="sort-options">
-                    <span 
-                        className="sort-button" 
-                        onClick={handleSortClick}
-                    >
-                        {sortOrder === 'newest' ? '최신순' : '오래된순'}
-                        <span className={sortOrder === 'newest' ? 'mgc_down_fill' : 'mgc_up_fill'}></span>
-                    </span>
+            <div className="header-margin" />
+
+            <div className="reading-card-content-wrapper">
+                <div className="reading-card-title-section-wrapper">
+                    <div className="reading-card-title-section">
+                        <h2 className="reading-card-title">
+                            독서카드 <span className="reading-card-count">{filteredCards.length}</span>
+                        </h2>
+                        <div className="view-toggle-buttons">
+                            <button
+                                className={`view-toggle-btn ${activeTab === 'text' ? 'active' : ''}`}
+                                onClick={() => handleTabClick('text')}
+                                aria-label="텍스트 보기"
+                            >
+                                <span className="mgc_rows_3_fill"></span>
+                            </button>
+                            <button
+                                className={`view-toggle-btn ${activeTab === 'image' ? 'active' : ''}`}
+                                onClick={() => handleTabClick('image')}
+                                aria-label="이미지 보기"
+                            >
+                                <span className="mgc_layout_grid_fill"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="sort-options">
+                        <span
+                            className="sort-button"
+                            onClick={handleSortClick}
+                        >
+                            {sortOrder === 'newest' ? '최신순' : '오래된순'}
+                            <span className={sortOrder === 'newest' ? 'mgc_down_fill' : 'mgc_up_fill'}></span>
+                        </span>
+                    </div>
+
+                    {activeTab === 'text' && (
+                        <div className="reading-card-search-input-container">
+                            <input
+                                type="text"
+                                placeholder="텍스트를 입력하세요"
+                                value={searchQuery}
+                                onChange={(e) => handleSearch(e.target.value)}
+                                className="card-search-input"
+                            />
+                            <span className="mgc_search_2_fill"></span>
+                        </div>
+                    )}
                 </div>
 
-                {/* 이미지 뷰 */}
                 {activeTab === 'image' && (
                     <div className="reading-card-grid-view">
                         {isLoading ? (
@@ -233,7 +228,6 @@ function ReadingCardPage() {
                     </div>
                 )}
 
-                {/* 텍스트 뷰 */}
                 {activeTab === 'text' && (
                     <div className="reading-card-text-view">
                         {isLoading ? (
@@ -263,7 +257,7 @@ function ReadingCardPage() {
 
             <div className='main-page-margin'>
             </div>
-            
+
             <div className="create-button-container">
                 <button className="create-button" onClick={handleCreateCardClick}>
                     + 등록하기

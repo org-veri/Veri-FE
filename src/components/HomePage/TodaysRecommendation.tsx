@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
+=======
+import React, { useEffect, useState, useRef } from 'react';
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 import { useNavigate } from 'react-router-dom';
 
 import { getPopularBooks, type PopularBookItem, type GetPopularBooksQueryParams } from '../../api/bookApi';
@@ -56,6 +60,10 @@ const TodaysRecommendationSection: React.FC = () => {
   const [recommendedBooks, setRecommendedBooks] = useState<RecommendedBookType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -70,13 +78,12 @@ const TodaysRecommendationSection: React.FC = () => {
         const response = await getPopularBooks(queryParams);
 
         if (response.isSuccess && response.result && response.result.books) {
-          // API 응답 데이터를 RecommendedBookType에 맞게 매핑
           const mappedBooks: RecommendedBookType[] = response.result.books.map((book: PopularBookItem) => ({
             title: book.title,
-            imageUrl: book.image, // PopularBookItem의 'image' 필드를 'imageUrl'로 매핑
+            imageUrl: book.image,
             author: book.author,
-            publisher: book.publisher, // PopularBookItem의 'publisher' 필드 매핑
-            isbn: book.isbn, // PopularBookItem의 'isbn' 필드 매핑
+            publisher: book.publisher,
+            isbn: book.isbn,
           }));
           setRecommendedBooks(mappedBooks);
         } else {
@@ -91,7 +98,30 @@ const TodaysRecommendationSection: React.FC = () => {
     };
 
     fetchRecommendations();
-  }, []); // 컴포넌트가 처음 마운트될 때 한 번만 실행
+  }, []);
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!scrollContainerRef.current) return;
+    isDragging.current = true;
+    startX.current = e.pageX - scrollContainerRef.current.offsetLeft;
+    scrollLeft.current = scrollContainerRef.current.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    isDragging.current = false;
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging.current || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX.current) * 2;
+    scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
+  };
 
   if (isLoading) {
     return (
@@ -100,7 +130,14 @@ const TodaysRecommendationSection: React.FC = () => {
           <p>오늘의 추천</p>
           <span className="more-text">오늘 가장 많이 읽은 책이에요</span>
         </div>
-        <div className="recommendation-list horizontal-scroll-container">
+        <div 
+          className="recommendation-list horizontal-scroll-container"
+          ref={scrollContainerRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+        >
           <p className="loading-message">오늘의 추천 데이터를 불러오는 중...</p>
         </div>
       </section>
@@ -114,7 +151,14 @@ const TodaysRecommendationSection: React.FC = () => {
           <p>오늘의 추천</p>
           <span className="more-text">오늘 가장 많이 읽은 책이에요</span>
         </div>
-        <div className="recommendation-list horizontal-scroll-container">
+        <div 
+          className="recommendation-list horizontal-scroll-container"
+          ref={scrollContainerRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+        >
           <p className="error-message">{error}</p>
         </div>
       </section>
@@ -127,11 +171,18 @@ const TodaysRecommendationSection: React.FC = () => {
         <p>오늘의 추천</p>
         <span className="more-text">오늘 가장 많이 읽은 책이에요</span>
       </div>
-      <div className="recommendation-list horizontal-scroll-container">
+      <div 
+        className="recommendation-list horizontal-scroll-container"
+        ref={scrollContainerRef}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+      >
         {recommendedBooks.length > 0 ? (
           recommendedBooks.map((book) => (
             <SingleRecommendedBookItem
-              key={book.isbn} // key로 isbn 사용
+              key={book.isbn}
               title={book.title}
               imageUrl={book.imageUrl}
               author={book.author}

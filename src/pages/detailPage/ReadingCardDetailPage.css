@@ -15,12 +15,10 @@
     justify-content: center;
     align-items: center;
     min-height: calc(100vh - 65px);
-    /* 헤더 제외 높이 */
     text-align: center;
     font-size: 1.1em;
     color: #666;
     width: 100%;
-    /* 전체 너비 차지 */
 }
 
 .card-image-wrapper {
@@ -44,17 +42,11 @@
 .card-text-info {
     text-align: left;
     padding: 0 20px;
-    /* 좌우 패딩 */
 }
 
 .book-title-for-card-button {
     text-align: left;
     justify-content: left;
-
-    font-size: 1.1em;
-    font-weight: 400;
-    color: #DBDFE4;
-    margin-bottom: 8px;
 
     border: none;
     background: none;
@@ -68,10 +60,12 @@
     text-align: left;
     justify-content: left;
 
+    color: var(--dark-grey, #6A717B);
+    font-family: Pretendard;
     font-size: 14px;
-    font-weight: 500;
-    color: #DBDFE4;
-    margin-bottom: 8px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 140%;
 
     border: none;
     background: none;
@@ -80,20 +74,20 @@
 }
 
 .card-content-text {
+    color: var(--Black, #1A1A1A);
+    font-family: Pretendard;
     font-size: 16px;
-    color: black;
+    font-style: normal;
     font-weight: 500;
-    line-height: 1.5;
-    margin-bottom: 15px;
-    white-space: pre-wrap;
-    /* 줄바꿈 유지 */
+    line-height: 140%;
 }
 
 .card-upload-date {
+    color: var(--Grey_1, #9BA2B1);
     font-size: 14px;
-    color: #DBDFE4;
-    text-align: left;
-    font-weight: 400;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 140%;
     margin-top: 20px;
     padding-right: 0;
 }
@@ -136,7 +130,11 @@
 .download-button-revised {
     background-color: #e0e0e0;
     color: #757575;
+<<<<<<< HEAD
     border: none;
+=======
+    border: none
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 }
 
 .download-button-revised:hover {

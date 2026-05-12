@@ -4,6 +4,7 @@ import TopBar from '../../components/TopBar';
 import { SkeletonList, SkeletonCard } from '../../components/SkeletonUI';
 import { getPostFeed, getCards } from '../../api/communityApi';
 import type { Post, GetPostFeedQueryParams, Card, GetCardsQueryParams } from '../../api/communityApi';
+import { getCurrentUserId } from '../../api/auth';
 import './CommunityPage.css';
 
 function CommunityPage() {
@@ -19,7 +20,6 @@ function CommunityPage() {
 
   const observer = useRef<IntersectionObserver | null>(null);
 
-  // IntersectionObserver를 위한 ref callback
   const lastPostElementRef = useCallback((node: HTMLDivElement | null) => {
     if (loadingMore || isLoading) return;
 
@@ -38,7 +38,6 @@ function CommunityPage() {
     }
   }, [loadingMore, isLoading, hasMore]);
 
-  // 게시글 데이터 로드
   const loadPosts = useCallback(async (page: number = 1, reset: boolean = false) => {
     try {
       if (reset) {
@@ -73,21 +72,18 @@ function CommunityPage() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.';
       setError(errorMessage);
-      console.error('게시글 로드 실패:', err);
     } finally {
       setIsLoading(false);
       setLoadingMore(false);
     }
   }, []);
 
-  // 추가 게시글 로드
   const loadMorePosts = useCallback(async () => {
     if (loadingMore || isLoading || !hasMore) return;
 
     await loadPosts(currentPage, false);
   }, [currentPage, loadingMore, isLoading, hasMore, loadPosts]);
 
-  // 카드 데이터 로드
   const loadCards = useCallback(async () => {
     try {
       setCardsLoading(true);
@@ -102,11 +98,8 @@ function CommunityPage() {
       
       if (response.isSuccess && response.result) {
         setCards(response.result.cards);
-      } else {
-        console.error('카드 로드 실패:', response.message);
       }
-    } catch (err) {
-      console.error('카드 로드 실패:', err);
+    } catch {
     } finally {
       setCardsLoading(false);
     }
@@ -131,8 +124,15 @@ function CommunityPage() {
     navigate('/community/reading-cards');
   };
 
-  const handlePostClick = (postId: number) => {
-    navigate(`/community/post/${postId}`);
+  const handlePostClick = (postId: number, post: Post) => {
+    const currentUserId = getCurrentUserId();
+    const isMyPost = currentUserId !== null && post.author.id === currentUserId;
+    
+    if (isMyPost) {
+      navigate(`/my-community/post/${postId}`);
+    } else {
+      navigate(`/community/post/${postId}`);
+    }
   };
 
   const handleRefresh = () => {
@@ -154,7 +154,16 @@ function CommunityPage() {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}.${month}.${day}`;
   };
-  
+
+  const getPostImageUrl = (post: Post): string | null => {
+    const p = post as Post & { images?: string[]; imageUrl?: string; cardImage?: string };
+    if (p.images && p.images.length > 0 && p.images[0] && p.images[0].trim() !== '') return p.images[0];
+    if (post.thumbnail && post.thumbnail.trim() !== '') return post.thumbnail;
+    if (p.imageUrl && p.imageUrl.trim() !== '') return p.imageUrl;
+    if (p.cardImage && p.cardImage.trim() !== '') return p.cardImage;
+    return null;
+  };
+
   return (
     <div className="page-container">
       <TopBar onProfileClick={handleProfileClick} />
@@ -162,7 +171,6 @@ function CommunityPage() {
       <div className="header-margin"></div>
       
       <div className="community-content">
-        {/* 독서카드 섹션 */}
         <div className="reading-cards-section">
           <h2 className="reading-cards-section-title">독서카드</h2>
           
@@ -210,7 +218,6 @@ function CommunityPage() {
           )}
         </div>
 
-        {/* 이달의 추천 섹션 */}
         <div className="recommendations-section">
           <div className="recommendations-header">
             <div className="header-content">
@@ -242,12 +249,13 @@ function CommunityPage() {
             <div className="recommendations-list">
               {posts.map((post, index) => {
                 const isLastElement = posts.length === index + 1;
+                const imageUrl = getPostImageUrl(post);
                 return (
                   <div 
                     ref={isLastElement && hasMore ? lastPostElementRef : null}
                     key={post.postId} 
                     className="recommendation-item"
-                    onClick={() => handlePostClick(post.postId)}
+                    onClick={() => handlePostClick(post.postId, post)}
                   >
                   <div className="recommendation-header">
                     <div className="author-info">
@@ -270,8 +278,8 @@ function CommunityPage() {
                   </div>
                   
                   <div className="recommendation-image">
-                    {post.thumbnail ? (
-                      <img src={post.thumbnail} alt="게시글 이미지" />
+                    {imageUrl ? (
+                      <img src={imageUrl} alt="게시글 이미지" />
                     ) : (
                       <div className="no-image-placeholder">
                         <span>이미지 없음</span>
@@ -310,14 +318,12 @@ function CommunityPage() {
               );
             })}
               
-              {/* 로딩 인디케이터 */}
               {loadingMore && (
                 <div className="loading-more">
                   <p className="loading-message">더 많은 게시글을 불러오는 중...</p>
                 </div>
               )}
               
-              {/* 게시글이 없는 경우 */}
               {!isLoading && posts.length === 0 && !error && (
                 <div className="no-posts">
                   <p>아직 게시글이 없습니다.</p>

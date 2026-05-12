@@ -1,4 +1,4 @@
-import { getAccessToken } from './auth';
+import { fetchWithAuth } from './auth';
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || 'https://api.veri.me.kr';
 
@@ -110,7 +110,7 @@ export type GetPostFeedResponse = BaseApiResponse<PostFeedResponse>;
 export type GetMyPostsResponse = BaseApiResponse<MyPostsResponse>;
 export type GetPostDetailResponse = BaseApiResponse<PostDetail>;
 export type GetCardsResponse = BaseApiResponse<CardListResponse>;
-export type CreatePostResponse = BaseApiResponse<number>;
+export type CreatePostResponse = BaseApiResponse<{ postId: number }>;
 export type DeletePostResponse = BaseApiResponse<Record<string, never>>;
 export type LikePostResponse = BaseApiResponse<LikeResponse>;
 export type PublishPostResponse = BaseApiResponse<Record<string, never>>;
@@ -135,38 +135,6 @@ export interface CreatePostRequest {
   images: string[];
   bookId?: number;
 }
-
-const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
-  const accessToken = getAccessToken();
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    ...(options.headers as Record<string, string>),
-  };
-
-  if (accessToken) {
-    headers['Authorization'] = `Bearer ${accessToken}`;
-  } else {
-    console.warn(`[fetchWithAuth] Access token is missing for URL: ${url}`);
-  }
-
-  const response = await fetch(url, {
-    ...options,
-    headers: headers as HeadersInit,
-  });
-
-  if (!response.ok) {
-    let errorMessage = `API call failed: ${response.status}`;
-    try {
-      const errorData = await response.json();
-      errorMessage += ` - ${errorData.message || response.statusText}`;
-    } catch {
-      const text = await response.text();
-      errorMessage += ` - ${text || response.statusText}`;
-    }
-    throw new Error(errorMessage);
-  }
-  return response;
-};
 
 const makeApiRequest = async <T>(
   endpoint: string, 

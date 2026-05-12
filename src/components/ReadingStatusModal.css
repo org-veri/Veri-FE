@@ -74,6 +74,12 @@
 .status-text {
   font-weight: 500;
   white-space: nowrap;
+  color: #1a1a1a80;
+  transition: color 0.2s ease;
+}
+
+.status-text.selected {
+  color: #000000;
 }
 
 .checkbox-label:hover .custom-checkbox {
@@ -82,4 +88,8 @@
 
 .checkbox-label:hover .status-text {
   color: #311CA8;
+}
+
+.checkbox-label:hover .status-text.selected {
+  color: #000000;
 } 

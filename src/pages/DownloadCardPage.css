@@ -29,8 +29,8 @@
 }
 
 .download-header .header-right-placeholder {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
 }
 
 .download-card-content {
@@ -184,7 +184,6 @@
     box-shadow: none;
 }
 
-/* 공유 버튼 강조 애니메이션 */
 @keyframes pulse {
     0% {
         box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);

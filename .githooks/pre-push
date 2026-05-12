@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+
+echo "Running pnpm build..."
+pnpm build

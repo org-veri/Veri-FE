@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { getAccessToken } from './auth';
+=======
+import { fetchWithAuth } from './auth';
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
@@ -99,8 +103,8 @@ export type UpdateBookVisibilityResponse = BaseApiResponse<{
   id: number;
   idPublic: boolean;
 }>;
-export type GetMyBooksCountResponse = BaseApiResponse<number>;
-export type SearchMyBookResponse = BaseApiResponse<number>;
+export type GetMyBooksCountResponse = BaseApiResponse<{ count: number }>;
+export type SearchMyBookResponse = BaseApiResponse<{ memberBookId: number }>;
 
 export interface GetAllBooksQueryParams {
   page?: number;
@@ -144,38 +148,6 @@ export interface RateBookRequest {
   score: number;
 }
 
-const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
-  const accessToken = getAccessToken();
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    ...(options.headers as Record<string, string>),
-  };
-
-  if (accessToken) {
-    headers['Authorization'] = `Bearer ${accessToken}`;
-  } else {
-    console.warn(`[fetchWithAuth] Access token is missing for URL: ${url}`);
-  }
-
-  const response = await fetch(url, {
-    ...options,
-    headers: headers as HeadersInit,
-  });
-
-  if (!response.ok) {
-    let errorMessage = `API call failed: ${response.status}`;
-    try {
-      const errorData = await response.json();
-      errorMessage += ` - ${errorData.message || response.statusText}`;
-    } catch {
-      const text = await response.text();
-      errorMessage += ` - ${text || response.statusText}`;
-    }
-    throw new Error(errorMessage);
-  }
-  return response;
-};
-
 const makeApiRequest = async <T>(
   endpoint: string, 
   options: RequestInit = {}
@@ -183,7 +155,7 @@ const makeApiRequest = async <T>(
   const response = await fetchWithAuth(`${BASE_URL}${endpoint}`, options);
   
   if (response.status === 204 || response.headers.get('content-length') === '0') {
-    return {} as T;
+    return { isSuccess: true, code: '', message: '', result: {} } as T;
   }
   
   const contentType = response.headers.get('content-type');
@@ -319,7 +291,6 @@ export const updateBookVisibility = async (
     }
     return data;
   } catch (error) {
-    console.error('독서 공개 여부 수정 중 오류:', error);
     throw error;
   }
 };

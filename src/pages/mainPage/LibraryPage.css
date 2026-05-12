@@ -1,8 +1,19 @@
+<<<<<<< HEAD
+=======
+.library-content-wrapper {
+  margin-left: 20px;
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 .library-title-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 20px;
+  margin-bottom: 14px;
+  padding: 0;
 }
 
 .library-title {
@@ -68,8 +79,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px 20px 20px;
   gap: 8px;
+  margin-bottom: 20px;
 }
 
 .left-filters {
@@ -85,23 +96,26 @@
   position: relative;
 }
 
-.reading-status-filters .sort-button {
-  display: flex;
-  align-items: center;
+.list-sort-button {
+  display: inline-flex;
   justify-content: center;
-  width: 60px;
-  height: 20px;
-  display: flex;
-  padding: 5px;
+  align-items: center;
+  min-height: 28px;
+  padding: 6px 8px;
   gap: 4px;
   border-radius: 15px;
-  border: 0.5px solid var(--border-light);
-  background: none;
-  color: var(--text-dark);
-  font-size: 11px;
+  border: 0.5px solid rgba(106, 113, 123, 0.50);
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.30);
+  color: var(--dark-grey_1, #464A52);
+  text-align: center;
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-style: normal;
   font-weight: 500;
-  line-height: 14px;
+  line-height: 1.2;
   cursor: pointer;
+<<<<<<< HEAD
 }
 
 .reading-status-filters .sort-button:hover {
@@ -111,6 +125,10 @@
 .filter-search-section .sort-options {
   display: flex;
   align-items: center;
+=======
+  white-space: nowrap;
+  box-sizing: border-box;
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 }
 
 .search-input-container {
@@ -120,11 +138,16 @@
 }
 
 .book-search-input {
-  width: 100%;
-  height: 34px;
-  border: 1px solid var(--border-color);
+  display: flex;
+  width: 170px;
+  height: 25px;
+  padding: 6px 8px 6px 10px;
+  justify-content: space-between;
+  align-items: center;
   border-radius: 6px;
-  font-size: 16px; /* 모바일 자동 줌인 방지를 위해 16px로 변경 */
+  border: 1px solid var(--grey_2, #F4F5F7);
+  background: #FFF;
+  font-size: 16px;
   background-color: white;
   transition: border-color 0.2s ease;
   padding-left: 12px;
@@ -137,8 +160,13 @@
 }
 
 .book-search-input::placeholder {
-  color: var(--text-dark-gray);
-  font-weight: 300;
+  color: var(--dark-grey, #6A717B);
+  text-align: left;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%;
 }
 
 .search-input-container .mgc_search_2_fill {
@@ -156,9 +184,12 @@
   color: #666 !important;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 .books-container {
-  padding: 0 15px;
+  padding: 0;
   min-height: 200px;
 }
 

@@ -3,7 +3,6 @@ body {
 }
 
 @font-face {
-    /*이름??*/
     font-family: 'Gungsuh';
     src: url('../../public/fonts/ChosunGs.woff2') format('woff2');
     font-weight: normal;

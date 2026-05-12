@@ -26,11 +26,9 @@ const MyReadingCardSection: React.FC<MyReadingCardSectionProps> = ({ cards, book
     const navigate = useNavigate();
 
     const handleSeeAllCards = useCallback(() => {
-        // Correctly use bookId to navigate to a page showing all cards for this specific book
         navigate(`/reading-card`);
     }, [navigate, bookId]);
 
-    // This function should accept cardId as an argument
     const handleClick = useCallback((cardId: number) => {
         navigate(`/reading-card-detail/${cardId}`);
     }, [navigate]);
@@ -80,7 +78,7 @@ function BookDetailPage() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
     const [isPublic, setIsPublic] = useState<boolean | null>(null);
-    const [isMyBook, setIsMyBook] = useState<boolean>(true); // 기본값은 true (내 책으로 가정)
+    const [isMyBook, setIsMyBook] = useState<boolean>(true);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info'; isVisible: boolean }>({
         message: '',
         type: 'info',
@@ -108,13 +106,11 @@ function BookDetailPage() {
                 const currentUserId = getCurrentUserId();
                 const bookOwnerId = response.result.member?.id;
                 
-                // 현재 사용자 ID와 책 소유자 ID를 비교하여 내 책인지 판단
-                // ReadingCardDetailPage와 동일한 로직: member 정보가 있어야만 비교
                 const isMyBookValue = currentUserId !== null && bookOwnerId !== undefined && currentUserId === bookOwnerId;
                 setIsMyBook(isMyBookValue);
                 
                 const fetchedBook: Book = {
-                    bookId: response.result.memberBookId, // API 응답에 bookId가 없으므로 memberBookId 사용
+                    bookId: response.result.memberBookId,
                     memberBookId: response.result.memberBookId,
                     title: response.result.title,
                     author: response.result.author,
@@ -128,7 +124,6 @@ function BookDetailPage() {
                     ...fetchedBook,
                     cardSummaries: response.result.cardSummaries
                 } as Book & { cardSummaries: CardSummary[] });
-                // API 응답에서 isPublic 필드 읽어오기
                 setIsPublic(response.result.isPublic !== undefined ? response.result.isPublic : false);
             } else {
                 setError(response.message || "책 상세 정보를 가져오는데 실패했습니다.");
@@ -177,12 +172,11 @@ function BookDetailPage() {
         try {
             const response = await deleteBook(book.memberBookId);
             if (response.isSuccess) {
-                navigate('/my-bookshelf');
+                navigate('/library');
             } else {
                 setToast({ message: `책 삭제에 실패했습니다: ${response.message || '알 수 없는 오류'}`, type: 'error', isVisible: true });
             }
         } catch (err: any) {
-            console.error('책 삭제 중 오류 발생:', err);
             setToast({ message: `책 삭제 중 오류가 발생했습니다: ${err.message}`, type: 'error', isVisible: true });
         } finally {
             setIsSavingChanges(false);
@@ -190,21 +184,21 @@ function BookDetailPage() {
         }
     }, [book, navigate]);
 
-    // BottomEditModal이 닫힐 때 책 정보를 다시 불러오는 함수
     const handleEditModalClose = useCallback(() => {
         setIsEditModalOpen(false);
+    }, []);
+
+    const handleEditModalSaveSuccess = useCallback(() => {
         if (id) {
             fetchBookDetails(Number(id));
         }
     }, [id, fetchBookDetails]);
 
-    // 독서 공개 여부 토글 핸들러
     const handleToggleVisibility = useCallback(async () => {
         if (!book || !book.memberBookId || isUpdatingVisibility || isSavingChanges) {
             return;
         }
 
-        // 현재 공개 상태를 명확히 확인하고 반대로 토글
         const currentIsPublic = isPublic === true;
         const newVisibility = !currentIsPublic;
         
@@ -213,7 +207,6 @@ function BookDetailPage() {
         try {
             const response = await updateBookVisibility(book.memberBookId, newVisibility);
             if (response.isSuccess && response.result) {
-                // API 응답의 결과로 상태 업데이트 (idPublic 또는 isPublic 필드 확인)
                 const updatedIsPublic = (response.result as any).isPublic ?? response.result.idPublic;
                 setIsPublic(updatedIsPublic);
                 
@@ -223,7 +216,6 @@ function BookDetailPage() {
                     isVisible: true 
                 });
             } else {
-                // 에러 코드에 따른 메시지 처리
                 let errorMessage = response.message || '독서 공개 여부 변경에 실패했습니다.';
                 if (response.code === 'C1005') {
                     errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -235,9 +227,6 @@ function BookDetailPage() {
                 });
             }
         } catch (err: any) {
-            console.error('독서 공개 여부 변경 중 오류 발생:', err);
-            
-            // 에러 코드에 따른 메시지 처리
             let errorMessage = err.message || '독서 공개 여부 변경 중 오류가 발생했습니다.';
             if (err.code === 'C1005') {
                 errorMessage = '비공개 독서 기록은 공개할 수 없습니다.';
@@ -385,6 +374,7 @@ function BookDetailPage() {
             <BottomEditModal
                 isOpen={isEditModalOpen}
                 onClose={handleEditModalClose}
+                onSaveSuccess={handleEditModalSaveSuccess}
                 memberBookId={book.memberBookId}
                 defaultScore={book.score}
                 defaultStartedAt={book.startedAt}

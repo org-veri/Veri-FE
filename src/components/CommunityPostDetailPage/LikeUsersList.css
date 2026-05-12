@@ -6,8 +6,9 @@
 .like-users-empty {
   text-align: center;
   padding: 20px;
-  color: #999;
+  color: #777;
   font-size: 14px;
+  font-family: Pretendard;
 }
 
 .like-users-grid {

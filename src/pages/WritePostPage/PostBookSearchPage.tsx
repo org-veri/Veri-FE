@@ -5,7 +5,6 @@ import { MdArrowBackIosNew } from 'react-icons/md';
 import '../../styles/components/search.css';
 import '../../styles/components/book-list.css';
 import './PostBookSearchPage.css';
-import { removeAccessToken } from '../../api/auth';
 import { getAllBooks, type Book } from '../../api/bookApi';
 import Toast from '../../components/Toast';
 import type { BookItem } from '../../api/bookSearchApi';
@@ -35,10 +34,6 @@ const PostBookSearchPage: React.FC = () => {
         isVisible: false
     });
 
-    const showToast = (message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') => {
-        setToast({ message, type, isVisible: true });
-    };
-
     const hideToast = () => {
         setToast(prev => ({ ...prev, isVisible: false }));
     };
@@ -56,14 +51,7 @@ const PostBookSearchPage: React.FC = () => {
             
             setMyBooks(response.result.memberBooks);
         } catch (error: any) {
-            console.error('내 책장 로드 중 오류:', error);
-            if (error.message === 'TOKEN_EXPIRED') {
-                showToast('세션이 만료되었습니다. 다시 로그인해주세요.', 'error');
-                removeAccessToken();
-                navigate('/login');
-            } else {
-                setMyBooksError(`내 책장 로드 중 오류: ${error.message}`);
-            }
+            setMyBooksError(`내 책장 로드 중 오류: ${error.message}`);
         } finally {
             setIsLoadingMyBooks(false);
         }
@@ -109,7 +97,6 @@ const PostBookSearchPage: React.FC = () => {
                 {isLoadingMyBooks && <p className="loading-message">내 책장을 불러오는 중입니다...</p>}
                 {myBooksError && <p className="error-message">{myBooksError}</p>}
 
-                {/* 나의 책장 표시 */}
                 {!isLoadingMyBooks && !myBooksError && myBooks.length > 0 ? (
                     <div>
                         <div className="book-list">
@@ -153,7 +140,6 @@ const PostBookSearchPage: React.FC = () => {
                 onClose={hideToast}
             />
 
-            {/* 하단 선택된 책 정보 또는 안내 메시지 */}
             <div className={`bottom-selection-area ${selectedBook ? 'has-selection' : ''}`}>
                 {selectedBook ? (
                     <div className="selected-book-info">
