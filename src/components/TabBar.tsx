@@ -1,50 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-<<<<<<< HEAD
-
-import LibraryActiveIcon from '../assets/icons/NavBar/Active/library.svg';
-import LibraryDeactiveIcon from '../assets/icons/NavBar/Deactive/library.svg';
-import ReadingCardActiveIcon from '../assets/icons/NavBar/Active/reading_card.svg';
-import ReadingCardDeactiveIcon from '../assets/icons/NavBar/Deactive/reading_card.svg';
-import CommunityActiveIcon from '../assets/icons/NavBar/Active/community.svg';
-import CommunityDeactiveIcon from '../assets/icons/NavBar/Deactive/community.svg';
-import HomeActiveIcon from '../assets/icons/NavBar/Active/home.svg';
-import HomeDeactiveIcon from '../assets/icons/NavBar/Deactive/home.svg';
-
-const LibraryIcon = ({ active }: { active: boolean }) => (
-    <img 
-        src={active ? LibraryActiveIcon : LibraryDeactiveIcon} 
-        alt="서재" 
-        className="tab-item-icon"
-    />
-);
-
-const ReadingCardIcon = ({ active }: { active: boolean }) => (
-    <img 
-        src={active ? ReadingCardActiveIcon : ReadingCardDeactiveIcon} 
-        alt="독서카드" 
-        className="tab-item-icon"
-    />
-);
-
-const CommunityIcon = ({ active }: { active: boolean }) => (
-    <img 
-        src={active ? CommunityActiveIcon : CommunityDeactiveIcon} 
-        alt="커뮤니티" 
-        className="tab-item-icon"
-    />
-);
-
-const HomeIcon = ({ active }: { active: boolean }) => (
-    <img 
-        src={active ? HomeActiveIcon : HomeDeactiveIcon} 
-        alt="홈" 
-        className="tab-item-icon"
-    />
-);
-=======
 import './TabBar.css';
->>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 
 interface TabItem {
     id: string;
@@ -66,17 +22,15 @@ function TabBar() {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const initialActiveTabId = currentTabs.find(tab => tab.path === location.pathname)?.id ?? 'home';
+    const [activeTab, setActiveTab] = useState<string>(initialActiveTabId);
+
     useEffect(() => {
         const currentTab = currentTabs.find(tab => tab.path === location.pathname);
         if (currentTab) {
             setActiveTab(currentTab.id);
-        } else {
         }
     }, [location.pathname]);
-
-    const initialActiveTabId = currentTabs.find(tab => tab.path === location.pathname)?.id ?? 'home';
-    const [activeTab, setActiveTab] = useState<string>(initialActiveTabId);
-
 
     const handleTabClick = (tab: TabItem) => {
         if (tab.isDummy) {

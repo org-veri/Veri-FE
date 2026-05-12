@@ -135,11 +135,7 @@ const handleReissueResponse = async (response: Response): Promise<ReissueRespons
   return data;
 };
 
-<<<<<<< HEAD
-export const handleSocialLoginCallback = async (provider: string, code: string, state: string): Promise<{ accessToken: string; refreshToken: string }> => {
-=======
 export const handleSocialLoginCallback = async (provider: string, code: string, state: string): Promise<{ accessToken: string }> => {
->>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
   try {
     const response = await fetch(`${BASE_URL}/api/v1/oauth2/${provider}?code=${code}&state=${state}`, {
       method: 'GET',
@@ -235,33 +231,6 @@ export const removeAccessToken = (): void => {
   localStorage.removeItem('accessToken');
 };
 
-<<<<<<< HEAD
-export const getRefreshToken = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('refreshToken');
-};
-
-export const setRefreshToken = (token: string): void => {
-  if (typeof window === 'undefined') return;
-
-  try {
-    if (token) {
-      localStorage.setItem('refreshToken', token);
-    } else {
-      localStorage.removeItem('refreshToken');
-    }
-  } catch (error) {
-    console.error('리프레시 토큰 저장 중 오류:', error);
-  }
-};
-
-export const removeRefreshToken = (): void => {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem('refreshToken');
-};
-
-=======
->>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 export const reissueToken = async (): Promise<string> => {
   try {
     const response = await fetch(`${BASE_URL}/api/v1/auth/reissue`, {

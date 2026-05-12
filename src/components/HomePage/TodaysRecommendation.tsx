@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react';
-=======
 import React, { useEffect, useState, useRef } from 'react';
->>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 import { useNavigate } from 'react-router-dom';
 
 import { getPopularBooks, type PopularBookItem, type GetPopularBooksQueryParams } from '../../api/bookApi';

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { getAccessToken } from './auth';
-=======
 import { fetchWithAuth } from './auth';
->>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 

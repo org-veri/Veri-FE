@@ -19,12 +19,6 @@
   border-radius: 15px;
 }
 
-@media screen and (min-width: 768px) {
-  .tab-bar-container {
-    display: none !important;
-  }
-}
-
 .tab-item {
   flex: 1 1 0;
   min-width: 0;

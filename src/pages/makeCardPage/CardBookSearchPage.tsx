@@ -291,37 +291,10 @@ const CardBookSearchPage: React.FC = () => {
         try {
             const createResponse = await createBook(payload);
 
-<<<<<<< HEAD
-            let memberBookId: number;
-
-            if (searchResponse.isSuccess && searchResponse.result > 0) {
-                memberBookId = searchResponse.result;
-                showToast('기존 책에 독서카드가 추가됩니다.', 'info');
-            } else {
-                const payload: CreateBookRequest = {
-                    title: book.title.trim(),
-                    image: book.imageUrl.trim(),
-                    author: book.author.trim(),
-                    publisher: book.publisher.trim(),
-                    isbn: book.isbn.trim(),
-                };
-
-                const createResponse = await createBook(payload);
-
-                if (!createResponse.isSuccess || !createResponse.result?.memberBookId) {
-                    setSubmitError(createResponse.message || '책 등록에 실패했습니다.');
-                    setIsSubmitting(false);
-                    return;
-                }
-
-                memberBookId = createResponse.result.memberBookId;
-                showToast('새로운 책이 등록되었습니다! 독서카드에 추가됩니다.', 'success');
-=======
             if (!createResponse.isSuccess || !createResponse.result?.memberBookId) {
                 setSubmitError(createResponse.message || '책 등록에 실패했습니다.');
                 setIsSubmitting(false);
                 return;
->>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
             }
 
             const memberBookId = createResponse.result.memberBookId;

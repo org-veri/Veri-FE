@@ -6,15 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { getMemberProfile } from '../../api/memberApi';
 import { getAllBooks, type GetAllBooksQueryParams } from '../../api/bookApi';
 import { SkeletonHeroSection } from '../../components/SkeletonUI';
-<<<<<<< HEAD
 import unionIcon from '../../assets/icons/TopBar/union.svg';
 import profileIcon from '../../assets/icons/TopBar/profile.svg';
-=======
-
-import unionIcon from '../../assets/icons/TopBar/union.svg';
-import profileIcon from '../../assets/icons/TopBar/profile.svg';
-
->>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
 import sampleBookBackground from '../../assets/images/profileSample/sample_book_background.jpg';
 import sampleBook from '../../assets/images/profileSample/sample_book.jpg';
 import sampleUser from '../../assets/images/profileSample/sample_user.png';
@@ -37,11 +30,7 @@ function LibraryPage() {
     const storedImage = localStorage.getItem('profileImage');
     return storedImage || null;
   });
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
   const heroBackgroundErrorRef = useRef(false);
   const heroBookSampleErrorRef = useRef(false);
   const profileImageErrorRef = useRef(false);
@@ -76,11 +65,6 @@ function LibraryPage() {
       }
     };
 
-<<<<<<< HEAD
-=======
-    fetchUserProfile();
-
->>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
     const fetchRecentBook = async () => {
       try {
         const recentBooksParams: GetAllBooksQueryParams = {
@@ -97,12 +81,7 @@ function LibraryPage() {
             setBookImageUrl(mostRecentBook.imageUrl);
           }
         }
-<<<<<<< HEAD
-      } catch (err: any) {
-        console.error('최근 책 데이터 로딩 오류:', err);
-=======
       } catch {
->>>>>>> 1adf8f743cfb03f7aa00a1dfe599c07ea629d9da
       }
     };
 
