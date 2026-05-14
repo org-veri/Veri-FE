@@ -194,6 +194,7 @@ export interface CommunityAuthor {
 }
 
 export interface CommunityBookInfo {
+  bookId?: number;
   title: string;
   author: string;
   imageUrl: string;
@@ -245,6 +246,7 @@ export const mockCommunityPosts = (): CommunityPost[] => [
       profileImageUrl: '/images/profileSample/sample_user.png',
     },
     book: {
+      bookId: 1,
       title: '오늘 읽은 책',
       author: '작가A',
       imageUrl: '/images/cardSample/forest.jpg',
@@ -267,6 +269,7 @@ export const mockCommunityPosts = (): CommunityPost[] => [
       profileImageUrl: '/images/profileSample/sample_user.png',
     },
     book: {
+      bookId: 2,
       title: '새로운 작품',
       author: '작가B',
       imageUrl: '/images/cardSample/sea.jpg',
@@ -289,6 +292,7 @@ export const mockCommunityPosts = (): CommunityPost[] => [
       profileImageUrl: '/images/profileSample/sample_user.png',
     },
     book: {
+      bookId: 3,
       title: '독서 모임 후기',
       author: '작가C',
       imageUrl: '/images/cardSample/sky.jpg',

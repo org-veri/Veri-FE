@@ -34,6 +34,7 @@ import EditMyNamePage from './pages/EditMyNamePage';
 import WritePostPage from './pages/WritePostPage/WritePostPage';
 import PostBookSearchPage from './pages/WritePostPage/PostBookSearchPage';
 import CommunityMoreReadingCardPage from './pages/CommunityMoreReadingCardPage';
+import PostLikeListPage from './pages/PostLikeListPage';
 
 function App() {
   const location = useLocation();
@@ -98,6 +99,7 @@ function App() {
         <Route path={PATH.LIBRARY} element={<MainLayout><LibraryPage /></MainLayout>} />
         <Route path={`${PATH.BOOK_DETAIL}/:id`} element={<MainLayout><BookDetailPage /></MainLayout>} />
         <Route path={`${PATH.READING_CARD_DETAIL}/:id`} element={<MainLayout><ReadingCardDetailPage /></MainLayout>} />
+        <Route path={`${PATH.POST_LIKES}/:postId`} element={<MainLayout><PostLikeListPage /></MainLayout>} />
         <Route path={`${PATH.COMMUNITY_POST}/:postId`} element={<MainLayout><CommunityPostDetailPage /></MainLayout>} />
         <Route path={`${PATH.MY_COMMUNITY_POST}/:postId`} element={<MainLayout><MyCommunityPostDetailPage /></MainLayout>} />
         <Route path={PATH.MAKE_CARD} element={<MainLayout><MakeCardPage /></MainLayout>} />

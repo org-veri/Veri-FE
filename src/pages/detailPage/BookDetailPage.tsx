@@ -16,6 +16,7 @@ import {
 } from '../../api/bookApi';
 import { getCurrentUserId } from '../../api/auth';
 import { StarRatingFullPage } from '../mainPage/LibraryPage';
+import { FullPageErrorState } from '../../components/FullPageErrorState';
 
 interface MyReadingCardSectionProps {
     cards: CardSummary[];
@@ -253,16 +254,31 @@ function BookDetailPage() {
 
     if (error) {
         return (
-            <div className="loading-page-container">
-                <p style={{ color: 'red' }}>{error}</p>
-                <button onClick={() => navigate(-1)} className="back-button">뒤로 가기</button>
-            </div>
+            <FullPageErrorState
+                title="책 정보를 불러오지 못했습니다"
+                message={error}
+                primaryAction={
+                    id
+                        ? {
+                              label: '다시 시도',
+                              onClick: () => {
+                                  void fetchBookDetails(Number(id));
+                              },
+                          }
+                        : undefined
+                }
+                secondaryAction={{ label: '뒤로', onClick: () => navigate(-1) }}
+            />
         );
     }
 
     if (!book) {
         return (
-            <div className="book-detail-page-container no-data-state">책 정보를 찾을 수 없습니다.</div>
+            <FullPageErrorState
+                title="책 정보를 찾을 수 없습니다"
+                message="요청하신 책이 없거나 삭제되었을 수 있습니다."
+                secondaryAction={{ label: '뒤로', onClick: () => navigate(-1) }}
+            />
         );
     }
 

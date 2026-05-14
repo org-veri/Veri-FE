@@ -10,11 +10,14 @@ export interface DefaultApiResponse<T> {
 }
 
 export interface MemberProfile {
+    id?: number;
     email: string;
     nickname: string;
     image: string;
     numOfReadBook: number;
     numOfCard: number;
+    followerCount?: number;
+    followingCount?: number;
 }
 
 export interface GetMemberProfileResponse {

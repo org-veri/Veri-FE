@@ -1,20 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPostDetail, deletePost, publishPost, unpublishPost } from '../api/communityApi';
+import { getPostDetail, deletePost, publishPost, unpublishPost, likePost, unlikePost } from '../api/communityApi';
 import type { PostDetail, Comment } from '../api/communityApi';
 import { createComment, deleteComment, updateComment, createReply } from '../api/communityCommentsApi';
 import { getCurrentUserId } from '../api/auth';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import ConfirmationModal from '../components/ConfirmationModal';
 import CommentList from '../components/CommunityPostDetailPage/CommentList';
 import CommentInput from '../components/CommunityPostDetailPage/CommentInput';
-import PostActionToggle from '../components/CommunityPostDetailPage/PostActionToggle';
-import LikeUsersList from '../components/CommunityPostDetailPage/LikeUsersList';
 import Toast from '../components/Toast';
-import '../styles/components/post-detail.css';
 import '../styles/components/headers.css';
 import './MyCommunityPostDetailPage.css';
+import { FullPageErrorState } from '../components/FullPageErrorState';
+import { PATH } from '../config/routes';
 
 function MyCommunityPostDetailPage() {
   const navigate = useNavigate();
@@ -38,13 +36,11 @@ function MyCommunityPostDetailPage() {
     type: 'info',
     isVisible: false
   });
-  const [isLikeUsersOpen, setIsLikeUsersOpen] = useState(false);
-  const [isCommentsOpen, setIsCommentsOpen] = useState(true);
-  const [likeUsers, setLikeUsers] = useState<Array<{ id: number; nickname: string; profileImageUrl: string }>>([]);
-  const [isLoadingLikeUsers, setIsLoadingLikeUsers] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
   const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
   const [isPublic, setIsPublic] = useState<boolean | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const commentsSectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -100,13 +96,6 @@ function MyCommunityPostDetailPage() {
           setIsLiked(postData.isLiked);
           const responseResult = postData as any;
           setIsPublic(responseResult.isPublic !== undefined ? responseResult.isPublic : true);
-          if (postData.likedMembers && postData.likedMembers.length > 0) {
-            setLikeUsers(postData.likedMembers.map(member => ({
-              id: member.id,
-              nickname: member.nickname,
-              profileImageUrl: member.profileImageUrl
-            })));
-          }
         } else {
           throw new Error(response.message || '게시글을 불러오는데 실패했습니다.');
         }
@@ -121,61 +110,52 @@ function MyCommunityPostDetailPage() {
     loadPostDetail();
   }, [postId]);
 
+  useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [postId]);
+
   const handleBack = () => {
     navigate(-1);
   };
 
-  const handleLikeToggle = () => {
-    if (!isLikeUsersOpen) {
-      setIsLikeUsersOpen(true);
-      setIsCommentsOpen(false);
-      loadLikeUsers();
-    } else {
-      setIsLikeUsersOpen(false);
-    }
-  };
-
-  const loadLikeUsers = async () => {
-    if (!postId || isLoadingLikeUsers) return;
+  const handleLike = async () => {
+    if (!postId || isLiking || !post) return;
 
     try {
-      setIsLoadingLikeUsers(true);
-      
-      if (post?.likedMembers && post.likedMembers.length > 0) {
-        setLikeUsers(post.likedMembers.map(member => ({
-          id: member.id,
-          nickname: member.nickname,
-          profileImageUrl: member.profileImageUrl
-        })));
+      setIsLiking(true);
+
+      const response = isLiked ? await unlikePost(parseInt(postId)) : await likePost(parseInt(postId));
+
+      if (response.isSuccess && response.result) {
+        setIsLiked(response.result.isLiked);
+        setPost((prev) =>
+          prev
+            ? {
+                ...prev,
+                likeCount: response.result!.likeCount,
+              }
+            : null
+        );
       } else {
-        const response = await getPostDetail(parseInt(postId));
-        if (response.isSuccess && response.result) {
-          const postData = response.result;
-          if (postData.likedMembers && postData.likedMembers.length > 0) {
-            setLikeUsers(postData.likedMembers.map(member => ({
-              id: member.id,
-              nickname: member.nickname,
-              profileImageUrl: member.profileImageUrl
-            })));
-          } else {
-            setLikeUsers([]);
-          }
-        }
+        setToast({
+          message: response.message || '좋아요 처리에 실패했습니다.',
+          type: 'error',
+          isVisible: true,
+        });
       }
     } catch {
+      setToast({
+        message: '좋아요 처리 중 오류가 발생했습니다.',
+        type: 'error',
+        isVisible: true,
+      });
     } finally {
-      setIsLoadingLikeUsers(false);
+      setIsLiking(false);
     }
   };
 
-  const handleCommentToggle = () => {
-    setIsCommentsOpen(prev => {
-      const newValue = !prev;
-      if (newValue) {
-        setIsLikeUsersOpen(false);
-      }
-      return newValue;
-    });
+  const scrollToComments = () => {
+    commentsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
@@ -202,13 +182,6 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
-          if (postData.likedMembers && postData.likedMembers.length > 0) {
-            setLikeUsers(postData.likedMembers.map(member => ({
-              id: member.id,
-              nickname: member.nickname,
-              profileImageUrl: member.profileImageUrl
-            })));
-          }
         }
       } else {
         setToast({ message: response.message || '댓글 작성에 실패했습니다.', type: 'error', isVisible: true });
@@ -248,13 +221,6 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
-          if (postData.likedMembers && postData.likedMembers.length > 0) {
-            setLikeUsers(postData.likedMembers.map(member => ({
-              id: member.id,
-              nickname: member.nickname,
-              profileImageUrl: member.profileImageUrl
-            })));
-          }
         }
       } else {
         setToast({ message: response.message || '답글 작성에 실패했습니다.', type: 'error', isVisible: true });
@@ -288,13 +254,6 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
-          if (postData.likedMembers && postData.likedMembers.length > 0) {
-            setLikeUsers(postData.likedMembers.map(member => ({
-              id: member.id,
-              nickname: member.nickname,
-              profileImageUrl: member.profileImageUrl
-            })));
-          }
         }
       } else {
         setToast({ message: response.message || '댓글 삭제에 실패했습니다.', type: 'error', isVisible: true });
@@ -335,13 +294,6 @@ function MyCommunityPostDetailPage() {
             ...postData,
             comments: commentsWithIsMine
           });
-          if (postData.likedMembers && postData.likedMembers.length > 0) {
-            setLikeUsers(postData.likedMembers.map(member => ({
-              id: member.id,
-              nickname: member.nickname,
-              profileImageUrl: member.profileImageUrl
-            })));
-          }
         }
       } else {
         setToast({ message: response.message || '댓글 수정에 실패했습니다.', type: 'error', isVisible: true });
@@ -387,7 +339,45 @@ function MyCommunityPostDetailPage() {
   const handleEditPost = () => {
     if (!post) return;
     setMenuOpen(false);
-    setToast({ message: '게시글 수정 기능은 준비 중입니다.', type: 'info', isVisible: true });
+    navigate(PATH.WRITE_POST, { state: { editPostId: post.postId } });
+  };
+
+  const handleSharePost = async () => {
+    if (!post) return;
+    setMenuOpen(false);
+    const url = `${window.location.origin}${PATH.MY_COMMUNITY_POST}/${post.postId}`;
+
+    try {
+      if (typeof navigator !== 'undefined' && navigator.share) {
+        await navigator.share({
+          title: post.title,
+          text: `${post.author.nickname} 님의 글 — ${post.title}`,
+          url,
+        });
+        setToast({ message: '공유를 완료했습니다.', type: 'success', isVisible: true });
+        return;
+      }
+    } catch (err: unknown) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        return;
+      }
+    }
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        setToast({ message: '링크가 클립보드에 복사되었습니다.', type: 'success', isVisible: true });
+        return;
+      }
+    } catch {
+      /* fall through */
+    }
+
+    setToast({
+      message: '클립보드에 복사할 수 없습니다. 링크를 직접 복사해 주세요.',
+      type: 'warning',
+      isVisible: true,
+    });
   };
 
   const handleToggleVisibility = async () => {
@@ -448,6 +438,14 @@ function MyCommunityPostDetailPage() {
     }).replace(/\./g, '.').replace(/\s/g, '');
   };
 
+  const formatPostDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}. ${m}. ${d}`;
+  };
+
   const handleImageSwipe = (direction: 'left' | 'right') => {
     if (!post?.images || post.images.length <= 1) return;
 
@@ -493,7 +491,7 @@ function MyCommunityPostDetailPage() {
     document.addEventListener('touchend', handleTouchEnd);
   };
 
-  if (loading || isProcessing) {
+  if (loading) {
     return (
       <div className="loading-page-container">
         <div className="loading-spinner"></div>
@@ -503,192 +501,206 @@ function MyCommunityPostDetailPage() {
 
   if (error || !post) {
     return (
-      <div className="community-post-detail">
-        <div className="detail-header">
-          <button className="back-button" onClick={handleBack}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-          <h1 className="header-title">오류</h1>
-        </div>
-        <div className="error-content">
-          <p>{error || '게시글을 찾을 수 없습니다.'}</p>
-          <button onClick={() => navigate(-1)} className="retry-button">
-            돌아가기
-          </button>
-        </div>
-      </div>
+      <FullPageErrorState
+        title={error ? '게시글을 불러오지 못했습니다' : '게시글을 찾을 수 없습니다'}
+        message={error || '게시글을 찾을 수 없습니다.'}
+        primaryAction={{ label: '다시 시도', onClick: () => window.location.reload() }}
+        secondaryAction={{ label: '돌아가기', onClick: handleBack }}
+      />
     );
   }
 
-  return (
-    <div className="page-container">
-      <header className="detail-header">
-        <button className="header-left-arrow" onClick={() => navigate(-1)}>
-          <span
-            className="mgc_left_fill"
-          ></span>
-        </button>
-        <h3>{post.author.nickname} 님의 글</h3>
-        <div className="header-right-wrapper">
-          {(() => {
-            const currentUserId = getCurrentUserId();
-            const isMyPost = currentUserId !== null && post.author.id === currentUserId;
-            return isMyPost ? (
-              <>
-                <button
-                  className="header-menu-button"
-                  onClick={() => setMenuOpen((prev) => !prev)}
-                  disabled={isProcessing}
-                >
-                  <BsThreeDotsVertical size={20} color="#333" />
-                </button>
+  const currentUserId = getCurrentUserId();
+  const isMyPost = currentUserId !== null && post.author.id === currentUserId;
+  const galleryImages = post.images ?? [];
 
-                {menuOpen && (
-                  <div className="header-dropdown-menu" ref={menuRef}>
-                    <div className="menu-item disabled" onClick={handleEditPost}>
-                      <FiEdit2 size={16} />
-                      <span>수정하기</span>
-                    </div>
-                    <div className="menu-item" onClick={handleDeletePost}>
-                      <FiTrash2 size={16} />
-                      <span>삭제하기</span>
-                    </div>
+  const commentHasVisibleContent = (c: Comment): boolean => {
+    if (!c.isDeleted) return true;
+    return (c.replies ?? []).some(commentHasVisibleContent);
+  };
+  const hasVisibleComments = post.comments.some(commentHasVisibleContent);
+
+  return (
+    <div className="page-container mcp-detail">
+      <header className="mcp-header">
+        <button type="button" className="mcp-header-back" onClick={() => navigate(-1)} aria-label="뒤로">
+          <span className="mgc_left_fill" aria-hidden />
+        </button>
+        <h1 className="mcp-header-title">
+          <span className="mcp-header-title-strong">{post.author.nickname}</span>
+          <span className="mcp-header-title-suffix"> 님의 글</span>
+        </h1>
+        <div className="mcp-header-menu-area" ref={menuRef}>
+          {isMyPost ? (
+            <>
+              <button
+                type="button"
+                className="mcp-header-menu"
+                onClick={() => setMenuOpen((prev) => !prev)}
+                disabled={isProcessing}
+                aria-label="더보기"
+              >
+                <BsThreeDotsVertical size={22} />
+              </button>
+              {menuOpen && (
+                <div className="header-dropdown-menu mcp-header-dropdown">
+                  <div className="menu-item" onClick={handleEditPost}>
+                    <span className="mcp-menu-mgc-icon mgc_edit_2_fill" aria-hidden />
+                    <span>수정하기</span>
                   </div>
-                )}
-              </>
-            ) : null;
-          })()}
+                  <div className="menu-item" onClick={handleDeletePost}>
+                    <span className="mcp-menu-mgc-icon mgc_delete_2_fill" aria-hidden />
+                    <span>삭제하기</span>
+                  </div>
+                  <div className="menu-item" onClick={() => void handleSharePost()}>
+                    <span className="mcp-menu-mgc-icon mgc_share_forward_fill" aria-hidden />
+                    <span>공유하기</span>
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <span className="mcp-header-menu-spacer" aria-hidden />
+          )}
         </div>
       </header>
 
-      <div className="header-margin"></div>
+      <div className="mcp-scroll">
+        <section className="mcp-hero" aria-label="게시물 이미지">
+          <div
+            className="mcp-hero-media"
+            onTouchStart={galleryImages.length > 0 ? handleTouchStart : undefined}
+          >
+            {galleryImages.length > 0 ? (
+              <img src={galleryImages[currentImageIndex]} alt="" className="mcp-hero-img" />
+            ) : (
+              <div className="mcp-hero-placeholder">이미지 없음</div>
+            )}
+            {isMyPost && isPublic !== null && (
+              <button
+                type="button"
+                className={`mcp-visibility-pill ${isPublic ? 'is-public' : 'is-private'}`}
+                onClick={handleToggleVisibility}
+                disabled={isUpdatingVisibility || isProcessing}
+                aria-label={isPublic ? '공개된 게시물' : '비공개된 게시물'}
+              >
+                <span
+                  className={`mcp-visibility-pill-icon ${isPublic === true ? 'mgc_unlock_fill' : 'mgc_lock_fill'}`}
+                  aria-hidden
+                />
+                <span>{isPublic ? '공개된 게시물' : '비공개된 게시물'}</span>
+              </button>
+            )}
+          </div>
+          {galleryImages.length > 0 && (
+            <div className="mcp-dots" aria-label="이미지 인디케이터">
+              {galleryImages.map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`mcp-dot ${index === currentImageIndex ? 'is-active' : ''}`}
+                  onClick={() => setCurrentImageIndex(index)}
+                  aria-label={`이미지 ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </section>
 
-      <div className="detail-content">
-        <div className="main-image-container">
-          {post.images && post.images.length > 0 ? (
-            <>
-              <img
-                src={post.images[currentImageIndex]}
-                alt="게시물 이미지"
-                className="main-image"
-                onTouchStart={handleTouchStart}
-              />
-              {(() => {
-                const currentUserId = getCurrentUserId();
-                const isMyPost = currentUserId !== null && post.author.id === currentUserId;
-                return isMyPost && isPublic !== null ? (
-                  <button 
-                    className={`post-visibility-toggle ${isPublic === true ? 'public' : 'private'}`}
-                    onClick={handleToggleVisibility}
-                    disabled={isUpdatingVisibility || isProcessing}
-                    aria-label={isPublic === true ? '공개된 게시글' : '비공개된 게시글'}
+        <article className="mcp-body">
+          <div className="mcp-body-pad">
+            <div className="mcp-engagement-row">
+              <div className="mcp-engagement-left">
+                <div className={`mcp-stat-like-group ${isLiked ? 'is-liked' : ''}`}>
+                  <button
+                    type="button"
+                    className="mcp-stat-btn mcp-stat-btn--like-icon"
+                    onClick={handleLike}
+                    disabled={isLiking}
+                    aria-label="좋아요"
                   >
-                    <span className={isPublic === true ? 'mgc_unlock_fill' : 'mgc_lock_fill'}></span>
-                    <span className="visibility-text">
-                      {isPublic === true ? '공개된 게시글' : '비공개된 게시글'}
-                    </span>
+                    <span className="mgc_heart_fill" aria-hidden />
                   </button>
-                ) : null;
-              })()}
-            </>
-          ) : (
-            <div className="no-image-placeholder-detail">
-              <span>이미지 없음</span>
-            </div>
-          )}
-        </div>
-
-        {post.images && post.images.length > 1 && (
-          <div className="image-dots">
-            {post.images.map((_, index) => (
-              <span
-                key={index}
-                className={`post-detail-dot ${index === currentImageIndex ? 'active' : ''}`}
-                onClick={() => setCurrentImageIndex(index)}
-              ></span>
-            ))}
-          </div>
-        )}
-
-        <div className="detail-post-info">
-          <div className="detail-author-section">
-            <div className="detail-author-avatar">
-              <img src={post.author.profileImageUrl} alt="프로필" />
-            </div>
-            <div className="detail-author-details">
-              <div className="author-name-detail">{post.author.nickname}</div>
-            </div>
-          </div>
-
-          <div className="detail-post-content">
-            <p className="detail-post-summary">{post.content}</p>
-          </div>
-
-          {post.book && (
-            <div className="detail-book-info">
-              <img src={post.book.imageUrl} alt="책 표지" className="detail-book-cover" />
-              <div className="detail-book-details">
-                <div className="community-detail-book-title">{post.book.title}</div>
-                <div className="community-detail-book-author">{post.book.author}</div>
+                  <button
+                    type="button"
+                    className="mcp-stat-btn mcp-stat-btn--like-count"
+                    onClick={() => navigate(`${PATH.POST_LIKES}/${post.postId}`)}
+                    aria-label="좋아요 목록 보기"
+                  >
+                    <span className="mcp-stat-count">{post.likeCount}</span>
+                  </button>
+                </div>
+                <button type="button" className="mcp-stat-btn" onClick={scrollToComments} aria-label="댓글 보기">
+                  <span className="mgc_chat_3_fill" aria-hidden />
+                  <span className="mcp-stat-count">{post.commentCount}</span>
+                </button>
               </div>
+              <time className="mcp-post-date" dateTime={post.createdAt}>
+                {formatPostDate(post.createdAt)}
+              </time>
             </div>
-          )}
 
-          <div className="detail-post-footer">
-            <div className="detail-post-actions">
-              <PostActionToggle
-                type="like"
-                count={post.likeCount}
-                isActive={isLiked}
-                isOpen={isLikeUsersOpen}
-                onClick={handleLikeToggle}
-                disabled={false}
-              />
-              <PostActionToggle
-                type="comment"
-                count={post.commentCount}
-                isOpen={isCommentsOpen}
-                onClick={handleCommentToggle}
-              />
-            </div>
-            <div className="detail-post-date">{formatDate(post.createdAt)}</div>
-            </div>
+            <p className="mcp-lead-title">{post.title}</p>
+            <div className="mcp-prose">{post.content}</div>
+
+            {post.book && (
+              <div className="mcp-book-row">
+                <div className="mcp-book-cover-wrap">
+                  <img src={post.book.imageUrl} alt="" className="mcp-book-cover" />
+                </div>
+                <div className="mcp-book-text">
+                  <p className="mcp-book-title">{post.book.title}</p>
+                  <p className="mcp-book-author">{post.book.author}</p>
+                </div>
+              </div>
+            )}
           </div>
 
-        {isLikeUsersOpen && (
-          <LikeUsersList users={likeUsers} />
-        )}
+          <div className="mcp-rule" />
 
-        {isCommentsOpen && (
-          <CommentList
-            comments={post.comments}
-            editingCommentId={editingCommentId}
-            editingContent={editingContent}
-            onEditContentChange={setEditingContent}
-            onEditComment={handleEditComment}
-            onDeleteComment={handleDeleteComment}
-            onUpdateComment={handleUpdateComment}
-            onCancelEdit={handleCancelEdit}
-            formatDate={formatDate}
-            onReply={handleReply}
-            replyingToCommentId={replyingToCommentId}
-            replyContent={replyContent}
-            onReplyContentChange={setReplyContent}
-            onSubmitReply={handleSubmitReply}
-            onCancelReply={handleCancelReply}
-          />
-        )}
+          <section ref={commentsSectionRef} id="mcp-comments" className="mcp-comments" aria-label="댓글">
+            <div className="mcp-comments-head">
+              <span className="mcp-comments-head-icon mgc_chat_3_fill" aria-hidden />
+              <span className="mcp-comments-label">댓글</span>
+              <span className="mcp-comments-count">{post.commentCount}</span>
+            </div>
+            <div className="mcp-comments-list-wrap">
+              {!hasVisibleComments ? (
+                <div className="mcp-comments-empty" role="status">
+                  <p className="mcp-comments-empty-title">아직 댓글이 없어요</p>
+                  <p className="mcp-comments-empty-desc">첫 댓글을 남겨보세요</p>
+                </div>
+              ) : (
+                <CommentList
+                  comments={post.comments}
+                  editingCommentId={editingCommentId}
+                  editingContent={editingContent}
+                  onEditContentChange={setEditingContent}
+                  onEditComment={handleEditComment}
+                  onDeleteComment={handleDeleteComment}
+                  onUpdateComment={handleUpdateComment}
+                  onCancelEdit={handleCancelEdit}
+                  formatDate={formatDate}
+                  onReply={handleReply}
+                  replyingToCommentId={replyingToCommentId}
+                  replyContent={replyContent}
+                  onReplyContentChange={setReplyContent}
+                  onSubmitReply={handleSubmitReply}
+                  onCancelReply={handleCancelReply}
+                />
+              )}
+            </div>
+          </section>
+        </article>
+      </div>
 
-        {isCommentsOpen && (
-          <CommentInput
-            value={newComment}
-            onChange={setNewComment}
-            onSubmit={handleCommentSubmit}
-            isSubmitting={submittingComment}
-          />
-        )}
+      <div className="mcp-input-dock">
+        <CommentInput
+          value={newComment}
+          onChange={setNewComment}
+          onSubmit={handleCommentSubmit}
+          isSubmitting={submittingComment}
+        />
       </div>
 
       <Toast

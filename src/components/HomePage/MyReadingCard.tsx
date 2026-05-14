@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MyReadingCard.css';
+import { SectionErrorBanner } from '../SectionErrorBanner';
 import { getMyCards, type MyCardItem, type GetMyCardsQueryParams } from '../../api/cardApi';
 
 interface ReadingCardItemType {
@@ -155,7 +156,7 @@ const MyReadingCardSection: React.FC = () => {
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
         >
-          <p className="errorMessage">{error}</p>
+          <SectionErrorBanner message={error} onRetry={() => window.location.reload()} />
         </div>
       </section>
     );

@@ -9,6 +9,7 @@ export interface AuthorInfo {
 }
 
 export interface BookInfo {
+  bookId?: number;
   title: string;
   author: string;
   imageUrl: string;
@@ -213,6 +214,8 @@ export interface UpdatePostRequest {
   title: string;
   content: string;
   images: string[];
+  /** 서버가 게시글에 연결할 책(도서) ID — 생략 시 기존 연결 유지 등 서버 정책에 따름 */
+  bookId?: number;
 }
 
 export interface UpdatePostResponse extends BaseApiResponse<{}> {}

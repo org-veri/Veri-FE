@@ -9,6 +9,7 @@ import { getCurrentUserId } from '../../api/auth';
 import ReadingCardEditModal from '../../components/ReadingCardEditModal';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import Toast from '../../components/Toast';
+import { FullPageErrorState } from '../../components/FullPageErrorState';
 import './ReadingCardDetailPage.css';
 
 function ReadingCardDetailPage() {
@@ -289,16 +290,22 @@ function ReadingCardDetailPage() {
 
   if (error) {
     return (
-      <div className="loading-page-container">
-        <p style={{ color: 'red' }}>{error}</p>
-        <button onClick={() => navigate(-1)} className="back-button">뒤로 가기</button>
-      </div>
+      <FullPageErrorState
+        title="독서카드를 불러오지 못했습니다"
+        message={error}
+        primaryAction={{ label: '다시 시도', onClick: () => window.location.reload() }}
+        secondaryAction={{ label: '뒤로', onClick: () => navigate(-1) }}
+      />
     );
   }
 
   if (!cardDetail) {
     return (
-      <div className="reading-card-detail-page-container no-data-state">독서 카드 정보를 찾을 수 없습니다.</div>
+      <FullPageErrorState
+        title="독서카드를 찾을 수 없습니다"
+        message="카드가 없거나 삭제되었을 수 있습니다."
+        secondaryAction={{ label: '뒤로', onClick: () => navigate(-1) }}
+      />
     );
   }
 

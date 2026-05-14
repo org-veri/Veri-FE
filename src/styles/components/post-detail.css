@@ -246,12 +246,43 @@
   padding: 5px;
 }
 
+.detail-like-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.detail-like-button.detail-like-button--icon {
+  gap: 0;
+  padding: 5px 2px 5px 5px;
+}
+
+.detail-like-count-nav {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  padding: 5px 5px 5px 0;
+  font-family: inherit;
+}
+
+.detail-like-count-nav:hover {
+  color: #333;
+}
+
+.detail-like-group.is-liked .detail-like-count-nav {
+  color: #e53e3e;
+}
+
 .detail-like-button:hover,
 .detail-comment-button:hover {
   color: #333;
 }
 
-.detail-like-button.liked {
+.detail-like-group.is-liked .detail-like-button.liked {
   color: #e53e3e;
 }
 

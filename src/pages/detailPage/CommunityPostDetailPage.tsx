@@ -14,6 +14,8 @@ import '../../styles/components/post-detail.css';
 import '../../styles/components/headers.css';
 import './CommunityPostDetailPage.css';
 import CommunityPostEditModal from '../../components/CommunityPostEditModal';
+import { FullPageErrorState } from '../../components/FullPageErrorState';
+import { PATH } from '../../config/routes';
 
 function CommunityPostDetailPage() {
   const navigate = useNavigate();
@@ -493,21 +495,12 @@ function CommunityPostDetailPage() {
 
   if (error || !post) {
     return (
-      <div className="community-post-detail">
-        <div className="detail-header">
-          <button className="back-button" onClick={handleBack}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-          <h1 className="header-title">게시글을 찾을 수 없습니다</h1>
-        </div>
-        <div className="error-content">
-          <p>{error || '게시글을 찾을 수 없습니다.'}</p>
-          <button onClick={() => navigate(-1)} className="retry-button">
-          </button>
-        </div>
-      </div>
+      <FullPageErrorState
+        title={error ? '게시글을 불러오지 못했습니다' : '게시글을 찾을 수 없습니다'}
+        message={error || '게시글을 찾을 수 없습니다.'}
+        primaryAction={{ label: '다시 시도', onClick: () => window.location.reload() }}
+        secondaryAction={{ label: '돌아가기', onClick: handleBack }}
+      />
     );
   }
 
@@ -602,14 +595,25 @@ function CommunityPostDetailPage() {
               <div className="author-name-detail">{post.author.nickname}</div>
             </div>
             <div className="detail-post-actions">
-              <button
-                className={`detail-like-button ${isLiked ? 'liked' : ''} ${isLikeAnimating ? 'animate' : ''}`}
-                onClick={handleLike}
-                disabled={isLiking}
-              >
-                <span className={isLiked ? 'mgc_heart_fill' : 'mgc_heart_line'}></span>
-                <span>{post.likeCount}</span>
-              </button>
+              <div className={`detail-like-group ${isLiked ? 'is-liked' : ''}`}>
+                <button
+                  type="button"
+                  className={`detail-like-button detail-like-button--icon ${isLiked ? 'liked' : ''} ${isLikeAnimating ? 'animate' : ''}`}
+                  onClick={handleLike}
+                  disabled={isLiking}
+                  aria-label="좋아요"
+                >
+                  <span className={isLiked ? 'mgc_heart_fill' : 'mgc_heart_line'}></span>
+                </button>
+                <button
+                  type="button"
+                  className="detail-like-count-nav"
+                  onClick={() => post && navigate(`${PATH.POST_LIKES}/${post.postId}`)}
+                  aria-label="좋아요 목록 보기"
+                >
+                  {post.likeCount}
+                </button>
+              </div>
               <button className="detail-comment-button">
                 <span className="mgc_chat_3_line"></span>
                 <span>{post.commentCount}</span>

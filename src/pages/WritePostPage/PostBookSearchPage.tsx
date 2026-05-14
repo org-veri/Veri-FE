@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { MdArrowBackIosNew } from 'react-icons/md';
 
 import '../../styles/components/search.css';
@@ -7,6 +7,7 @@ import '../../styles/components/book-list.css';
 import './PostBookSearchPage.css';
 import { getAllBooks, type Book } from '../../api/bookApi';
 import Toast from '../../components/Toast';
+import { PATH } from '../../config/routes';
 import type { BookItem } from '../../api/bookSearchApi';
 import BookIcon from '../../assets/icons/book.svg';
 import BookActiveIcon from '../../assets/icons/book_active.svg';
@@ -16,8 +17,14 @@ interface SelectedBookInfo extends BookItem {
     memberBookId?: number;
 }
 
+type PostBookSearchLocationState = {
+    editPostId?: number;
+};
+
 const PostBookSearchPage: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const editPostId = (location.state as PostBookSearchLocationState | null)?.editPostId;
 
     const [myBooks, setMyBooks] = useState<Book[]>([]);
     const [isLoadingMyBooks, setIsLoadingMyBooks] = useState(false);
@@ -77,12 +84,13 @@ const PostBookSearchPage: React.FC = () => {
     const handleConfirmSelection = useCallback(() => {
         if (!selectedBook) return;
 
-        navigate('/write-post', {
+        navigate(PATH.WRITE_POST, {
             state: {
-                selectedBook: selectedBook
+                selectedBook,
+                ...(editPostId != null ? { editPostId } : {}),
             }
         });
-    }, [selectedBook, navigate]);
+    }, [selectedBook, navigate, editPostId]);
 
     return (
         <div className="page-container">

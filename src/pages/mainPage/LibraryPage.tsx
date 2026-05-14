@@ -8,6 +8,7 @@ import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/b
 import BookshelfList from '../../components/LibraryPage/LibraryPageList';
 import LibraryPageGrid from '../../components/LibraryPage/LibraryPageGrid';
 import TopBar from '../../components/TopBar';
+import { FullPageErrorState } from '../../components/FullPageErrorState';
 import { SkeletonList, SkeletonCard } from '../../components/SkeletonUI';
 import ReadingStatusModal from '../../components/ReadingStatusModal';
 import SortOptionsModal from '../../components/SortOptionsModal';
@@ -192,9 +193,12 @@ function LibraryPage() {
 
   if (error) {
     return (
-      <div className="loading-page-container">
-        <p style={{ color: 'red' }}>{error}</p>
-      </div>
+      <FullPageErrorState
+        title="책장을 불러오지 못했습니다"
+        message={error}
+        primaryAction={{ label: '다시 시도', onClick: () => void fetchBooks() }}
+        secondaryAction={{ label: '홈으로', onClick: () => navigate('/') }}
+      />
     );
   }
 

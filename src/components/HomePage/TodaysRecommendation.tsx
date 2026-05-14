@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getPopularBooks, type PopularBookItem, type GetPopularBooksQueryParams } from '../../api/bookApi';
+import { SectionErrorBanner } from '../SectionErrorBanner';
 
 interface RecommendedBookType {
   title: string;
@@ -155,7 +156,7 @@ const TodaysRecommendationSection: React.FC = () => {
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
         >
-          <p className="error-message">{error}</p>
+          <SectionErrorBanner message={error} onRetry={() => window.location.reload()} />
         </div>
       </section>
     );

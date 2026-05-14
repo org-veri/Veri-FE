@@ -4,6 +4,7 @@ import html2canvas from 'html2canvas';
 import { FiDownload, FiShare2 } from 'react-icons/fi';
 
 import { getCardDetailById, type Card } from '../api/cardApi';
+import { FullPageErrorState } from '../components/FullPageErrorState';
 import './DownloadCardPage.css';
 
 interface LocationState {
@@ -290,18 +291,23 @@ function DownloadCardPage() {
 
     if (error) {
         return (
-            <div className="loading-page-container">
-                <p style={{ color: 'red' }}>{error}</p>
-                <button onClick={() => navigate(-1)} className="back-button">뒤로 가기</button>
-            </div>
+            <FullPageErrorState
+                title="독서카드를 불러오지 못했습니다"
+                message={error}
+                primaryAction={{ label: '다시 시도', onClick: () => window.location.reload() }}
+                secondaryAction={{ label: '뒤로', onClick: () => navigate(-1) }}
+            />
         );
     }
 
     if (!cardDetail) {
         return (
-            <div className="download-card-page-container no-data-state">
-                독서 카드 정보를 찾을 수 없습니다.
-            </div>
+            <FullPageErrorState
+                title="독서카드 정보가 없습니다"
+                message="이전 화면에서 다시 시도하거나 책장으로 돌아가 주세요."
+                primaryAction={{ label: '독서카드 목록', onClick: () => navigate('/reading-card') }}
+                secondaryAction={{ label: '뒤로', onClick: () => navigate(-1) }}
+            />
         );
     }
 

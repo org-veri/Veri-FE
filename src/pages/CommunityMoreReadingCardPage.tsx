@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCards } from '../api/communityApi';
 import type { Card, GetCardsQueryParams } from '../api/communityApi';
+import { FullPageErrorState } from '../components/FullPageErrorState';
 import './CommunityMoreReadingCardPage.css';
 
 interface CardItemProps {
@@ -191,26 +192,12 @@ function CommunityMoreReadingCardPage() {
 
   if (error) {
     return (
-      <div className="page-container">
-        <header className="detail-header">
-          <button className="header-left-arrow" onClick={handleBack}>
-            <span className="mgc_left_fill"></span>
-          </button>
-          <h3>독서카드</h3>
-          <div className="header-right-wrapper"></div>
-        </header>
-
-        <div className="header-margin"></div>
-
-        <div className="reading-cards-page">
-          <div className="error-container">
-            <p>{error}</p>
-            <button onClick={handleRefresh} className="retry-button">
-              다시 시도
-            </button>
-          </div>
-        </div>
-      </div>
+      <FullPageErrorState
+        title="독서카드를 불러오지 못했습니다"
+        message={error}
+        primaryAction={{ label: '다시 시도', onClick: handleRefresh }}
+        secondaryAction={{ label: '뒤로', onClick: handleBack }}
+      />
     );
   }
 

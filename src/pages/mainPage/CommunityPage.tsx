@@ -6,6 +6,7 @@ import { getPostFeed, getCards } from '../../api/communityApi';
 import type { Post, GetPostFeedQueryParams, Card, GetCardsQueryParams } from '../../api/communityApi';
 import { getCurrentUserId } from '../../api/auth';
 import './CommunityPage.css';
+import { SectionErrorBanner } from '../../components/SectionErrorBanner';
 
 function CommunityPage() {
   const navigate = useNavigate();
@@ -230,12 +231,7 @@ function CommunityPage() {
               </button>
             </div>
             {error && (
-              <div className="error-message">
-                <p>{error}</p>
-                <button onClick={handleRefresh} className="retry-button">
-                  다시 시도
-                </button>
-              </div>
+              <SectionErrorBanner message={error} onRetry={handleRefresh} />
             )}
           </div>
 

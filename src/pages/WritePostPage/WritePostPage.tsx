@@ -2,17 +2,26 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './WritePostPage.css';
 import type { BookItem } from '../../api/bookSearchApi';
-import { createPost } from '../../api/communityApi';
+import { createPost, getPostDetail, updatePost, type UpdatePostRequest } from '../../api/communityApi';
 import { uploadImage } from '../../api/imageApi';
 import Toast from '../../components/Toast';
+import { PATH } from '../../config/routes';
 
 interface SelectedBookInfo extends BookItem {
   bookId?: number;
 }
 
+type WritePostLocationState = {
+  editPostId?: number;
+  selectedBook?: SelectedBookInfo;
+};
+
 function WritePostPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const writePostState = location.state as WritePostLocationState | null;
+  const editPostId = writePostState?.editPostId;
+  const isEditMode = editPostId != null;
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [images, setImages] = useState<string[]>([]);
@@ -40,26 +49,68 @@ function WritePostPage() {
   };
 
   useEffect(() => {
-    const restoreDraft = async () => {
-      try {
-        if (location.state?.selectedBook) {
-          setSelectedBook(location.state.selectedBook);
+    const state = location.state as WritePostLocationState | null;
+    const editId = state?.editPostId;
+
+    if (editId != null) {
+      (async () => {
+        try {
+          const res = await getPostDetail(editId);
+          if (res.isSuccess && res.result) {
+            const p = res.result;
+            setTitle(p.title);
+            setContent(p.content);
+            const urls = p.images?.length ? [...p.images] : [];
+            setImages(urls);
+            setUploadedImageUrls([...urls]);
+            if (state?.selectedBook) {
+              setSelectedBook(state.selectedBook);
+            } else if (p.book) {
+              setSelectedBook({
+                bookId: p.book.bookId,
+                title: p.book.title,
+                author: p.book.author,
+                imageUrl: p.book.imageUrl,
+                publisher: p.book.publisher ?? '',
+                isbn: p.book.isbn ?? '',
+              });
+            } else {
+              setSelectedBook(null);
+            }
+          } else {
+            showToast(res.message || '게시글을 불러오지 못했습니다.', 'error');
+            navigate(-1);
+          }
+        } catch {
+          showToast('게시글을 불러오는 중 오류가 발생했습니다.', 'error');
+          navigate(-1);
+        } finally {
+          setIsInitialLoad(false);
         }
-        
+      })();
+      return;
+    }
+
+    const restoreDraft = () => {
+      try {
+        if (state?.selectedBook) {
+          setSelectedBook(state.selectedBook);
+        }
+
         const savedData = localStorage.getItem('writePostDraft');
         if (savedData) {
           const draft = JSON.parse(savedData);
-          
+
           setTitle(draft.title || '');
           setContent(draft.content || '');
-          
-          if (!location.state?.selectedBook && draft.selectedBook) {
+
+          if (!state?.selectedBook && draft.selectedBook) {
             setSelectedBook(draft.selectedBook);
           }
-          
+
           if (draft.images && draft.images.length > 0) {
             setImages(draft.images);
-            
+
             if (draft.uploadedImageUrls && draft.uploadedImageUrls.length > 0) {
               setUploadedImageUrls(draft.uploadedImageUrls);
             } else {
@@ -67,18 +118,19 @@ function WritePostPage() {
             }
           }
         }
-        
+
         setIsInitialLoad(false);
       } catch {
         setIsInitialLoad(false);
       }
     };
-    
+
     restoreDraft();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   useEffect(() => {
-    if (!isInitialLoad) {
+    if (!isInitialLoad && !isEditMode) {
       try {
         const draft = {
           title,
@@ -90,10 +142,12 @@ function WritePostPage() {
         localStorage.setItem('writePostDraft', JSON.stringify(draft));
       } catch {}
     }
-  }, [title, content, images, uploadedImageUrls, selectedBook, isInitialLoad]);
+  }, [title, content, images, uploadedImageUrls, selectedBook, isInitialLoad, isEditMode]);
 
   const handleBookSelection = () => {
-    navigate('/post-book-search');
+    navigate(PATH.POST_BOOK_SEARCH, {
+      state: isEditMode && editPostId != null ? { editPostId } : undefined
+    });
   };
 
   const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -168,7 +222,7 @@ function WritePostPage() {
       return;
     }
 
-    if (!selectedBook) {
+    if (!isEditMode && !selectedBook) {
       showToast('책을 선택해주세요.', 'warning');
       return;
     }
@@ -181,7 +235,31 @@ function WritePostPage() {
     setIsSubmitting(true);
 
     try {
-      const postData: any = {
+      if (isEditMode && editPostId != null) {
+        const updateBody: UpdatePostRequest = {
+          title: title.trim(),
+          content: content.trim(),
+          images: uploadedImageUrls,
+        };
+        if (selectedBook?.bookId != null) {
+          updateBody.bookId = selectedBook.bookId;
+        }
+        const response = await updatePost(editPostId, updateBody);
+
+        if (response.isSuccess) {
+          navigate(`${PATH.MY_COMMUNITY_POST}/${editPostId}`, { replace: true });
+        } else {
+          showToast(response.message || '게시글 수정에 실패했습니다.', 'error');
+        }
+        return;
+      }
+
+      const postData: {
+        title: string;
+        content: string;
+        images: string[];
+        bookId?: number;
+      } = {
         title: title.trim(),
         content: content.trim(),
         images: uploadedImageUrls,
@@ -200,7 +278,7 @@ function WritePostPage() {
         showToast(response.message || '게시글 작성에 실패했습니다.', 'error');
       }
     } catch {
-      showToast('게시글 작성 중 오류가 발생했습니다.', 'error');
+      showToast(isEditMode ? '게시글 수정 중 오류가 발생했습니다.' : '게시글 작성 중 오류가 발생했습니다.', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -209,12 +287,20 @@ function WritePostPage() {
   return (
     <div className="page-container">
       <header className="detail-header">
-        <button className="header-left-arrow" onClick={() => navigate(-1)}>
+        <button
+          className="header-left-arrow"
+          type="button"
+          onClick={() =>
+            isEditMode && editPostId != null
+              ? navigate(`${PATH.MY_COMMUNITY_POST}/${editPostId}`, { replace: true })
+              : navigate(-1)
+          }
+        >
           <span
             className="mgc_close_line"
           ></span>
         </button>
-        <h3>글쓰기</h3>
+        <h3>{isEditMode ? '글 수정하기' : '글쓰기'}</h3>
         <div className="header-right-wrapper">
           <button
             className="header-menu-button"
@@ -315,10 +401,25 @@ function WritePostPage() {
         <div className="submit-section">
           <button 
             className="submit-button"
+            type="button"
             onClick={handleSubmit}
-            disabled={isSubmitting || isUploadingImages || !title.trim() || !content.trim() || !selectedBook}
+            disabled={
+              isSubmitting ||
+              isUploadingImages ||
+              !title.trim() ||
+              !content.trim() ||
+              (!isEditMode && !selectedBook)
+            }
           >
-            {isSubmitting ? '작성 중...' : isUploadingImages ? '이미지 업로드 중...' : '글 올리기'}
+            {isSubmitting
+              ? isEditMode
+                ? '수정 중...'
+                : '작성 중...'
+              : isUploadingImages
+                ? '이미지 업로드 중...'
+                : isEditMode
+                  ? '수정하기'
+                  : '글 올리기'}
           </button>
         </div>
       </div>

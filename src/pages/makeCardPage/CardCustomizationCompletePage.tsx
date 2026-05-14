@@ -4,6 +4,8 @@ import './CardCustomizationCompletePage.css';
 import { createCard, uploadImageAndGetUrl } from '../../api/cardApi';
 import { getBookById, type GetBookByIdResponse } from '../../api/bookApi';
 import Toast from '../../components/Toast';
+import { FullPageErrorState } from '../../components/FullPageErrorState';
+import { SectionErrorBanner } from '../../components/SectionErrorBanner';
 import downIcon from '../../assets/icons/down.svg';
 import instarIcon from '../../assets/icons/instar.svg';
 
@@ -190,18 +192,25 @@ const CardCustomizationCompletePage: React.FC = () => {
         return (
             <div className="loading-page-container">
                 <p>독서카드를 저장 중입니다...</p>
-                {saveError && <p style={{ color: 'red' }}>오류: {saveError}</p>}
+                {saveError && (
+                    <SectionErrorBanner
+                        message={saveError}
+                        onRetry={() => navigate('/make-card')}
+                        retryLabel="카드 만들기로"
+                    />
+                )}
             </div>
         );
     }
 
     if (saveError) {
         return (
-            <div className="page-container error-state">
-                <p>카드 저장에 실패했습니다.</p>
-                <p>오류: {saveError}</p>
-                <button onClick={() => navigate('/make-card')}>다시 시도하기</button>
-            </div>
+            <FullPageErrorState
+                title="카드 저장에 실패했습니다"
+                message={saveError}
+                primaryAction={{ label: '다시 만들기', onClick: () => navigate('/make-card') }}
+                secondaryAction={{ label: '독서카드 목록', onClick: () => navigate('/reading-card') }}
+            />
         );
     }
 

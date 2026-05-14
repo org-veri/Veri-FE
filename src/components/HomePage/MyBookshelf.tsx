@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookApi';
+import { SectionErrorBanner } from '../SectionErrorBanner';
 
 interface BookshelfItemType {
   id: string;
@@ -114,7 +115,7 @@ const MyBookshelfSection: React.FC = () => {
           <span className="more-link" onClick={handleGoToBookshelf}>책장으로 가기 &gt;</span>
         </div>
         <div className="bookshelf-list horizontal-scroll-container">
-          <p className="error-message">{error}</p>
+          <SectionErrorBanner message={error} onRetry={() => window.location.reload()} />
         </div>
       </section>
     );

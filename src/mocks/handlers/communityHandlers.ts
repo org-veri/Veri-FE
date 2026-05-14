@@ -1,5 +1,5 @@
 import { http, HttpResponse, delay } from 'msw';
-import { createMockResponse, mockCommunityCards, mockCommunityPosts } from '../data';
+import { createMockResponse, mockCommunityCards, mockCommunityPosts, mockBooks } from '../data';
 
 let posts = mockCommunityPosts();
 let cards = mockCommunityCards();
@@ -32,6 +32,23 @@ const buildPostDetail = (postId: number) => {
     ...post,
     images: post.thumbnail ? [post.thumbnail] : [],
     isLiked: Boolean(post.isLiked),
+    likedMembers: [
+      {
+        id: 201,
+        nickname: '김현아',
+        profileImageUrl: '/images/profileSample/sample_user.png',
+      },
+      {
+        id: 202,
+        nickname: '김세원',
+        profileImageUrl: '/images/profileSample/sample_user.png',
+      },
+      {
+        id: 203,
+        nickname: '이독서',
+        profileImageUrl: '/images/profileSample/sample_user.png',
+      },
+    ],
     comments: [
       {
         commentId: 1,
@@ -136,12 +153,30 @@ export const communityHandlers = [
     return withDelay(body);
   }),
   http.patch('*/api/v1/posts/:postId', async ({ request, params }) => {
-    const payload = await safeJson<Partial<{ title: string; content: string; images: string[] }>>(request);
+    const payload = await safeJson<
+      Partial<{ title: string; content: string; images: string[]; bookId?: number }>
+    >(request);
     const post = posts.find(item => item.postId === Number(params.postId));
     if (post) {
       post.title = payload.title ?? post.title;
       post.content = payload.content ?? post.content;
       post.thumbnail = payload.images?.[0] ?? post.thumbnail;
+      if (payload.bookId != null) {
+        const shelfBook = mockBooks.find(
+          (b) => b.bookId === payload.bookId || b.memberBookId === payload.bookId
+        );
+        if (shelfBook) {
+          const bid = shelfBook.bookId ?? shelfBook.memberBookId;
+          post.book = {
+            bookId: bid,
+            title: shelfBook.title,
+            author: shelfBook.author,
+            imageUrl: shelfBook.imageUrl,
+            publisher: '',
+            isbn: '',
+          };
+        }
+      }
     }
     const body = createMockResponse({}, 'Mock 게시글 수정 성공');
     return withDelay(body);

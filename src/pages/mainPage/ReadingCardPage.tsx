@@ -5,6 +5,7 @@ import ReadingCardItem from '../../components/ReadingCardPage/ReadingCardItem';
 import ReadingCardGridItem from '../../components/ReadingCardPage/ReadingCardGridItem';
 import { getMyCards, getCardDetailById, type MyCardItem, type GetMyCardsQueryParams } from '../../api/cardApi';
 import TopBar from '../../components/TopBar';
+import { FullPageErrorState } from '../../components/FullPageErrorState';
 import { SkeletonList, SkeletonReadingCard, SkeletonReadingCardGrid } from '../../components/SkeletonUI';
 
 export interface ReadingCardItemType {
@@ -144,7 +145,20 @@ function ReadingCardPage() {
     };
 
     if (error) {
-        return <div className="loading-page-container reading-card-page-message reading-card-page-error">{error}</div>;
+        return (
+            <FullPageErrorState
+                title="독서카드를 불러오지 못했습니다"
+                message={error}
+                primaryAction={{
+                    label: '다시 시도',
+                    onClick: () => {
+                        setError(null);
+                        void fetchCards();
+                    },
+                }}
+                secondaryAction={{ label: '홈으로', onClick: () => navigate('/') }}
+            />
+        );
     }
 
     return (

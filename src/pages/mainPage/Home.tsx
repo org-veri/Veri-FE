@@ -7,6 +7,7 @@ import { getMemberProfile } from '../../api/memberApi';
 import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookApi';
 import { SkeletonHeroSection } from '../../components/SkeletonUI';
 import TopBar from '../../components/TopBar';
+import { FullPageErrorState } from '../../components/FullPageErrorState';
 import sampleBookBackground from '../../assets/images/profileSample/sample_book_background.jpg';
 import sampleBook from '../../assets/images/profileSample/sample_book.jpg';
 
@@ -131,7 +132,14 @@ function LibraryPage() {
   };
 
   if (error) {
-    return <div className="loading-page-container"><p style={{ color: 'red' }}>{error}</p></div>;
+    return (
+      <FullPageErrorState
+        title="홈을 불러오지 못했습니다"
+        message={error}
+        primaryAction={{ label: '다시 시도', onClick: () => window.location.reload() }}
+        secondaryAction={{ label: '홈으로', onClick: () => navigate('/') }}
+      />
+    );
   }
 
   if (isUserDataLoading || !userData) {

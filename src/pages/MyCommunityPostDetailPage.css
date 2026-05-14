@@ -1,37 +1,577 @@
+/* 내 게시글 상세 — Figma 390 레이아웃 정렬 */
 
-.community-post-detail {
+.mcp-detail {
+  max-width: 390px;
+  margin: 0 auto;
   min-height: 100vh;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
+  background: #fff;
+  position: relative;
+  padding-bottom: 120px;
+  text-align: left;
 }
 
-.back-button,
-.menu-button {
-  background: none;
-  border: none;
-  padding: 8px;
-  cursor: pointer;
-  color: #333;
+.mcp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fff;
+}
+
+.mcp-header-back {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: -8px 0 -8px -8px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
-.back-button:hover,
-.menu-button:hover {
-  background-color: #f5f5f5;
+.mcp-header-back .mgc_left_fill {
+  font-size: 22px;
+}
+
+.mcp-header-title {
+  margin: 0;
+  flex: 1;
+  text-align: center;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.3;
+  letter-spacing: -0.64px;
+  color: #000;
+}
+
+.mcp-header-title-strong {
+  font-weight: 600;
+  letter-spacing: -0.1px;
+}
+
+.mcp-header-title-suffix {
+  font-weight: 500;
+  letter-spacing: -0.1px;
+}
+
+.mcp-header-menu-area {
+  position: relative;
+  width: 40px;
+  min-height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.mcp-header-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: -8px -8px -8px 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
   border-radius: 50%;
 }
 
-.header-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
+.mcp-header-menu:hover {
+  background: #f4f5f7;
 }
-@media (max-width: 480px) {
-  .header-title {
-    font-size: 16px;
-  }
-} 
+
+.mcp-header-menu-spacer {
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+.mcp-header-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+}
+
+.mcp-header-dropdown .mcp-menu-mgc-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.mcp-header-dropdown .mcp-menu-mgc-icon::before {
+  color: #333 !important;
+}
+
+.mcp-scroll {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: left;
+}
+
+.mcp-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+}
+
+.mcp-hero-media {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  background: #e3e4e7;
+  overflow: hidden;
+}
+
+.mcp-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mcp-hero-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 14px;
+  color: #777a87;
+}
+
+.mcp-visibility-pill {
+  position: absolute;
+  top: 13px;
+  left: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e3e4e7;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.56px;
+  color: #6a717b;
+  cursor: pointer;
+  max-width: calc(100% - 40px);
+}
+
+.mcp-visibility-pill:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mcp-visibility-pill-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mcp-visibility-pill .mcp-visibility-pill-icon.mgc_unlock_fill::before,
+.mcp-visibility-pill .mcp-visibility-pill-icon.mgc_lock_fill::before {
+  color: var(--grey-600) !important;
+}
+
+.mcp-dots {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 6px;
+  padding: 0 20px 4px;
+}
+
+.mcp-dot {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: #e3e4e7;
+  cursor: pointer;
+}
+
+.mcp-dot.is-active {
+  width: 6px;
+  height: 6px;
+  background: #18181b;
+}
+
+.mcp-body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0;
+  text-align: left;
+  align-items: stretch;
+}
+
+.mcp-body-pad {
+  padding: 0 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mcp-engagement-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.mcp-engagement-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.mcp-stat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.28px;
+  color: #3f3f46;
+}
+
+.mcp-stat-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mcp-stat-btn .mgc_heart_line,
+.mcp-stat-btn .mgc_heart_fill,
+.mcp-stat-btn .mgc_chat_3_line,
+.mcp-stat-btn .mgc_chat_3_fill {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.mcp-stat-btn .mgc_heart_fill::before,
+.mcp-stat-btn .mgc_chat_3_fill::before {
+  color: var(--grey-700) !important;
+}
+
+.mcp-stat-like-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mcp-stat-btn.mcp-stat-btn--like-icon,
+.mcp-stat-btn.mcp-stat-btn--like-count {
+  gap: 0;
+}
+
+.mcp-stat-btn.mcp-stat-btn--like-count {
+  padding-left: 2px;
+}
+
+.mcp-stat-like-group.is-liked .mcp-stat-btn--like-icon .mgc_heart_fill::before {
+  color: #e53e3e !important;
+}
+
+.mcp-stat-like-group.is-liked .mcp-stat-btn--like-count .mcp-stat-count {
+  color: #e53e3e;
+}
+
+.mcp-stat-count {
+  line-height: 19.6px;
+}
+
+.mcp-post-date {
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: -0.48px;
+  line-height: 16.8px;
+  color: #777a87;
+  white-space: nowrap;
+}
+
+.mcp-lead-title {
+  margin: 0;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.64px;
+  line-height: 1.45;
+  color: #18181b;
+  text-align: left;
+  width: 100%;
+}
+
+.mcp-prose {
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.56px;
+  line-height: 1.4;
+  color: #18181b;
+  white-space: pre-wrap;
+  word-break: break-word;
+  text-align: left;
+  width: 100%;
+}
+
+.mcp-book-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--light-gray-2, #f4f5f7);
+  background: rgba(244, 245, 247, 0.4);
+  box-sizing: border-box;
+}
+
+.mcp-book-cover-wrap {
+  width: 64px;
+  height: 94px;
+  flex-shrink: 0;
+  border-radius: 6.81px;
+  overflow: hidden;
+  border: 0.68px solid #e3e4e7;
+  background: #fff;
+}
+
+.mcp-book-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mcp-book-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 0;
+  text-align: left;
+  align-items: flex-start;
+}
+
+.mcp-book-title {
+  margin: 0;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #18181b;
+  line-height: 1.35;
+  text-align: left;
+  width: 100%;
+}
+
+.mcp-book-author {
+  margin: 0;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(12, 15, 20, 0.7);
+  line-height: 1.35;
+  text-align: left;
+  width: 100%;
+}
+
+.mcp-rule {
+  height: 6px;
+  width: 100%;
+  background: #f4f5f7;
+}
+
+.mcp-comments {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 24px;
+  text-align: left;
+  align-items: stretch;
+  width: 100%;
+}
+
+.mcp-comments-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+}
+
+.mcp-comments-head-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.mcp-comments-head .mcp-comments-head-icon.mgc_chat_3_fill::before {
+  color: var(--grey-400) !important;
+}
+
+.mcp-comments-label {
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.24px;
+  color: #6a717b;
+}
+
+.mcp-comments-count {
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.28px;
+  color: #3f3f46;
+}
+
+.mcp-comments-list-wrap {
+  padding: 0 8px;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 댓글 리스트 — 피그마 여백에 맞춤 */
+.mcp-detail .comments-section {
+  padding: 0 4px 8px;
+  text-align: left;
+}
+
+.mcp-detail .comments-list {
+  gap: 0;
+  text-align: left;
+}
+
+.mcp-detail .comment-item-container {
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #f4f5f7;
+  text-align: left;
+}
+
+.mcp-detail .comment-header,
+.mcp-detail .comment-content,
+.mcp-detail .comment-footer,
+.mcp-detail .comment-author {
+  text-align: left;
+}
+
+.mcp-detail .comment-item-container:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.mcp-detail .comment-item {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border-bottom: none;
+}
+
+.mcp-detail .comment-item.is-reply {
+  background: transparent;
+}
+
+.mcp-input-dock {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 100%;
+  max-width: 390px;
+  z-index: 50;
+  background: #fff;
+  padding: 10px 20px max(30px, calc(12px + env(safe-area-inset-bottom)));
+  box-sizing: border-box;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.mcp-comments-empty {
+  padding: 28px 20px 36px;
+  text-align: left;
+}
+
+.mcp-comments-empty-title {
+  margin: 0 0 6px;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: #3f3f46;
+}
+
+.mcp-comments-empty-desc {
+  margin: 0;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.26px;
+  color: #6a717b;
+}
+
+.mcp-detail .comment-input-section {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  border-top: none;
+  padding: 0;
+  background: transparent;
+}
+
+.mcp-detail .comment-input-wrapper {
+  padding: 0 16px;
+  min-height: 48px;
+  align-items: center;
+  background: var(--light-gray-2, #f4f5f7);
+  border-radius: 6px;
+}
+
+.mcp-detail .comment-input {
+  background: transparent;
+  border-radius: 0;
+  padding: 14px 52px 14px 0;
+}
+
+.mcp-detail .comment-input::placeholder {
+  color: #6a717b;
+}
+
+.mcp-detail .comment-submit {
+  background: transparent;
+  right: 8px;
+}
