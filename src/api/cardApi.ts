@@ -307,12 +307,10 @@ export async function updateCard(cardId: number, body: UpdateCardRequest): Promi
 }
 
 export async function updateCardVisibility(cardId: number, isPublic: boolean): Promise<UpdateCardVisibilityResponse> {
-  const url = new URL(`${BASE_URL}/api/cards/${cardId}/visibility`);
-  url.searchParams.append('isPublic', String(isPublic));
-
   try {
-    const response = await fetchWithAuth(url.toString(), {
+    const response = await fetchWithAuth(`${BASE_URL}/api/cards/${cardId}/visibility`, {
       method: 'PATCH',
+      body: JSON.stringify({ isPublic }),
     });
 
     const data: UpdateCardVisibilityResponse = await response.json();

@@ -236,17 +236,17 @@ export const updateBookStatus = async (
   memberBookId: number,
   data: UpdateBookStatusRequest
 ): Promise<UpdateBookStatusResponse> => {
-  return makeApiRequest<UpdateBookStatusResponse>(`/api/bookshelf/${memberBookId}/modify`, {
+  return makeApiRequest<UpdateBookStatusResponse>(`/api/bookshelf/${memberBookId}`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   });
 };
 
 export const updateBookContent = async (
-  memberBookId: number, 
+  memberBookId: number,
   bookData: UpdateBookContentRequest
 ): Promise<UpdateBookStatusResponse> => {
-  return makeApiRequest<UpdateBookStatusResponse>(`/api/bookshelf/${memberBookId}/modify`, {
+  return makeApiRequest<UpdateBookStatusResponse>(`/api/bookshelf/${memberBookId}`, {
     method: 'PATCH',
     body: JSON.stringify(bookData),
   });
