@@ -1,57 +1,197 @@
-.community-content {
-  padding: 0 10px;
-  height: auto;
+.community-page .community-content {
+  padding: 0 20px;
   min-height: 100vh;
-  background-color: white;
+  background-color: #fff;
 }
 
-.reading-cards-section {
-  background-color: #fff;
-  padding: 0px 10px;
+.community-tabs-wrap {
   margin-bottom: 20px;
 }
 
-.reading-cards-section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
+.community-tabs {
+  display: flex;
+  width: 100%;
+  max-width: 358px;
+  margin: 0 auto;
+}
+
+.community-tab {
+  flex: 1;
+  padding: 14px 0;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: none;
+  font-family: Pretendard, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #adafb8;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.community-tab--active {
+  color: #18181b;
+  font-weight: 700;
+  border-bottom-color: #303336;
+}
+
+.community-tabs-divider {
+  height: 1px;
+  background: #f3f4f5;
+}
+
+.community-tab-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.community-tab-panel--recommended {
+  gap: 50px;
+}
+
+/* 구독 — 친구 독서카드 */
+.friends-cards-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+}
+
+.friends-cards-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.friends-cards-title {
+  margin: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #0c0c0e;
+}
+
+.friends-cards-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  font-family: Pretendard, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(26, 26, 26, 0.5);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.friends-cards-chevron {
+  display: inline-block;
+  width: 5px;
+  height: 10px;
+  border-right: 1.5px solid rgba(26, 26, 26, 0.5);
+  border-bottom: 1.5px solid rgba(26, 26, 26, 0.5);
+  transform: rotate(-45deg);
+  margin-top: -1px;
+}
+
+.friends-cards-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+.friends-cards-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.friends-card-item {
+  flex: 0 0 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
   text-align: left;
 }
 
-.recommendations-section-title {
-  font-size: clamp(16px, 4vw, 18px);
+.friends-card-item--empty {
+  cursor: default;
+}
+
+.friends-card-thumb {
+  width: 100px;
+  height: 100px;
+  border-radius: 5px;
+  background-color: #e4e4e7;
+  background-size: cover;
+  background-position: center;
+  box-shadow: inset 0 0 0 0.83px #e4e4e7;
+}
+
+.friends-card-excerpt {
+  margin: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: rgba(26, 26, 26, 0.8);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.friends-cards-loading,
+.cards-loading,
+.community-posts-loading {
+  margin-top: 8px;
+}
+
+/* 추천 — 독서카드 그리드 */
+.reading-cards-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reading-cards-section-title {
+  margin: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: #1a1a1a;
   text-align: left;
-  white-space: nowrap;
-  line-height: 1.2;
 }
 
 .community-reading-cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
-  margin-bottom: 10px;
+  gap: 4px;
 }
 
 .community-reading-card-item {
   aspect-ratio: 1;
-  border-radius: 8px;
+  border: none;
+  padding: 0;
+  border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.community-reading-card-item:hover {
-  transform: scale(1.02);
+  background: #e4e4e7;
 }
 
 .community-reading-card-item.community-reading-card-empty {
   cursor: default;
-}
-
-.community-reading-card-item.community-reading-card-empty:hover {
-  transform: none;
 }
 
 .community-reading-card-image {
@@ -59,16 +199,17 @@
   height: 100%;
   background-size: cover;
   background-position: center;
-  background-color: #e0e0e0;
+  background-color: #e4e4e7;
 }
 
 .more-cards-button {
   width: 100%;
-  padding: 15px;
-  background-color: #f5f5f5;
+  padding: 10px;
+  background-color: #f4f4f5;
   border: none;
-  border-radius: 8px;
-  color: #666;
+  border-radius: 6px;
+  color: #5f626d;
+  font-family: Pretendard, sans-serif;
   font-size: 18px;
   font-weight: 400;
   cursor: pointer;
@@ -76,355 +217,229 @@
 }
 
 .more-cards-button:hover {
-  background-color: #eeeeee;
+  background-color: #ebebec;
 }
 
+/* 추천글 섹션 */
 .recommendations-section {
-  background-color: #fff;
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .recommendations-header {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0px 10px 0px 10px;
-  gap: 10px;
-}
-
-.title-section {
-  display: flex;
-  align-items: baseline;
   gap: 8px;
-  flex-wrap: nowrap;
-  min-width: 0;
-  flex: 1;
+  flex-wrap: wrap;
 }
 
-.write-post-button {
-  background-color: var(--light-gray-2);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 5px 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  display: none;
-}
-
-.write-icon {
-  font-size: 16px;
-  color: var(--Black, #1A1A1A) !important;
+.recommendations-section-title {
+  margin: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
 }
 
 .section-subtitle {
-  text-align: start;
-  font-size: clamp(11px, 3vw, 14px);
-  color: #666;
-  white-space: nowrap;
-  line-height: 1.2;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #5f626d;
 }
 
-.recommendations-list {
+.community-feed-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
-.recommendation-item {
-  padding: 15px;
-  border-radius: 10px;
+.community-posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 게시글 카드 */
+.community-post-item {
+  display: flex;
+  flex-direction: column;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  border: none;
+  background: none;
+  padding: 0;
+  width: 100%;
+  text-align: left;
 }
 
-.author-info {
+.community-post-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  padding: 14px 0;
 }
 
-.author-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+.community-post-avatar {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 20px;
   overflow: hidden;
-  background-color: #e0e0e0;
+  background-color: #e4e4e7;
 }
 
-.author-avatar img {
+.community-post-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.author-details {
-  align-items: flex-start;
-  flex: 1;
+.community-post-author {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  min-height: 32px;
+  padding: 2px 0;
+  min-width: 0;
+}
+
+.community-post-author-name {
+  font-family: Pretendard, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1a1a1a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.community-post-book {
+  display: flex;
+  align-items: center;
   gap: 2px;
   min-width: 0;
 }
 
-.author-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: black;
+.community-post-book .mgc_book_6_fill::before {
+  font-size: 10px;
+  color: rgba(106, 113, 123, 0.7);
+}
+
+.community-post-book-title {
+  font-family: Pretendard, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: #5f626d;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 100%;
 }
 
-.card-book {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  min-width: 0;
-  max-width: 100%;
-}
-
-.card-book .mgc_book_6_fill::before {
-  font-size: 14px;
-  color: var(--text-dark-gray);
-  flex-shrink: 0;
-}
-
-.community-more-book-title {
-  font-size: 12px;
-  color: var(--text-dark-gray);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-  min-width: 0;
-}
-
-.author-book-title {
-  text-align: start;
-  font-size: 12px;
-  line-clamp: 1;
-  color: var(--text-dark-gray)
-}
-
-.recommendation-image {
+.community-post-image {
   width: 100%;
+  height: 200px;
+  border-radius: 16px;
   overflow: hidden;
+  background-color: #e4e4e7;
 }
 
-.recommendation-image img {
+.community-post-image img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
-.no-image-placeholder {
+.community-post-image-placeholder {
   width: 100%;
-  height: 200px;
-  background-color: #e0e0e0;
+  height: 100%;
+  background-color: #e4e4e7;
+}
+
+.community-post-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 4px 0;
+}
+
+.community-post-stats {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #999;
+  gap: 10px;
+}
+
+.community-post-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: Pretendard, sans-serif;
   font-size: 14px;
   font-weight: 500;
+  color: #0c0c0e;
 }
 
-.action-buttons {
-  display: flex;
-  gap: 15px;
+.community-post-stat .mgc_heart_line::before,
+.community-post-stat .mgc_heart_fill::before,
+.community-post-stat .mgc_chat_3_line::before {
+  font-size: 16px;
+  color: #0c0c0e;
 }
 
-.action-button {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 15px;
-  color: #666;
-  padding: 0;
-}
-
-.action-button:hover {
-  color: #333;
-}
-
-.action-button.liked {
+.community-post-stat .mgc_heart_fill::before {
   color: #e53e3e;
 }
 
-.action-button.liked .mgc_heart_fill::before,
-.action-button.liked .mgc_heart_fill {
-  color: #e53e3e !important;
+.community-post-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.heart-icon,
-.comment-icon {
-  font-size: 16px;
-}
-
-.recommendation-content {
+.community-post-content {
+  margin: 0;
+  font-family: Pretendard, sans-serif;
   font-size: 14px;
-  line-height: 1.5;
-  color: #333;
-}
-
-.recommendation-content p {
-  margin: 0 0 5px 0;
-}
-
-.recommendation-date {
-  font-size: 12px;
-  color: #999;
-  margin-top: 10px;
-}
-
-.cards-loading,
-.recommendations-loading {
-  margin-top: 20px;
-}
-
-.error-message {
-  background-color: #fff5f5;
-  border: 1px solid #fed7d7;
-  border-radius: 8px;
-  padding: 12px;
-  margin: 10px 0;
-  text-align: center;
-  font-size: 14px;
-  font-family: Pretendard;
-}
-
-.error-message p {
-  color: #dc3545;
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  font-family: Pretendard;
-}
-
-.retry-button {
-  background-color: #e53e3e;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.retry-button:hover {
-  background-color: #c53030;
-}
-
-.post-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 8px 0;
+  font-weight: 400;
   line-height: 1.4;
-}
-
-.post-content {
-  text-align: start;
-  font-size: 14px;
-  color: #666;
-  line-height: 1.5;
+  color: #0c0c0e;
   display: -webkit-box;
   -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
   overflow: hidden;
-  margin: 0;
 }
 
-.post-date {
+.community-post-date {
+  font-family: Pretendard, sans-serif;
   font-size: 12px;
-  color: #999;
-  flex-shrink: 0;
-  text-align: left;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #5f626d;
 }
 
-.post-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+.community-loading-more {
+  text-align: center;
+  font-family: Pretendard, sans-serif;
+  font-size: 14px;
+  color: #5f626d;
   margin: 8px 0;
 }
 
-.tag {
-  background-color: #f0f0f0;
-  color: #666;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.action-button.liked .heart-icon {
-  color: #e53e3e;
-}
-
-.load-more-section {
-  text-align: center;
-  margin: 20px 0;
-}
-
-.load-more-button {
-  background-color: #f7fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-size: 14px;
-  color: #4a5568;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.load-more-button:hover:not(:disabled) {
-  background-color: #edf2f7;
-  border-color: #cbd5e0;
-}
-
-.load-more-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.no-posts {
+.community-no-posts {
   text-align: center;
   padding: 40px 20px;
-  color: #777;
+  color: #5f626d;
+  font-family: Pretendard, sans-serif;
   font-size: 14px;
-  font-family: Pretendard;
 }
 
-.no-posts p {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  font-family: Pretendard;
+.community-no-posts p {
+  margin: 0 0 8px;
 }
 
-.no-posts p:first-child {
+.community-no-posts p:first-child {
   font-size: 16px;
   font-weight: 500;
-  color: #666;
+  color: #1a1a1a;
 }

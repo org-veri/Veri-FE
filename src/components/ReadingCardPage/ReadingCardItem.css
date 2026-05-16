@@ -1,100 +1,106 @@
 .reading-card-page-item {
-    height: 100px;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid var(--border-gray);
-    background-color: #fff;
-    align-items: flex-start;
-    flex-direction: row;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    align-self: stretch;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: left;
 }
 
 .card-image-container {
-    border-radius: 6px;
-    background: var(--Grey_2, #E7E9EF);
-    width: 100px;
-    height: 100px;
-    margin-right: 16px;
-    flex-shrink: 0;
-    position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: #e7e9ef;
+  overflow: hidden;
+  position: relative;
 }
 
 .card-image-container img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: inherit;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .private-badge-text {
-    position: absolute;
-    bottom: 6px;
-    left: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
 .private-badge-text .mgc_unlock_fill::before {
-    color: #ffffff !important;
-    font-size: 16px;
-    filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.8));
+  color: #ffffff !important;
+  font-size: 16px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
 }
 
 .card-content {
-    flex-grow: 1;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.card-book-info {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-    align-items: center;
-    min-width: 0;
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 6px 4px 0;
+  box-sizing: border-box;
 }
 
 .card-preview {
-    color: var(--Black, #1A1A1A);
-    font-size: 13px;
-    font-style: normal;
-    font-weight: 400;
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    word-break: break-all;
-    margin: 0;
+  margin: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #1a1a1a;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.card-book-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding-left: 2px;
+  padding-right: 0;
+  box-sizing: border-box;
 }
 
 .card-book-title {
-    -webkit-line-clamp: 1;
-    line-clamp: 1;
-    font-size: 15px;
-    text-align: left;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    word-break: break-all;
-    flex: 1;
-    min-width: 0;
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #1a1a1a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card-date {
-    flex-shrink: 0;
-    white-space: nowrap;
-    font-size: 0.8em;
-    color: #999;
-    text-align: right;
+  flex-shrink: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.4;
+  color: #9ba2b1;
+  white-space: nowrap;
 }

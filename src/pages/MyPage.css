@@ -1,7 +1,9 @@
-/* My page — layout aligned with mobile Figma (390) */
+/* My page */
 
 .my-page {
+  width: 100%;
   background: #fff;
+  box-sizing: border-box;
 }
 
 .my-page-top-bar {
@@ -11,7 +13,7 @@
   width: 100%;
   box-sizing: border-box;
   min-height: 60px;
-  padding: 20px 20px 16px;
+  padding: 20px 30px 16px;
   background: #fff;
 }
 
@@ -19,9 +21,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  margin: -8px 0 -8px -8px;
+  width: 20px;
+  height: 20px;
   padding: 0;
   border: none;
   background: none;
@@ -30,12 +31,12 @@
 }
 
 .my-page-back .mgc_left_fill {
-  font-size: 22px;
-  color: #1a1a1a !important;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.8) !important;
 }
 
 .my-page-back .mgc_left_fill::before {
-  color: #1a1a1a !important;
+  color: rgba(0, 0, 0, 0.8) !important;
 }
 
 .my-page-top-title {
@@ -45,22 +46,25 @@
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 16px;
   font-weight: 600;
-  letter-spacing: -0.64px;
-  color: #000;
+  color: #1a1a1a;
 }
 
 .my-page-top-spacer {
-  width: 40px;
+  width: 20px;
   flex-shrink: 0;
 }
 
 .my-page-content {
+  width: 100%;
   padding: 0 0 24px;
+  box-sizing: border-box;
 }
 
 /* Profile block */
 .my-page-profile {
-  padding: 0 20px;
+  width: 100%;
+  padding: 20px 20px 0;
+  box-sizing: border-box;
 }
 
 .my-page-profile-row {
@@ -84,7 +88,7 @@
   border-radius: 55px;
   overflow: hidden;
   flex-shrink: 0;
-  background: var(--grey-2, #e7e9ef);
+  background: #e4e4e7;
 }
 
 .my-page-avatar-img {
@@ -109,6 +113,14 @@
   gap: 10px;
   min-width: 0;
   flex: 1;
+}
+
+.my-page-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
 }
 
 .my-page-nickname {
@@ -144,15 +156,14 @@
 }
 
 .my-page-social-icon::before {
-  color: #1a1a1a !important;
+  color: #777a88 !important;
 }
 
 .my-page-social-label {
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: -0.52px;
-  color: var(--text-dark-gray, #6a717b);
+  color: #777a88;
 }
 
 .my-page-social-value {
@@ -170,7 +181,7 @@
   gap: 13px;
   padding: 10px 16px;
   background: #fff;
-  border: 1px solid var(--light-gray-2, #f4f5f7);
+  border: 1px solid #f4f4f5;
   border-radius: 10px;
   box-sizing: border-box;
 }
@@ -188,7 +199,7 @@
 
 .my-page .my-page-stat-icon.mgc_book_3_fill::before,
 .my-page .my-page-stat-icon.mgc_notebook_2_fill::before {
-  color: var(--primary-green) !important;
+  color: rgba(0, 237, 158, 0.5) !important;
 }
 
 .my-page-stat-num {
@@ -196,14 +207,15 @@
   font-size: 18px;
   font-weight: 600;
   line-height: 1.4;
-  color: var(--grey-900, #18181b);
+  color: #0c0c0e;
 }
 
 .my-page-stat-unit {
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: var(--text-dark-gray, #6a717b);
+  line-height: 1.4;
+  color: #777a88;
 }
 
 .my-page-stat-divider {
@@ -219,12 +231,11 @@
   padding: 10px 12px;
   border: none;
   border-radius: 10px;
-  background: var(--grey-2, #e7e9ef);
+  background: #e4e4e7;
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: -0.56px;
-  color: var(--text-dark-gray, #6a717b);
+  color: #5f626d;
   cursor: pointer;
   white-space: nowrap;
 }
@@ -237,14 +248,13 @@
   height: 6px;
   margin: 24px -20px 0;
   width: calc(100% + 40px);
-  background: var(--light-gray-2, #f4f5f7);
+  background: #f4f4f5;
 }
 
 /* Posts */
 .my-page-posts {
-  padding: 24px 20px 0;
-  max-width: 390px;
-  margin: 0 auto;
+  width: 100%;
+  padding: 30px 20px 0;
   box-sizing: border-box;
 }
 
@@ -268,32 +278,30 @@
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 18px;
   font-weight: 600;
-  letter-spacing: -0.72px;
-  color: var(--grey-900, #18181b);
-  white-space: nowrap;
+  color: #0c0c0e;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 220px;
+  white-space: nowrap;
 }
 
 .my-page-posts-count {
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 16px;
   font-weight: 600;
-  letter-spacing: -0.64px;
-  color: var(--text-dark-gray, #6a717b);
+  color: #777a88;
   flex-shrink: 0;
 }
 
 .my-page-record-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   padding: 8px 10px 8px 8px;
   border: none;
   border-radius: 250px;
-  background: var(--grey-900, #18181b);
-  color: var(--light-gray-2, #f4f5f7);
+  background: #0c0c0e;
+  color: #f4f4f5;
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 12px;
   font-weight: 500;
@@ -349,9 +357,14 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.my-page-post-list > li {
+  width: 100%;
 }
 
 .my-page-post-card {
@@ -373,7 +386,7 @@
   height: 160px;
   border-radius: 10px;
   overflow: hidden;
-  background: var(--grey-2, #e7e9ef);
+  background: #e4e4e7;
 }
 
 .my-page-post-cover-img {
@@ -397,10 +410,12 @@
 }
 
 .my-page-post-body {
+  width: 100%;
   padding-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  box-sizing: border-box;
 }
 
 .my-page-post-title-row {
@@ -414,10 +429,10 @@
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 16px;
   font-weight: 500;
-  letter-spacing: -0.64px;
-  color: var(--grey-900, #18181b);
+  color: #0c0c0e;
   line-height: 1.4;
   min-width: 0;
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -436,27 +451,26 @@
 }
 
 .my-page-post-badge.is-public {
-  background: #3f3f46;
+  background: #2f2f37;
 }
 
 .my-page-post-badge.is-private {
-  background: var(--text-dark-gray, #6a717b);
+  background: #777a88;
 }
 
 .my-page-post-excerpt {
   margin: 0;
+  width: 100%;
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  letter-spacing: -0.56px;
   line-height: 1.4;
-  color: var(--grey-900, #18181b);
+  color: #0c0c0e;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .my-page-post-meta-row {
@@ -482,15 +496,14 @@
 }
 
 .my-page .my-page-post-book-icon.mgc_book_6_fill::before {
-  color: var(--primary-green) !important;
+  color: #00ed9e !important;
 }
 
 .my-page-post-book-title {
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 12px;
   font-weight: 400;
-  letter-spacing: -0.48px;
-  color: var(--text-dark-gray, #6a717b);
+  color: #5f626d;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -503,9 +516,8 @@
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 12px;
   font-weight: 400;
-  letter-spacing: -0.48px;
   line-height: 1.4;
-  color: var(--text-dark-gray, #6a717b);
+  color: #5f626d;
 }
 
 .my-page-post-stats {
@@ -522,8 +534,8 @@
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: -0.2px;
-  color: var(--grey-900, #18181b);
+  line-height: 1.4;
+  color: #0c0c0e;
 }
 
 .my-page-post-stat .mgc_heart_line,
@@ -534,5 +546,5 @@
 
 .my-page-post-stat .mgc_heart_line::before,
 .my-page-post-stat .mgc_chat_3_line::before {
-  color: var(--grey-900, #18181b) !important;
+  color: #777a88 !important;
 }

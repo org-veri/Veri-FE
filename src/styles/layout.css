@@ -165,7 +165,6 @@
 }
 
 .main-layout--with-tab-bar {
-  /* 떠 있는 탭바(높이 ~74px + bottom 12px + 여유) */
   padding-bottom: 96px;
 }
 

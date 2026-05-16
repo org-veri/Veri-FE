@@ -162,7 +162,7 @@ function ReadingCardPage() {
     }
 
     return (
-        <div className="page-container">
+        <div className="page-container reading-card-page">
             <TopBar
                 onSearchClick={handleSearchClick}
                 onProfileClick={handleProfileClick}
@@ -173,9 +173,10 @@ function ReadingCardPage() {
             <div className="reading-card-content-wrapper">
                 <div className="reading-card-title-section-wrapper">
                     <div className="reading-card-title-section">
-                        <h2 className="reading-card-title">
-                            독서카드 <span className="reading-card-count">{filteredCards.length}</span>
-                        </h2>
+                        <div className="reading-card-title-group">
+                            <h2 className="reading-card-title">독서카드</h2>
+                            <span className="reading-card-count">{filteredCards.length}</span>
+                        </div>
                         <div className="view-toggle-buttons">
                             <button
                                 className={`view-toggle-btn ${activeTab === 'text' ? 'active' : ''}`}

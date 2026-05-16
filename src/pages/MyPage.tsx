@@ -183,8 +183,9 @@ const MyPage: React.FC = () => {
                 )}
               </div>
               <div className="my-page-profile-col">
-                <p className="my-page-nickname">{userData.nickname}</p>
-                <div className="my-page-social-row">
+                <div className="my-page-profile-info">
+                  <p className="my-page-nickname">{userData.nickname}</p>
+                  <div className="my-page-social-row">
                   <div className="my-page-social-item">
                     <span className="my-page-social-icon mgc_user_3_line" aria-hidden />
                     <span className="my-page-social-label">친구</span>
@@ -195,6 +196,7 @@ const MyPage: React.FC = () => {
                     <span className="my-page-social-label">글</span>
                     <span className="my-page-social-value">{postCount}개</span>
                   </div>
+                </div>
                 </div>
                 <div className="my-page-stat-chip">
                   <div className="my-page-stat-chip-part">

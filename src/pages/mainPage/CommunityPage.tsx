@@ -5,11 +5,22 @@ import { SkeletonList, SkeletonCard } from '../../components/SkeletonUI';
 import { getPostFeed, getCards } from '../../api/communityApi';
 import type { Post, GetPostFeedQueryParams, Card, GetCardsQueryParams } from '../../api/communityApi';
 import { getCurrentUserId } from '../../api/auth';
+import CommunityPostItem from '../../components/CommunityPage/CommunityPostItem';
 import './CommunityPage.css';
 import { SectionErrorBanner } from '../../components/SectionErrorBanner';
 
+type CommunityTab = 'subscription' | 'recommended';
+
+const CARD_EXCERPT_MAX = 28;
+
+function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength)} ...`;
+}
+
 function CommunityPage() {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<CommunityTab>('subscription');
   const [isLoading, setIsLoading] = useState(true);
   const [posts, setPosts] = useState<Post[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
@@ -47,24 +58,24 @@ function CommunityPage() {
         setLoadingMore(true);
       }
       setError(null);
-      
+
       const params: GetPostFeedQueryParams = {
         page: page,
         size: 10,
         sort: 'newest'
       };
-      
+
       const response = await getPostFeed(params);
-      
+
       if (response.isSuccess && response.result) {
         const newPosts = response.result.posts;
-        
+
         if (reset) {
           setPosts(newPosts);
         } else {
           setPosts(prevPosts => [...prevPosts, ...newPosts]);
         }
-        
+
         setHasMore(page < response.result.totalPages);
         setCurrentPage(page);
       } else {
@@ -88,34 +99,38 @@ function CommunityPage() {
   const loadCards = useCallback(async () => {
     try {
       setCardsLoading(true);
-      
+
       const params: GetCardsQueryParams = {
         page: 1,
-        size: 6,
+        size: activeTab === 'subscription' ? 12 : 6,
         sort: 'newest'
       };
-      
+
       const response = await getCards(params);
-      
+
       if (response.isSuccess && response.result) {
         setCards(response.result.cards);
       }
     } catch {
+      // keep empty
     } finally {
       setCardsLoading(false);
     }
-  }, []);
+  }, [activeTab]);
 
   useEffect(() => {
     loadPosts(1, true);
+  }, [loadPosts]);
+
+  useEffect(() => {
     loadCards();
-  }, [loadPosts, loadCards]);
+  }, [loadCards]);
 
   useEffect(() => {
     if (currentPage > 1 && hasMore) {
       loadMorePosts();
     }
-  }, [currentPage]);
+  }, [currentPage, hasMore, loadMorePosts]);
 
   const handleProfileClick = () => {
     navigate('/my-page');
@@ -128,7 +143,7 @@ function CommunityPage() {
   const handlePostClick = (postId: number, post: Post) => {
     const currentUserId = getCurrentUserId();
     const isMyPost = currentUserId !== null && post.author.id === currentUserId;
-    
+
     if (isMyPost) {
       navigate(`/my-community/post/${postId}`);
     } else {
@@ -140,10 +155,6 @@ function CommunityPage() {
     loadPosts(1, true);
   };
 
-  const handleWritePost = () => {
-    navigate('/write-post');
-  };
-
   const handleCardClick = (cardId: number) => {
     navigate(`/reading-card-detail/${cardId}`);
   };
@@ -153,7 +164,7 @@ function CommunityPage() {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    return `${year}.${month}.${day}`;
+    return `${year}. ${month}. ${day}`;
   };
 
   const getPostImageUrl = (post: Post): string | null => {
@@ -165,173 +176,201 @@ function CommunityPage() {
     return null;
   };
 
+  const renderPostsList = () => {
+    if (isLoading && posts.length === 0) {
+      return (
+        <div className="community-posts-loading">
+          <SkeletonList count={2}>
+            <SkeletonCard />
+          </SkeletonList>
+        </div>
+      );
+    }
+
+    return (
+      <div className="community-posts-list">
+        {posts.map((post, index) => {
+          const isLastElement = posts.length === index + 1;
+          const postProps = {
+            post,
+            imageUrl: getPostImageUrl(post),
+            formattedDate: formatDate(post.createdAt),
+            onClick: () => handlePostClick(post.postId, post),
+            ...(isLastElement && hasMore ? { innerRef: lastPostElementRef } : {}),
+          };
+          return <CommunityPostItem key={post.postId} {...postProps} />;
+        })}
+
+        {loadingMore && (
+          <p className="community-loading-more">더 많은 게시글을 불러오는 중...</p>
+        )}
+
+        {!isLoading && posts.length === 0 && !error && (
+          <div className="community-no-posts">
+            <p>아직 게시글이 없습니다.</p>
+            <p>첫 번째 게시글을 작성해보세요!</p>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="page-container">
+    <div className="page-container community-page">
       <TopBar onProfileClick={handleProfileClick} />
-      
-      <div className="header-margin"></div>
-      
+
+      <div className="header-margin" />
+
       <div className="community-content">
-        <div className="reading-cards-section">
-          <h2 className="reading-cards-section-title">독서카드</h2>
-          
-          {cardsLoading ? (
-            <div className="cards-loading">
-              <SkeletonList count={6}>
-                <SkeletonCard />
-              </SkeletonList>
-            </div>
-          ) : (
-            <>
-              <div className="community-reading-cards-grid">
-                {Array.from({ length: 6 }).map((_, index) => {
-                  const card = cards[index];
-                  if (card) {
-                    return (
-                      <div 
-                        key={card.cardId} 
-                        className="community-reading-card-item"
-                        onClick={() => handleCardClick(card.cardId)}
-                      >
-                        <div 
-                          className="community-reading-card-image"
-                          style={{ backgroundImage: `url(${card.image})` }}
-                        />
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div 
-                        key={`empty-${index}`}
-                        className="community-reading-card-item community-reading-card-empty"
-                      >
-                        <div className="community-reading-card-image" />
-                      </div>
-                    );
-                  }
-                })}
-              </div>
-              
-              <button className="more-cards-button" onClick={handleMoreCardsClick}>
-                독서카드 더 보러가기
-              </button>
-            </>
-          )}
+        <div className="community-tabs-wrap">
+          <div className="community-tabs" role="tablist" aria-label="커뮤니티 피드">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === 'subscription'}
+              className={`community-tab ${activeTab === 'subscription' ? 'community-tab--active' : ''}`}
+              onClick={() => setActiveTab('subscription')}
+            >
+              구독
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === 'recommended'}
+              className={`community-tab ${activeTab === 'recommended' ? 'community-tab--active' : ''}`}
+              onClick={() => setActiveTab('recommended')}
+            >
+              추천
+            </button>
+          </div>
+          <div className="community-tabs-divider" />
         </div>
 
-        <div className="recommendations-section">
-          <div className="recommendations-header">
-            <div className="header-content">
-              <div className="title-section">
+        {error && (
+          <SectionErrorBanner message={error} onRetry={handleRefresh} />
+        )}
+
+        {activeTab === 'subscription' ? (
+          <div className="community-tab-panel">
+            <section className="friends-cards-section">
+              <div className="friends-cards-header">
+                <h2 className="friends-cards-title">친구들의 독서카드</h2>
+                <button
+                  type="button"
+                  className="friends-cards-link"
+                  onClick={handleMoreCardsClick}
+                >
+                  독서카드 보러가기
+                  <span className="friends-cards-chevron" aria-hidden />
+                </button>
+              </div>
+
+              {cardsLoading ? (
+                <div className="friends-cards-loading">
+                  <SkeletonList count={4}>
+                    <SkeletonCard />
+                  </SkeletonList>
+                </div>
+              ) : (
+                <div className="friends-cards-scroll">
+                  {cards.length > 0 ? (
+                    cards.map((card) => (
+                      <button
+                        key={card.cardId}
+                        type="button"
+                        className="friends-card-item"
+                        onClick={() => handleCardClick(card.cardId)}
+                      >
+                        <div
+                          className="friends-card-thumb"
+                          style={{ backgroundImage: `url(${card.image})` }}
+                        />
+                        <p className="friends-card-excerpt">
+                          {truncateText(card.content, CARD_EXCERPT_MAX)}
+                        </p>
+                      </button>
+                    ))
+                  ) : (
+                    Array.from({ length: 4 }).map((_, i) => (
+                      <div key={`empty-${i}`} className="friends-card-item friends-card-item--empty">
+                        <div className="friends-card-thumb" />
+                        <p className="friends-card-excerpt">독서카드가 없습니다</p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </section>
+
+            <section className="community-feed-section">
+              {renderPostsList()}
+            </section>
+          </div>
+        ) : (
+          <div className="community-tab-panel community-tab-panel--recommended">
+            <section className="reading-cards-section">
+              <h2 className="reading-cards-section-title">독서카드</h2>
+
+              {cardsLoading ? (
+                <div className="cards-loading">
+                  <SkeletonList count={6}>
+                    <SkeletonCard />
+                  </SkeletonList>
+                </div>
+              ) : (
+                <>
+                  <div className="community-reading-cards-grid">
+                    {Array.from({ length: 6 }).map((_, index) => {
+                      const card = cards[index];
+                      if (card) {
+                        return (
+                          <button
+                            key={card.cardId}
+                            type="button"
+                            className="community-reading-card-item"
+                            onClick={() => handleCardClick(card.cardId)}
+                          >
+                            <div
+                              className="community-reading-card-image"
+                              style={{ backgroundImage: `url(${card.image})` }}
+                            />
+                          </button>
+                        );
+                      }
+                      return (
+                        <div
+                          key={`empty-${index}`}
+                          className="community-reading-card-item community-reading-card-empty"
+                        >
+                          <div className="community-reading-card-image" />
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <button
+                    type="button"
+                    className="more-cards-button"
+                    onClick={handleMoreCardsClick}
+                  >
+                    독서카드 더 보러가기
+                  </button>
+                </>
+              )}
+            </section>
+
+            <section className="recommendations-section">
+              <div className="recommendations-header">
                 <h2 className="recommendations-section-title">이달의 추천글</h2>
                 <p className="section-subtitle">다른 회원들의 글을 만나보세요</p>
               </div>
-              <button className="write-post-button" onClick={handleWritePost}>
-                <span className="write-icon">글쓰기</span>
-              </button>
-            </div>
-            {error && (
-              <SectionErrorBanner message={error} onRetry={handleRefresh} />
-            )}
+              {renderPostsList()}
+            </section>
           </div>
-
-          {isLoading && posts.length === 0 ? (
-            <div className="recommendations-loading">
-              <SkeletonList count={2}>
-                <SkeletonCard />
-              </SkeletonList>
-            </div>
-          ) : (
-            <div className="recommendations-list">
-              {posts.map((post, index) => {
-                const isLastElement = posts.length === index + 1;
-                const imageUrl = getPostImageUrl(post);
-                return (
-                  <div 
-                    ref={isLastElement && hasMore ? lastPostElementRef : null}
-                    key={post.postId} 
-                    className="recommendation-item"
-                    onClick={() => handlePostClick(post.postId, post)}
-                  >
-                  <div className="recommendation-header">
-                    <div className="author-info">
-                      <div className="author-avatar">
-                        <img 
-                          src={post.author.profileImageUrl} 
-                          alt="프로필" 
-                        />
-                      </div>
-                      <div className="author-details">
-                        <div className="author-name">
-                          {post.author.nickname}
-                        </div>
-                        <div className="card-book">
-                          <span className="mgc_book_6_fill"></span>
-                          <span className="community-more-book-title">{post.book?.title || '책 정보 없음'}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="recommendation-image">
-                    {imageUrl ? (
-                      <img src={imageUrl} alt="게시글 이미지" />
-                    ) : (
-                      <div className="no-image-placeholder">
-                        <span>이미지 없음</span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="recommendation-actions">
-                    <div className="action-buttons">
-                      <button 
-                        className={`action-button ${post.isLiked ? 'liked' : ''}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        <span className={post.isLiked ? 'mgc_heart_fill' : 'mgc_heart_line'}></span>
-                        <span>{post.likeCount}</span>
-                      </button>
-                      <button 
-                        className="action-button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        <span className="mgc_chat_3_line"></span>
-                        <span>{post.commentCount}</span>
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div className="recommendation-content">
-                    <p className="post-content">{post.content}</p>
-                    <div className="post-date">{formatDate(post.createdAt)}</div>
-                  </div>
-                </div>
-              );
-            })}
-              
-              {loadingMore && (
-                <div className="loading-more">
-                  <p className="loading-message">더 많은 게시글을 불러오는 중...</p>
-                </div>
-              )}
-              
-              {!isLoading && posts.length === 0 && !error && (
-                <div className="no-posts">
-                  <p>아직 게시글이 없습니다.</p>
-                  <p>첫 번째 게시글을 작성해보세요!</p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        )}
       </div>
 
-      <div className='main-page-margin'></div>
+      <div className="main-page-margin" />
     </div>
   );
 }

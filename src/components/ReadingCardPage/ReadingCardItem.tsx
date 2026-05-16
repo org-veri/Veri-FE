@@ -11,11 +11,13 @@ const ReadingCardItem: React.FC<ReadingCardItemType> = ({ id, title, contentPrev
         navigate(`/reading-card-detail/${id}`);
     };
 
-    const formattedDate = new Date(date).toLocaleDateString('ko-KR', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    }).replace(/\./g, '. ').trim();
+    const formattedDate = (() => {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}.${month}.${day}`;
+    })();
 
     const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
         if (!hasErrorRef.current && e.currentTarget.src !== fallbackImageUrl) {

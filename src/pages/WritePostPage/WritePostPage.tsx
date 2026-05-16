@@ -144,6 +144,14 @@ function WritePostPage() {
     }
   }, [title, content, images, uploadedImageUrls, selectedBook, isInitialLoad, isEditMode]);
 
+  const handleGoBack = () => {
+    if (isEditMode && editPostId != null) {
+      navigate(`${PATH.MY_COMMUNITY_POST}/${editPostId}`, { replace: true });
+    } else {
+      navigate(-1);
+    }
+  };
+
   const handleBookSelection = () => {
     navigate(PATH.POST_BOOK_SEARCH, {
       state: isEditMode && editPostId != null ? { editPostId } : undefined
@@ -187,7 +195,7 @@ function WritePostPage() {
       try {
         const uploadedUrl = await uploadImage(file);
         newUploadedUrls.push(uploadedUrl);
-      } catch (error) {
+      } catch {
         showToast('일부 이미지 업로드에 실패했습니다.', 'error');
         newImages.pop();
       }
@@ -200,6 +208,8 @@ function WritePostPage() {
     if (newUploadedUrls.length > 0) {
       showToast(`${newUploadedUrls.length}개의 이미지가 업로드되었습니다.`, 'success');
     }
+
+    event.target.value = '';
   };
 
   const handleRemoveImage = (index: number) => {
@@ -285,123 +295,118 @@ function WritePostPage() {
   };
 
   return (
-    <div className="page-container">
-      <header className="detail-header">
+    <div className="page-container write-post-page">
+      <header className="write-post-header">
         <button
-          className="header-left-arrow"
           type="button"
-          onClick={() =>
-            isEditMode && editPostId != null
-              ? navigate(`${PATH.MY_COMMUNITY_POST}/${editPostId}`, { replace: true })
-              : navigate(-1)
-          }
+          className="write-post-back-btn"
+          onClick={handleGoBack}
+          aria-label="뒤로 가기"
         >
-          <span
-            className="mgc_close_line"
-          ></span>
+          <span className="mgc_left_fill" aria-hidden />
         </button>
-        <h3>{isEditMode ? '글 수정하기' : '글쓰기'}</h3>
-        <div className="header-right-wrapper">
-          <button
-            className="header-menu-button"
-          >
-          </button>
-        </div>
+        <h1 className="write-post-title">{isEditMode ? '글 수정하기' : '글쓰기'}</h1>
+        <span className="write-post-header-spacer" aria-hidden />
       </header>
 
-      <div className="header-margin"></div>
+      <div className="header-margin" />
 
       <div className="write-post-content">
-        <div className="form-section">
-          <input
-            type="text"
-            className="title-input"
-            placeholder="제목"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            maxLength={100}
-          />
-        </div>
+        <div className="write-post-form">
+          <div className="write-post-title-field">
+            <input
+              type="text"
+              className="write-post-title-input"
+              placeholder="제목"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              maxLength={100}
+            />
+          </div>
 
-        <div className="form-section">
-          <textarea
-            className="content-input"
-            placeholder="내용을 입력하세요."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            maxLength={2000}
-          />
-        </div>
+          <div className="write-post-body-field">
+            <textarea
+              className="write-post-body-input"
+              placeholder="내용을 입력하세요."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              maxLength={2000}
+            />
+          </div>
 
-        <div className="image-section">
-          <div className="image-grid">
-            <div className="image-upload-slot">
+          <div className="write-post-image-row">
+            <div className="write-post-image-upload">
               <input
                 type="file"
                 id="image-upload"
                 accept="image/*"
                 multiple
                 onChange={handleImageSelect}
-                style={{ display: 'none' }}
+                className="write-post-image-input"
               />
-              <label htmlFor="image-upload" className="post-page-camera-button">
-                <span className="mgc_camera_2_fill"></span>
+              <label htmlFor="image-upload" className="write-post-camera-btn">
+                <span className="mgc_camera_2_fill" aria-hidden />
               </label>
             </div>
 
             {images.map((image, index) => (
-              <div key={index} className="image-slot">
+              <div key={index} className="write-post-image-thumb">
                 <img src={image} alt={`업로드 ${index + 1}`} />
                 <button
                   type="button"
-                  className="remove-image-btn"
+                  className="write-post-image-remove"
                   onClick={() => handleRemoveImage(index)}
+                  aria-label="이미지 삭제"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
+                  <span className="write-post-image-remove-icon" aria-hidden />
                 </button>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="book-section">
-          <div className="book-label-section">          
-            <div className="book-label">책 선택하기</div>
-            <div className="book-hint">내 책장에서 책을 선택해주세요</div>
+        <section className="write-post-book-section">
+          <div className="write-post-book-heading">
+            <h2 className="write-post-book-label">책 선택하기</h2>
+            <p className="write-post-book-hint">내 책장에서 책을 선택해주세요</p>
           </div>
-          
+
           {selectedBook ? (
-            // 선택된 책 표시
-            <div className="selected-book-card">
-              <img src={selectedBook.imageUrl} alt={selectedBook.title} className="selected-book-image" />
-              <div className="selected-book-info">
-                <p className="selected-book-title">{selectedBook.title}</p>
-                <p className="selected-book-author">{selectedBook.author}</p>
+            <div className="write-post-selected-book">
+              <img
+                src={selectedBook.imageUrl}
+                alt=""
+                className="write-post-selected-book-cover"
+              />
+              <div className="write-post-selected-book-meta">
+                <p className="write-post-selected-book-title">{selectedBook.title}</p>
+                <p className="write-post-selected-book-author">{selectedBook.author}</p>
               </div>
-              <button 
-                className="remove-book-button"
-                onClick={handleRemoveBook}
+              <button
                 type="button"
+                className="write-post-selected-book-remove"
+                onClick={handleRemoveBook}
+                aria-label="선택한 책 제거"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <span className="write-post-image-remove-icon" aria-hidden />
               </button>
             </div>
           ) : (
-            <button className="bookshelf-button" onClick={handleBookSelection}>
-              <span>책 선택하기</span>
-              <span className="mgc_right_fill"></span>
+            <button
+              type="button"
+              className="write-post-bookshelf-btn"
+              onClick={handleBookSelection}
+            >
+              <span>책장 바로가기</span>
+              <span className="write-post-bookshelf-chevron" aria-hidden />
             </button>
           )}
-        </div>
+        </section>
 
-        <div className="submit-section">
-          <button 
-            className="submit-button"
+        <div className="write-post-submit-wrap">
+          <button
             type="button"
+            className="write-post-submit-btn"
             onClick={handleSubmit}
             disabled={
               isSubmitting ||

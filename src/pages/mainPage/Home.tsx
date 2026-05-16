@@ -144,7 +144,7 @@ function LibraryPage() {
 
   if (isUserDataLoading || !userData) {
     return (
-      <div className="page-container home-page">
+      <div className="page-container">
         <TopBar onSearchClick={handleSearchClick} onProfileClick={handleProfileClick} />
         <div className="header-margin" />
         <div className="home-main">
@@ -158,7 +158,7 @@ function LibraryPage() {
   }
 
   return (
-    <div className="page-container home-page">
+    <div className="page-container">
       <TopBar onSearchClick={handleSearchClick} onProfileClick={handleProfileClick} />
       <div className="home-main">
         <div className="library-hero-section">
