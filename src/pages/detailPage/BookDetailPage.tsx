@@ -257,16 +257,16 @@ function BookDetailPage() {
             <FullPageErrorState
                 title="책 정보를 불러오지 못했습니다"
                 message={error}
-                primaryAction={
-                    id
-                        ? {
+                {...(id
+                    ? {
+                          primaryAction: {
                               label: '다시 시도',
                               onClick: () => {
                                   void fetchBookDetails(Number(id));
                               },
-                          }
-                        : undefined
-                }
+                          },
+                      }
+                    : {})}
                 secondaryAction={{ label: '뒤로', onClick: () => navigate(-1) }}
             />
         );

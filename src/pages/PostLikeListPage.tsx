@@ -109,11 +109,9 @@ function PostLikeListPage() {
         <PostLikeListPanel
           likeCount={likeCount}
           members={members}
-          emptyMessage={
-            likeCount > 0 && members.length === 0
-              ? '좋아요한 멤버 목록을 불러오지 못했습니다.'
-              : undefined
-          }
+          {...(likeCount > 0 && members.length === 0
+            ? { emptyMessage: '좋아요한 멤버 목록을 불러오지 못했습니다.' }
+            : {})}
           onPillPress={handlePillPress}
         />
       </main>

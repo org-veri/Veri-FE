@@ -67,7 +67,7 @@ function WritePostPage() {
               setSelectedBook(state.selectedBook);
             } else if (p.book) {
               setSelectedBook({
-                bookId: p.book.bookId,
+                ...(p.book.bookId != null ? { bookId: p.book.bookId } : {}),
                 title: p.book.title,
                 author: p.book.author,
                 imageUrl: p.book.imageUrl,
