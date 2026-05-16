@@ -63,7 +63,7 @@ const makeApiRequest = async <T>(
 export const createComment = async (
   commentData: CreateCommentRequest
 ): Promise<CreateCommentResponse> => {
-  return makeApiRequest<CreateCommentResponse>('/api/v1/comments', {
+  return makeApiRequest<CreateCommentResponse>('/api/comments', {
     method: 'POST',
     body: JSON.stringify(commentData),
   });
@@ -72,7 +72,7 @@ export const createComment = async (
 export const deleteComment = async (
   commentId: number
 ): Promise<DeleteCommentResponse> => {
-  return makeApiRequest<DeleteCommentResponse>(`/api/v1/comments/${commentId}`, {
+  return makeApiRequest<DeleteCommentResponse>(`/api/comments/${commentId}`, {
     method: 'DELETE',
   });
 };
@@ -81,7 +81,7 @@ export const updateComment = async (
   commentId: number,
   commentData: UpdateCommentRequest
 ): Promise<UpdateCommentResponse> => {
-  return makeApiRequest<UpdateCommentResponse>(`/api/v1/comments/${commentId}`, {
+  return makeApiRequest<UpdateCommentResponse>(`/api/comments/${commentId}`, {
     method: 'PATCH',
     body: JSON.stringify(commentData),
   });
@@ -90,7 +90,7 @@ export const updateComment = async (
 export const createReply = async (
   replyData: CreateReplyRequest
 ): Promise<CreateReplyResponse> => {
-  return makeApiRequest<CreateReplyResponse>('/api/v1/comments/reply', {
+  return makeApiRequest<CreateReplyResponse>('/api/comments/reply', {
     method: 'POST',
     body: JSON.stringify(replyData),
   });

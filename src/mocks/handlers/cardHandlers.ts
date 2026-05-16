@@ -28,7 +28,7 @@ const nextCardId = () => (
 );
 
 export const cardHandlers = [
-  http.get('*/api/v1/cards/my', async ({ request }) => {
+  http.get('*/api/cards/my', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('page') || '1');
     const size = Number(url.searchParams.get('size') || '10');
@@ -42,7 +42,7 @@ export const cardHandlers = [
     }, 'Mock 내 독서카드 조회 성공');
     return withDelay(body);
   }),
-  http.get('*/api/v1/cards/:cardId', async ({ params }) => {
+  http.get('*/api/cards/:cardId', async ({ params }) => {
     const id = Number(params.cardId);
     const card = cards.find(c => c.cardId === id);
     const body = createMockResponse(card ? {
@@ -60,7 +60,7 @@ export const cardHandlers = [
     } : null, card ? 'Mock 독서카드 상세 조회 성공' : 'Mock 독서카드 없음');
     return withDelay(body);
   }),
-  http.post('*/api/v1/cards', async ({ request }) => {
+  http.post('*/api/cards', async ({ request }) => {
     const bodyData = await safeJson<Partial<{ content: string; imageUrl: string }>>(request);
     const id = nextCardId();
     cards.push({
@@ -73,14 +73,14 @@ export const cardHandlers = [
     const body = createMockResponse({ cardId: id }, 'Mock 독서카드 생성 성공');
     return withDelay(body);
   }),
-  http.post('*/api/v1/cards/image', async () => {
+  http.post('*/api/cards/image', async () => {
     const body = createMockResponse({
       presignedUrl: 'https://mock-presigned-url.example.com/upload/mock-image.jpg?AWSAccessKeyId=MOCKKEY&Expires=MOCKEXP&Signature=MOCKSIG',
       publicUrl: 'https://mock-public-url.example.com/mock-image.jpg',
     }, 'Mock presigned URL 성공');
     return withDelay(body);
   }),
-  http.delete('*/api/v1/cards/:cardId', async ({ params }) => {
+  http.delete('*/api/cards/:cardId', async ({ params }) => {
     const id = Number(params.cardId);
     const index = cards.findIndex(card => card.cardId === id);
     if (index >= 0) {
@@ -89,11 +89,11 @@ export const cardHandlers = [
     const body = createMockResponse({}, 'Mock 독서카드 삭제 성공');
     return withDelay(body);
   }),
-  http.get('*/api/v1/cards/my/count', async () => {
+  http.get('*/api/cards/my/count', async () => {
     const body = createMockResponse({ count: cards.length }, 'Mock 내 독서카드 개수 조회 성공');
     return withDelay(body);
   }),
-  http.patch('*/api/v1/cards/:cardId', async ({ params, request }) => {
+  http.patch('*/api/cards/:cardId', async ({ params, request }) => {
     const id = Number(params.cardId);
     const updates = await safeJson<Partial<{ content: string; imageUrl: string }>>(request);
     const card = cards.find(c => c.cardId === id);
@@ -116,7 +116,7 @@ export const cardHandlers = [
     }, 'Mock 독서카드 수정 성공');
     return withDelay(body);
   }),
-  http.patch('*/api/v1/cards/:cardId/visibility', async ({ params, request }) => {
+  http.patch('*/api/cards/:cardId/visibility', async ({ params, request }) => {
     const url = new URL(request.url);
     const param = url.searchParams.get('isPublic');
     const bodyPayload = await safeJson<Record<string, unknown>>(request);

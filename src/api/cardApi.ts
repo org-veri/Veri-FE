@@ -148,7 +148,7 @@ export interface UpdateCardVisibilityResponse {
 }
 
 export async function getMyCards(params: GetMyCardsQueryParams = {}): Promise<GetMyCardsResponse> {
-  const url = new URL(`${BASE_URL}/api/v1/cards/my`);
+  const url = new URL(`${BASE_URL}/api/cards/my`);
   if (params.page !== undefined) url.searchParams.append('page', String(params.page));
   if (params.size !== undefined) url.searchParams.append('size', String(params.size));
   if (params.sort) url.searchParams.append('sort', params.sort);
@@ -166,7 +166,7 @@ export async function getMyCards(params: GetMyCardsQueryParams = {}): Promise<Ge
 }
 
 export async function getCardDetailById(cardId: number): Promise<GetCardDetailByIdResponse> {
-  const url = `${BASE_URL}/api/v1/cards/${cardId}`;
+  const url = `${BASE_URL}/api/cards/${cardId}`;
 
   try {
     const response = await fetchWithAuth(url, { method: 'GET' });
@@ -181,7 +181,7 @@ export async function getCardDetailById(cardId: number): Promise<GetCardDetailBy
 }
 
 export async function createCard(body: CreateCardRequest): Promise<CreateCardResponse> {
-  const url = `${BASE_URL}/api/v1/cards`;
+  const url = `${BASE_URL}/api/cards`;
 
   try {
     const response = await fetchWithAuth(url, {
@@ -201,7 +201,7 @@ export async function createCard(body: CreateCardRequest): Promise<CreateCardRes
 }
 
 export async function getPresignedUrlForImageUpload(body: GetPresignedUrlRequest): Promise<GetPresignedUrlResponse> {
-  const url = `${BASE_URL}/api/v1/cards/image`;
+  const url = `${BASE_URL}/api/cards/image`;
 
   try {
     const response = await fetchWithAuth(url, {
@@ -251,7 +251,7 @@ export async function uploadImageAndGetUrl(file: File): Promise<string> {
 }
 
 export async function deleteCard(cardId: number): Promise<DeleteCardResponse> {
-  const url = `${BASE_URL}/api/v1/cards/${cardId}`;
+  const url = `${BASE_URL}/api/cards/${cardId}`;
 
   try {
     const response = await fetchWithAuth(url, {
@@ -273,7 +273,7 @@ export async function deleteCard(cardId: number): Promise<DeleteCardResponse> {
 }
 
 export async function getMyCardsCount(): Promise<GetMyCardsCountResponse> {
-  const url = `${BASE_URL}/api/v1/cards/my/count`;
+  const url = `${BASE_URL}/api/cards/my/count`;
   try {
     const response = await fetchWithAuth(url, { method: 'GET' });
     const data: GetMyCardsCountResponse = await response.json();
@@ -287,7 +287,7 @@ export async function getMyCardsCount(): Promise<GetMyCardsCountResponse> {
 }
 
 export async function updateCard(cardId: number, body: UpdateCardRequest): Promise<UpdateCardResponse> {
-  const url = `${BASE_URL}/api/v1/cards/${cardId}`;
+  const url = `${BASE_URL}/api/cards/${cardId}`;
 
   try {
     const response = await fetchWithAuth(url, {
@@ -307,7 +307,7 @@ export async function updateCard(cardId: number, body: UpdateCardRequest): Promi
 }
 
 export async function updateCardVisibility(cardId: number, isPublic: boolean): Promise<UpdateCardVisibilityResponse> {
-  const url = new URL(`${BASE_URL}/api/v1/cards/${cardId}/visibility`);
+  const url = new URL(`${BASE_URL}/api/cards/${cardId}/visibility`);
   url.searchParams.append('isPublic', String(isPublic));
 
   try {

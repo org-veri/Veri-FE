@@ -44,7 +44,7 @@ export async function uploadImage(file: File): Promise<string> {
             contentLength: file.size,
         };
 
-        const response = await fetchWithAuth(`${BASE_URL}/api/v1/cards/image`, {
+        const response = await fetchWithAuth(`${BASE_URL}/api/cards/image`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export async function uploadImage(file: File): Promise<string> {
 }
 
 export async function extractTextFromImage(imageUrl: string): Promise<OcrResponse> {
-    const url = new URL(`${BASE_URL}/api/v0/images/ocr`);
+    const url = new URL(`${BASE_URL}/api/images/ocr`);
     url.searchParams.append('imageUrl', imageUrl);
 
     try {

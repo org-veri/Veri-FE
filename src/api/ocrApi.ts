@@ -10,7 +10,7 @@ export interface OCRResponse {
 }
 
 export const extractTextFromImage = async (imageUrl: string): Promise<string> => {
-  const url = new URL(`${BASE_URL}/api/v1/images/ocr`);
+  const url = new URL(`${BASE_URL}/api/images/ocr`);
   url.searchParams.append('imageUrl', imageUrl);
 
   try {

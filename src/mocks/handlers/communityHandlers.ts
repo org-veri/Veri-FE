@@ -92,7 +92,7 @@ const buildPostDetail = (postId: number) => {
 };
 
 export const communityHandlers = [
-  http.get('*/api/v1/posts', async ({ request }) => {
+  http.get('*/api/posts', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('page') || '1');
     const size = Number(url.searchParams.get('size') || '10');
@@ -106,7 +106,7 @@ export const communityHandlers = [
     }, 'Mock 전체 게시글 조회 성공');
     return withDelay(body);
   }),
-  http.get('*/api/v1/cards', async ({ request }) => {
+  http.get('*/api/cards', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('page') || '1');
     const size = Number(url.searchParams.get('size') || '10');
@@ -120,17 +120,17 @@ export const communityHandlers = [
     }, 'Mock 전체 카드 조회 성공');
     return withDelay(body);
   }),
-  http.get('*/api/v1/posts/:postId', async ({ params }) => {
+  http.get('*/api/posts/:postId', async ({ params }) => {
     const detail = buildPostDetail(Number(params.postId));
     const body = createMockResponse(detail, detail ? 'Mock 게시글 상세 조회 성공' : 'Mock 게시글 없음');
     return withDelay(body);
   }),
-  http.get('*/api/v1/posts/my', async () => {
+  http.get('*/api/posts/my', async () => {
     const owned = posts.slice(0, 2);
     const body = createMockResponse({ posts: owned, count: owned.length }, 'Mock 내 게시글 조회 성공');
     return withDelay(body);
   }),
-  http.post('*/api/v1/posts', async ({ request }) => {
+  http.post('*/api/posts', async ({ request }) => {
     const payload = await safeJson<Partial<{ title: string; content: string; images: string[] }>>(request);
     const newId = posts.length ? Math.max(...posts.map(post => post.postId)) + 1 : 1;
     const newPost = {
@@ -152,7 +152,7 @@ export const communityHandlers = [
     const body = createMockResponse({ postId: newId }, 'Mock 게시글 작성 성공');
     return withDelay(body);
   }),
-  http.patch('*/api/v1/posts/:postId', async ({ request, params }) => {
+  http.patch('*/api/posts/:postId', async ({ request, params }) => {
     const payload = await safeJson<
       Partial<{ title: string; content: string; images: string[]; bookId?: number }>
     >(request);
@@ -181,12 +181,12 @@ export const communityHandlers = [
     const body = createMockResponse({}, 'Mock 게시글 수정 성공');
     return withDelay(body);
   }),
-  http.delete('*/api/v1/posts/:postId', async ({ params }) => {
+  http.delete('*/api/posts/:postId', async ({ params }) => {
     posts = posts.filter(post => post.postId !== Number(params.postId));
     const body = createMockResponse({}, 'Mock 게시글 삭제 성공');
     return withDelay(body);
   }),
-  http.post('*/api/v1/posts/like/:postId', async ({ params }) => {
+  http.post('*/api/posts/like/:postId', async ({ params }) => {
     const post = posts.find(item => item.postId === Number(params.postId));
     if (post) {
       post.likeCount += 1;
@@ -195,7 +195,7 @@ export const communityHandlers = [
     const body = createMockResponse({ likeCount: post?.likeCount ?? 1, isLiked: true }, 'Mock 게시글 좋아요 성공');
     return withDelay(body);
   }),
-  http.post('*/api/v1/posts/unlike/:postId', async ({ params }) => {
+  http.post('*/api/posts/unlike/:postId', async ({ params }) => {
     const post = posts.find(item => item.postId === Number(params.postId));
     if (post && post.likeCount > 0) {
       post.likeCount -= 1;
@@ -204,11 +204,11 @@ export const communityHandlers = [
     const body = createMockResponse({ likeCount: post?.likeCount ?? 0, isLiked: false }, 'Mock 게시글 좋아요 취소 성공');
     return withDelay(body);
   }),
-  http.post('*/api/v1/posts/:postId/publish', async () => {
+  http.post('*/api/posts/:postId/publish', async () => {
     const body = createMockResponse({}, 'Mock 게시글 공개 성공');
     return withDelay(body);
   }),
-  http.post('*/api/v1/posts/:postId/unpublish', async () => {
+  http.post('*/api/posts/:postId/unpublish', async () => {
     const body = createMockResponse({}, 'Mock 게시글 비공개 성공');
     return withDelay(body);
   }),

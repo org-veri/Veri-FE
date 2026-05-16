@@ -35,7 +35,7 @@ export const searchBooks = async (query: string, page: number = 1, size: number 
             return { isSuccess: false, code: 'ENV_ERROR', message: 'API 기본 URL이 설정되지 않았습니다.' };
         }
 
-        const url = new URL('/api/v2/bookshelf/search', baseUrl);
+        const url = new URL('/api/bookshelf/search', baseUrl);
         url.searchParams.append('query', query);
         url.searchParams.append('page', String(page));
         url.searchParams.append('size', String(size));

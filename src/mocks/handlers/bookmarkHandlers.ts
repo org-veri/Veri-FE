@@ -9,7 +9,7 @@ const withDelay = async <T>(payload: T) => {
 };
 
 export const bookmarkHandlers = [
-  http.get('*/api/v1/bookmarks', async () => {
+  http.get('*/api/bookmarks', async () => {
     const body = createMockResponse(bookmarks, 'Mock 북마크 조회 성공');
     return withDelay(body);
   }),

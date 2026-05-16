@@ -137,7 +137,7 @@ const handleReissueResponse = async (response: Response): Promise<ReissueRespons
 
 export const handleSocialLoginCallback = async (provider: string, code: string, state: string): Promise<{ accessToken: string }> => {
   try {
-    const response = await fetch(`${BASE_URL}/api/v1/oauth2/${provider}?code=${code}&state=${state}`, {
+    const response = await fetch(`${BASE_URL}/api/oauth2/${provider}?code=${code}&state=${state}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export const handleSocialLoginCallback = async (provider: string, code: string, 
 };
 
 export const fetchTestToken = async (): Promise<string> => {
-  return makeApiRequest('/api/v1/oauth2/test-token');
+  return makeApiRequest('/api/oauth2/test-token');
 };
 
 export const getAccessToken = (): string | null => {
@@ -233,7 +233,7 @@ export const removeAccessToken = (): void => {
 
 export const reissueToken = async (): Promise<string> => {
   try {
-    const response = await fetch(`${BASE_URL}/api/v1/auth/reissue`, {
+    const response = await fetch(`${BASE_URL}/api/auth/reissue`, {
       method: 'POST',
       credentials: 'include',
     });
