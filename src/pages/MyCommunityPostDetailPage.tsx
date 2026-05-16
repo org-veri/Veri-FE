@@ -656,8 +656,6 @@ function MyCommunityPostDetailPage() {
             )}
           </div>
 
-          <div className="mcp-rule" />
-
           <section ref={commentsSectionRef} id="mcp-comments" className="mcp-comments" aria-label="댓글">
             <div className="mcp-comments-head">
               <span className="mcp-comments-head-icon mgc_chat_3_fill" aria-hidden />

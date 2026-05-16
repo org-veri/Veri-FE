@@ -124,6 +124,7 @@
 }
 
 .my-page-nickname {
+  text-align: left;
   margin: 0;
   font-family: Pretendard, system-ui, sans-serif;
   font-size: 18px;
