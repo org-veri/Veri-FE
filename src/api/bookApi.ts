@@ -169,7 +169,7 @@ const makeApiRequest = async <T>(
 export const getAllBooks = async (
   params: GetAllBooksQueryParams
 ): Promise<GetAllBooksResponse> => {
-  const url = new URL('/api/v2/bookshelf/my', BASE_URL);
+  const url = new URL('/api/bookshelf/my', BASE_URL);
   if (params.page !== undefined) url.searchParams.append('page', String(params.page));
   if (params.size !== undefined) url.searchParams.append('size', String(params.size));
   if (params.sort !== undefined) url.searchParams.append('sort', params.sort);
@@ -178,11 +178,11 @@ export const getAllBooks = async (
 };
 
 export const getBookById = async (memberBookId: number): Promise<GetBookByIdResponse> => {
-  return makeApiRequest<GetBookByIdResponse>(`/api/v2/bookshelf/${memberBookId}`);
+  return makeApiRequest<GetBookByIdResponse>(`/api/bookshelf/${memberBookId}`);
 };
 
 export const searchBooksByTitle = async (query: string): Promise<SearchBooksResponse> => {
-  const url = new URL('/api/v2/bookshelf/search', BASE_URL);
+  const url = new URL('/api/bookshelf/search', BASE_URL);
   url.searchParams.append('title', query);
   return makeApiRequest<SearchBooksResponse>(url.pathname + url.search);
 };
@@ -190,43 +190,43 @@ export const searchBooksByTitle = async (query: string): Promise<SearchBooksResp
 export const getPopularBooks = async (
   params: GetPopularBooksQueryParams
 ): Promise<GetPopularBooksResponse> => {
-  const url = new URL('/api/v2/bookshelf/popular', BASE_URL);
+  const url = new URL('/api/bookshelf/popular', BASE_URL);
   if (params.page !== undefined) url.searchParams.append('page', String(params.page));
   if (params.size !== undefined) url.searchParams.append('size', String(params.size));
   return makeApiRequest<GetPopularBooksResponse>(url.pathname + url.search);
 };
 
 export const getTodaysRecommendation = async (): Promise<GetTodaysRecommendationResponse> => {
-  return makeApiRequest<GetTodaysRecommendationResponse>('/api/v2/bookshelf/recommendation/today');
+  return makeApiRequest<GetTodaysRecommendationResponse>('/api/bookshelf/recommendation/today');
 };
 
 export const createBook = async (bookData: CreateBookRequest): Promise<CreateBookResponse> => {
-  return makeApiRequest<CreateBookResponse>('/api/v2/bookshelf', {
+  return makeApiRequest<CreateBookResponse>('/api/bookshelf', {
     method: 'POST',
     body: JSON.stringify(bookData),
   });
 };
 
 export const deleteBook = async (memberBookId: number): Promise<DeleteBookResponse> => {
-  return makeApiRequest<DeleteBookResponse>(`/api/v2/bookshelf/${memberBookId}`, {
+  return makeApiRequest<DeleteBookResponse>(`/api/bookshelf/${memberBookId}`, {
     method: 'DELETE'
   });
 };
 
 export const updateBookStatusToStart = async (memberBookId: number): Promise<UpdateBookStatusResponse> => {
-  return makeApiRequest<UpdateBookStatusResponse>(`/api/v2/bookshelf/${memberBookId}/status/start`, {
+  return makeApiRequest<UpdateBookStatusResponse>(`/api/bookshelf/${memberBookId}/status/start`, {
     method: 'PATCH'
   });
 };
 
 export const updateBookStatusToOver = async (memberBookId: number): Promise<UpdateBookStatusResponse> => {
-  return makeApiRequest<UpdateBookStatusResponse>(`/api/v2/bookshelf/${memberBookId}/status/over`, {
+  return makeApiRequest<UpdateBookStatusResponse>(`/api/bookshelf/${memberBookId}/status/over`, {
     method: 'PATCH'
   });
 };
 
 export const rateBook = async (memberBookId: number, score: number): Promise<UpdateBookStatusResponse> => {
-  return makeApiRequest<UpdateBookStatusResponse>(`/api/v2/bookshelf/${memberBookId}/rate`, {
+  return makeApiRequest<UpdateBookStatusResponse>(`/api/bookshelf/${memberBookId}/rate`, {
     method: 'PATCH',
     body: JSON.stringify({ score }),
   });
@@ -236,30 +236,30 @@ export const updateBookStatus = async (
   memberBookId: number,
   data: UpdateBookStatusRequest
 ): Promise<UpdateBookStatusResponse> => {
-  return makeApiRequest<UpdateBookStatusResponse>(`/api/v2/bookshelf/${memberBookId}/modify`, {
+  return makeApiRequest<UpdateBookStatusResponse>(`/api/bookshelf/${memberBookId}`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   });
 };
 
 export const updateBookContent = async (
-  memberBookId: number, 
+  memberBookId: number,
   bookData: UpdateBookContentRequest
 ): Promise<UpdateBookStatusResponse> => {
-  return makeApiRequest<UpdateBookStatusResponse>(`/api/v2/bookshelf/${memberBookId}/modify`, {
+  return makeApiRequest<UpdateBookStatusResponse>(`/api/bookshelf/${memberBookId}`, {
     method: 'PATCH',
     body: JSON.stringify(bookData),
   });
 };
 
 export const getMyBooksCount = async (): Promise<GetMyBooksCountResponse> => {
-  return makeApiRequest<GetMyBooksCountResponse>('/api/v2/bookshelf/my/count');
+  return makeApiRequest<GetMyBooksCountResponse>('/api/bookshelf/my/count');
 };
 
 export const searchMyBook = async (
   params: SearchMyBookQueryParams
 ): Promise<SearchMyBookResponse> => {
-  const url = new URL('/api/v2/bookshelf/my/search', BASE_URL);
+  const url = new URL('/api/bookshelf/my/search', BASE_URL);
   url.searchParams.append('title', params.title);
   url.searchParams.append('author', params.author);
   
@@ -270,7 +270,7 @@ export const updateBookVisibility = async (
   readingId: number,
   isPublic: boolean
 ): Promise<UpdateBookVisibilityResponse> => {
-  const url = new URL(`/api/v2/bookshelf/${readingId}/visibility`, BASE_URL);
+  const url = new URL(`/api/bookshelf/${readingId}/visibility`, BASE_URL);
   url.searchParams.append('isPublic', String(isPublic));
 
   try {

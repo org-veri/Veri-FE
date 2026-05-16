@@ -22,7 +22,7 @@ export interface GetBookmarksResponse {
 }
 
 export const getBookmarks = async (): Promise<GetBookmarksResponse> => {
-  const response = await fetchWithAuth(`${BASE_URL}/api/v1/bookmarks`, {
+  const response = await fetchWithAuth(`${BASE_URL}/api/bookmarks`, {
     method: 'GET',
   });
 

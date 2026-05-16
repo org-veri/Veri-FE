@@ -53,7 +53,7 @@ export interface CheckNicknameExistsResponse {
 }
 
 export async function getMemberProfile(): Promise<GetMemberProfileResponse> {
-    const url = `${BASE_URL}/api/v1/members/me`;
+    const url = `${BASE_URL}/api/members/me`;
 
     try {
         const response = await fetchWithAuth(url, {
@@ -75,7 +75,7 @@ export async function getMemberProfile(): Promise<GetMemberProfileResponse> {
 export async function updateMemberInfo(
     updateData: UpdateMemberInfoRequest
 ): Promise<GetMemberInfoUpdateResponse> {
-    const url = `${BASE_URL}/api/v1/members/me/info`;
+    const url = `${BASE_URL}/api/members/me/info`;
 
     try {
         const response = await fetchWithAuth(url, {
@@ -101,7 +101,7 @@ export async function updateMemberInfo(
 export async function checkNicknameExists(
     nickname: string
 ): Promise<CheckNicknameExistsResponse> {
-    const url = new URL(`${BASE_URL}/api/v1/members/nickname/exists`);
+    const url = new URL(`${BASE_URL}/api/members/nickname/exists`);
     url.searchParams.append('nickname', nickname);
 
     try {

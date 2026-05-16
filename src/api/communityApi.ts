@@ -172,7 +172,7 @@ const makeApiRequest = async <T>(
 export const getPostFeed = async (
   params: GetPostFeedQueryParams = {}
 ): Promise<GetPostFeedResponse> => {
-  const url = new URL('/api/v1/posts', BASE_URL);
+  const url = new URL('/api/posts', BASE_URL);
   if (params.page !== undefined) url.searchParams.append('page', String(params.page));
   if (params.size !== undefined) url.searchParams.append('size', String(params.size));
   if (params.sort !== undefined) url.searchParams.append('sort', params.sort);
@@ -183,7 +183,7 @@ export const getPostFeed = async (
 export const getCards = async (
   params: GetCardsQueryParams = {}
 ): Promise<GetCardsResponse> => {
-  const url = new URL('/api/v1/cards', BASE_URL);
+  const url = new URL('/api/cards', BASE_URL);
   if (params.page !== undefined) url.searchParams.append('page', String(params.page));
   if (params.size !== undefined) url.searchParams.append('size', String(params.size));
   if (params.sort !== undefined) url.searchParams.append('sort', params.sort);
@@ -194,17 +194,17 @@ export const getCards = async (
 export const getPostDetail = async (
   postId: number
 ): Promise<GetPostDetailResponse> => {
-  return makeApiRequest<GetPostDetailResponse>(`/api/v1/posts/${postId}`);
+  return makeApiRequest<GetPostDetailResponse>(`/api/posts/${postId}`);
 };
 
 export const getMyPosts = async (): Promise<GetMyPostsResponse> => {
-  return makeApiRequest<GetMyPostsResponse>('/api/v1/posts/my');
+  return makeApiRequest<GetMyPostsResponse>('/api/posts/my');
 };
 
 export const createPost = async (
   postData: CreatePostRequest
 ): Promise<CreatePostResponse> => {
-  return makeApiRequest<CreatePostResponse>('/api/v1/posts', {
+  return makeApiRequest<CreatePostResponse>('/api/posts', {
     method: 'POST',
     body: JSON.stringify(postData),
   });
@@ -224,7 +224,7 @@ export const updatePost = async (
   postId: number,
   postData: UpdatePostRequest
 ): Promise<UpdatePostResponse> => {
-  return makeApiRequest<UpdatePostResponse>(`/api/v1/posts/${postId}`, {
+  return makeApiRequest<UpdatePostResponse>(`/api/posts/${postId}`, {
     method: 'PATCH',
     body: JSON.stringify(postData),
   });
@@ -233,7 +233,7 @@ export const updatePost = async (
 export const deletePost = async (
   postId: number
 ): Promise<DeletePostResponse> => {
-  return makeApiRequest<DeletePostResponse>(`/api/v1/posts/${postId}`, {
+  return makeApiRequest<DeletePostResponse>(`/api/posts/${postId}`, {
     method: 'DELETE',
   });
 };
@@ -241,7 +241,7 @@ export const deletePost = async (
 export const likePost = async (
   postId: number
 ): Promise<LikePostResponse> => {
-  return makeApiRequest<LikePostResponse>(`/api/v1/posts/like/${postId}`, {
+  return makeApiRequest<LikePostResponse>(`/api/posts/like/${postId}`, {
     method: 'POST',
   });
 };
@@ -249,7 +249,7 @@ export const likePost = async (
 export const unlikePost = async (
   postId: number
 ): Promise<LikePostResponse> => {
-  return makeApiRequest<LikePostResponse>(`/api/v1/posts/unlike/${postId}`, {
+  return makeApiRequest<LikePostResponse>(`/api/posts/unlike/${postId}`, {
     method: 'POST',
   });
 };
@@ -257,7 +257,7 @@ export const unlikePost = async (
 export const publishPost = async (
   postId: number
 ): Promise<PublishPostResponse> => {
-  return makeApiRequest<PublishPostResponse>(`/api/v1/posts/${postId}/publish`, {
+  return makeApiRequest<PublishPostResponse>(`/api/posts/${postId}/publish`, {
     method: 'POST',
   });
 };
@@ -265,7 +265,7 @@ export const publishPost = async (
 export const unpublishPost = async (
   postId: number
 ): Promise<UnpublishPostResponse> => {
-  return makeApiRequest<UnpublishPostResponse>(`/api/v1/posts/${postId}/unpublish`, {
+  return makeApiRequest<UnpublishPostResponse>(`/api/posts/${postId}/unpublish`, {
     method: 'POST',
   });
 };
