@@ -152,7 +152,7 @@ export const bookHandlers = [
     const body = createMockResponse({ id, score }, 'Mock 별점 수정 성공');
     return withDelay(body);
   }),
-  http.patch('*/api/bookshelf/:memberBookId/modify', async ({ params, request }) => {
+  http.patch('*/api/bookshelf/:memberBookId', async ({ params, request }) => {
     const id = Number(params.memberBookId);
     const updates = await safeJson<Partial<BookRecord>>(request);
     const book = findBook(id);
