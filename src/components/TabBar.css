@@ -1,12 +1,12 @@
 .tab-bar-container {
   position: fixed;
   bottom: max(12px, env(safe-area-inset-bottom, 0px));
-  left: max(12px, env(safe-area-inset-left, 0px));
-  right: max(12px, env(safe-area-inset-right, 0px));
-  transform: none;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1000;
   box-sizing: border-box;
-  width: auto;
+  width: calc(100% - 2 * var(--app-shell-inline, 20px));
+  max-width: calc(var(--app-shell-max-width, 450px) - 2 * var(--app-shell-inline, 20px));
   padding: clamp(8px, 2.2vw, 10px) clamp(10px, 4vw, 20px);
   display: flex;
   flex-direction: row;

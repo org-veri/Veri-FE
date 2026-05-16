@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import './Home.css';
 import MyReadingCardSection from '../../components/HomePage/MyReadingCard';
 import TodaysRecommendationSection from '../../components/HomePage/TodaysRecommendation';
@@ -12,6 +12,7 @@ import sampleBookBackground from '../../assets/images/profileSample/sample_book_
 import sampleBook from '../../assets/images/profileSample/sample_book.jpg';
 
 const RECENT_BOOK_SLOTS = 5;
+const HERO_ROTATE_MS = 5000;
 
 interface UserData {
   email: string;
@@ -26,8 +27,10 @@ function LibraryPage() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [recentBooks, setRecentBooks] = useState<Book[]>([]);
   const [selectedRecentIndex, setSelectedRecentIndex] = useState(0);
+  const [isHeroPaused, setIsHeroPaused] = useState(false);
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const heroRotateTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -86,6 +89,39 @@ function LibraryPage() {
       return Math.min(prev, recentBooks.length - 1);
     });
   }, [recentBooks]);
+
+  const clearHeroRotateTimer = useCallback(() => {
+    if (heroRotateTimerRef.current !== null) {
+      clearInterval(heroRotateTimerRef.current);
+      heroRotateTimerRef.current = null;
+    }
+  }, []);
+
+  const startHeroRotateTimer = useCallback(() => {
+    clearHeroRotateTimer();
+    if (recentBooks.length < 2) return;
+
+    heroRotateTimerRef.current = setInterval(() => {
+      setSelectedRecentIndex((prev) => (prev + 1) % recentBooks.length);
+    }, HERO_ROTATE_MS);
+  }, [recentBooks.length, clearHeroRotateTimer]);
+
+  useEffect(() => {
+    if (isHeroPaused || recentBooks.length < 2) {
+      clearHeroRotateTimer();
+      return;
+    }
+
+    startHeroRotateTimer();
+    return clearHeroRotateTimer;
+  }, [isHeroPaused, recentBooks.length, startHeroRotateTimer, clearHeroRotateTimer]);
+
+  const handleSelectRecentBook = (index: number) => {
+    setSelectedRecentIndex(index);
+    if (!isHeroPaused) {
+      startHeroRotateTimer();
+    }
+  };
 
   useEffect(() => {
     const onProfileUpdated = (e: Event) => {
@@ -161,9 +197,23 @@ function LibraryPage() {
     <div className="page-container">
       <TopBar onSearchClick={handleSearchClick} onProfileClick={handleProfileClick} />
       <div className="home-main">
-        <div className="library-hero-section">
+        <div
+          className="library-hero-section"
+          onMouseEnter={() => setIsHeroPaused(true)}
+          onMouseLeave={() => setIsHeroPaused(false)}
+          onFocusCapture={() => setIsHeroPaused(true)}
+          onBlurCapture={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+              setIsHeroPaused(false);
+            }
+          }}
+        >
           <div className="library-hero-stack">
             <div className="library-hero-card">
+              <div
+                className="library-hero-card-slide"
+                key={featured?.memberBookId ?? `hero-${selectedRecentIndex}`}
+              >
             <img
               className="library-hero-card-blur"
               src={heroBlurSrc}
@@ -174,7 +224,7 @@ function LibraryPage() {
             <img
               className="library-hero-card-cover"
               src={heroCoverSrc}
-              alt=""
+              alt={featured?.title ?? ''}
               onError={handleHeroCoverError}
             />
             <div className="library-hero-card-text">
@@ -203,9 +253,10 @@ function LibraryPage() {
                 <span className="library-hero-cta-chevron" aria-hidden />
               </button>
             </div>
-          </div>
+              </div>
+            </div>
 
-          <div className="library-hero-thumbs" role="group" aria-label="최근 읽은 책">
+            <div className="library-hero-thumbs" role="group" aria-label="최근 읽은 책">
             {Array.from({ length: RECENT_BOOK_SLOTS }, (_, i) => {
               const book = recentBooks[i];
               const isActive = i === selectedRecentIndex;
@@ -217,7 +268,7 @@ function LibraryPage() {
                   disabled={!book}
                   aria-pressed={book ? isActive : undefined}
                   aria-label={book ? `${book.title} 선택` : '빈 슬롯'}
-                  onClick={() => book && setSelectedRecentIndex(i)}
+                  onClick={() => book && handleSelectRecentBook(i)}
                 >
                   {book ? (
                     <img
@@ -229,9 +280,9 @@ function LibraryPage() {
                 </button>
               );
             })}
+            </div>
           </div>
         </div>
-      </div>
 
         <MyReadingCardSection />
         <TodaysRecommendationSection />

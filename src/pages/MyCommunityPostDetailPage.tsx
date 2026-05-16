@@ -692,7 +692,7 @@ function MyCommunityPostDetailPage() {
         </article>
       </div>
 
-      <div className="mcp-input-dock">
+      <div className="app-shell-dock-bottom">
         <CommentInput
           value={newComment}
           onChange={setNewComment}

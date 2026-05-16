@@ -17,7 +17,7 @@ body::-webkit-scrollbar {
   align-items: center;
   justify-content: flex-start;
   position: relative;
-  max-width: 450px;
+  max-width: var(--app-shell-max-width, 450px);
   margin: 0 auto;
   overflow-x: hidden;
   scrollbar-width: none;

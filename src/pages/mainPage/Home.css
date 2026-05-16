@@ -48,6 +48,28 @@
     background: #B8B8B8;
 }
 
+.library-hero-card-slide {
+    position: absolute;
+    inset: 0;
+    animation: library-hero-crossfade 0.65s ease forwards;
+}
+
+@keyframes library-hero-crossfade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .library-hero-card-slide {
+        animation: none;
+    }
+}
+
 .library-hero-card-blur {
     position: absolute;
     inset: -12px;
@@ -212,6 +234,7 @@
 }
 
 .library-hero-thumb img {
+    transition: opacity 0.35s ease;
     position: absolute;
     left: 50%;
     top: 0;

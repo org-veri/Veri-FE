@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 450px;
+  max-width: var(--app-shell-max-width, 450px);
   height: 100px;
 }
 

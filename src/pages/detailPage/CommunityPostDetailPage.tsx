@@ -505,7 +505,7 @@ function CommunityPostDetailPage() {
   }
 
   return (
-    <div className="page-container">
+    <div className="page-container community-post-detail">
       <header className="detail-header">
         <button className="header-left-arrow" onClick={() => navigate(-1)}>
           <span
@@ -657,12 +657,14 @@ function CommunityPostDetailPage() {
         />
       </div>
 
-      <CommentInput
-        value={newComment}
-        onChange={setNewComment}
-        onSubmit={handleCommentSubmit}
-        isSubmitting={submittingComment}
-      />
+      <div className="app-shell-dock-bottom">
+        <CommentInput
+          value={newComment}
+          onChange={setNewComment}
+          onSubmit={handleCommentSubmit}
+          isSubmitting={submittingComment}
+        />
+      </div>
 
       <Toast
         message={toast.message}

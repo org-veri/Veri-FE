@@ -1,12 +1,14 @@
 /* 내 게시글 상세 — Figma 390 레이아웃 정렬 */
 
 .mcp-detail {
-  max-width: 390px;
+  width: 100%;
+  max-width: var(--app-shell-max-width, 450px);
   margin: 0 auto;
   min-height: 100vh;
   background: #fff;
   position: relative;
-  padding-bottom: 120px;
+  padding-bottom: max(88px, calc(72px + env(safe-area-inset-bottom, 0px)));
+  box-sizing: border-box;
   text-align: left;
 }
 
@@ -507,18 +509,10 @@
   background: transparent;
 }
 
-.mcp-input-dock {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 0;
-  width: 100%;
-  max-width: 390px;
+.mcp-detail .app-shell-dock-bottom {
   z-index: 50;
-  background: #fff;
-  padding: 10px 20px max(30px, calc(12px + env(safe-area-inset-bottom)));
-  box-sizing: border-box;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  padding-bottom: max(30px, calc(12px + env(safe-area-inset-bottom, 0px)));
 }
 
 .mcp-comments-empty {
@@ -542,15 +536,6 @@
   font-weight: 400;
   letter-spacing: -0.26px;
   color: #6a717b;
-}
-
-.mcp-detail .comment-input-section {
-  position: relative;
-  left: auto;
-  bottom: auto;
-  border-top: none;
-  padding: 0;
-  background: transparent;
 }
 
 .mcp-detail .comment-input-wrapper {
