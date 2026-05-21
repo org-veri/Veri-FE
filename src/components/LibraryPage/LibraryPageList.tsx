@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './LibraryPageList.css';
 
 import { StarRatingFullPage } from '../../pages/mainPage/LibraryPage';
-import { type Book, type BookStatus } from '../../api/bookApi';
+import { type Book, type BookStatus } from '../../api/bookshelf/bookshelfApi';
 
 interface BookshelfListProps {
   books: Book[];

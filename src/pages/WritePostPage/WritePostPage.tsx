@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './WritePostPage.css';
-import type { BookItem } from '../../api/bookSearchApi';
-import { createPost, getPostDetail, updatePost, type UpdatePostRequest } from '../../api/communityApi';
-import { uploadImage } from '../../api/imageApi';
+import type { BookItem } from '../../api/bookshelf/bookSearchApi';
+import {
+  createPost,
+  getPostDetail,
+  updatePost,
+  uploadPostImage,
+} from '../../api/community/postApi';
 import Toast from '../../components/Toast';
 import { PATH } from '../../config/routes';
 
@@ -193,7 +197,7 @@ function WritePostPage() {
       newImages.push(base64);
 
       try {
-        const uploadedUrl = await uploadImage(file);
+        const uploadedUrl = await uploadPostImage(file);
         newUploadedUrls.push(uploadedUrl);
       } catch {
         showToast('일부 이미지 업로드에 실패했습니다.', 'error');
@@ -246,15 +250,11 @@ function WritePostPage() {
 
     try {
       if (isEditMode && editPostId != null) {
-        const updateBody: UpdatePostRequest = {
+        const response = await updatePost(editPostId, {
           title: title.trim(),
           content: content.trim(),
           images: uploadedImageUrls,
-        };
-        if (selectedBook?.bookId != null) {
-          updateBody.bookId = selectedBook.bookId;
-        }
-        const response = await updatePost(editPostId, updateBody);
+        });
 
         if (response.isSuccess) {
           navigate(`${PATH.MY_COMMUNITY_POST}/${editPostId}`, { replace: true });
@@ -269,10 +269,12 @@ function WritePostPage() {
         content: string;
         images: string[];
         bookId?: number;
+        public?: boolean;
       } = {
         title: title.trim(),
         content: content.trim(),
         images: uploadedImageUrls,
+        public: true,
       };
 
       if (selectedBook?.bookId) {

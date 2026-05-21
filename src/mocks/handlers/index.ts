@@ -6,12 +6,14 @@ import { communityCommentsHandlers } from './communityCommentsHandlers';
 import { imageHandlers } from './imageHandlers';
 import { memberHandlers } from './memberHandlers';
 import { bookmarkHandlers } from './bookmarkHandlers';
+import { socialHandlers } from './socialHandlers';
 
 export const handlers = [
   ...authHandlers,
   ...bookHandlers,
-  ...cardHandlers,
   ...communityHandlers,
+  ...socialHandlers,
+  ...cardHandlers,
   ...communityCommentsHandlers,
   ...imageHandlers,
   ...memberHandlers,

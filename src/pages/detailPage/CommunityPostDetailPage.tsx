@@ -1,9 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPostDetail, deletePost, likePost, unlikePost, publishPost, unpublishPost } from '../../api/communityApi';
-import type { PostDetail, Comment } from '../../api/communityApi';
-import { createComment, deleteComment, updateComment, createReply } from '../../api/communityCommentsApi';
-import { getCurrentUserId } from '../../api/auth';
+import {
+  getPostDetail,
+  deletePost,
+  likePost,
+  unlikePost,
+  publishPost,
+  unpublishPost,
+} from '../../api/community/postApi';
+import type { PostDetail, Comment } from '../../api/types/community';
+import {
+  createComment,
+  deleteComment,
+  updateComment,
+  createReply,
+} from '../../api/community/commentApi';
+import { getCurrentUserId } from '../../api/auth/authApi';
+import { navigateToMemberProfile } from '../../utils/navigateToMemberProfile';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import ConfirmationModal from '../../components/ConfirmationModal';
@@ -588,12 +601,18 @@ function CommunityPostDetailPage() {
 
         <div className="detail-post-info">
           <div className="detail-author-section">
-            <div className="detail-author-avatar">
-              <img src={post.author.profileImageUrl} alt="프로필" />
-            </div>
-            <div className="detail-author-details">
-              <div className="author-name-detail">{post.author.nickname}</div>
-            </div>
+            <button
+              type="button"
+              className="detail-author-profile-link"
+              onClick={() => navigateToMemberProfile(navigate, post.author.id)}
+            >
+              <div className="detail-author-avatar">
+                <img src={post.author.profileImageUrl} alt="프로필" />
+              </div>
+              <div className="detail-author-details">
+                <div className="author-name-detail">{post.author.nickname}</div>
+              </div>
+            </button>
             <div className="detail-post-actions">
               <div className={`detail-like-group ${isLiked ? 'is-liked' : ''}`}>
                 <button

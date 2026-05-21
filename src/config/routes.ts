@@ -27,6 +27,7 @@ export const PATH = {
   POST_BOOK_SEARCH: '/post-book-search',
   COMMUNITY_READING_CARDS: '/community/reading-cards',
   POST_LIKES: '/post-likes',
+  MEMBER_PROFILE: '/member',
 } as const;
 
 export const PATHS_PUBLIC: string[] = [PATH.LOGIN, PATH.OAUTH_CALLBACK];

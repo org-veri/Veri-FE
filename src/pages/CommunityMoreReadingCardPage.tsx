@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getCards } from '../api/communityApi';
-import type { Card, GetCardsQueryParams } from '../api/communityApi';
+import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  getCards,
+  getFollowingCards,
+  type PaginationQueryParams,
+  type Card,
+} from '../api/explore/exploreApi';
+import { navigateToMemberProfile } from '../utils/navigateToMemberProfile';
 import { FullPageErrorState } from '../components/FullPageErrorState';
 import './CommunityMoreReadingCardPage.css';
 
@@ -12,6 +17,7 @@ interface CardItemProps {
 }
 
 const CardItem: React.FC<CardItemProps> = ({ card, onCardClick, innerRef }) => {
+  const navigate = useNavigate();
   const cardImageErrorRef = useRef(false);
   const profileImageErrorRef = useRef(false);
   
@@ -47,16 +53,23 @@ const CardItem: React.FC<CardItemProps> = ({ card, onCardClick, innerRef }) => {
       </div>
 
       <div className="card-info">
-        <div className="card-user">
+        <button
+          type="button"
+          className="card-user card-user--clickable"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigateToMemberProfile(navigate, card.member.id);
+          }}
+        >
           <div className="user-avatar">
-            <img 
+            <img
               src={card.member.profileImageUrl || profileFallbackImageUrl}
               alt={card.member.nickname}
               onError={handleProfileImageError}
             />
           </div>
           <div className="user-name">{card.member.nickname}</div>
-        </div>
+        </button>
 
         <div className="card-quote">
           {card.content.length > 50 
@@ -76,6 +89,10 @@ const CardItem: React.FC<CardItemProps> = ({ card, onCardClick, innerRef }) => {
 
 function CommunityMoreReadingCardPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const feedType = (location.state as { feed?: 'following' | 'all' } | null)?.feed ?? 'all';
+  const isFollowingFeed = feedType === 'following';
+  const pageTitle = isFollowingFeed ? '친구들의 독서카드' : '독서카드';
   const [cards, setCards] = useState<Card[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -96,13 +113,13 @@ function CommunityMoreReadingCardPage() {
       }
       setError(null);
       
-      const params: GetCardsQueryParams = {
+      const params: PaginationQueryParams = {
         page: page,
         size: 12,
         sort: 'newest'
       };
       
-      const response = await getCards(params);
+      const response = await (isFollowingFeed ? getFollowingCards : getCards)(params);
       
       if (response.isSuccess && response.result) {
         const newCards = response.result.cards;
@@ -125,11 +142,13 @@ function CommunityMoreReadingCardPage() {
       setIsLoading(false);
       setLoadingMore(false);
     }
-  }, [loadingMore, hasMore]);
+  }, [loadingMore, hasMore, isFollowingFeed]);
 
   useEffect(() => {
-    loadCards(1, true);
-  }, []);
+    setCurrentPage(1);
+    setHasMore(true);
+    void loadCards(1, true);
+  }, [isFollowingFeed, loadCards]);
 
   useEffect(() => {
     if (currentPage > 1 && hasMore) {
@@ -175,7 +194,7 @@ function CommunityMoreReadingCardPage() {
           <button className="header-left-arrow" onClick={handleBack}>
             <span className="mgc_left_fill"></span>
           </button>
-          <h3>독서카드</h3>
+          <h3>{pageTitle}</h3>
           <div className="header-right-wrapper"></div>
         </header>
 
@@ -207,7 +226,7 @@ function CommunityMoreReadingCardPage() {
         <button className="header-left-arrow" onClick={handleBack}>
           <span className="mgc_left_fill"></span>
         </button>
-        <h3>독서카드</h3>
+        <h3>{pageTitle}</h3>
         <div className="header-right-wrapper"></div>
       </header>
 
@@ -236,8 +255,8 @@ function CommunityMoreReadingCardPage() {
 
         {!isLoading && !loadingMore && cards.length === 0 && !error && (
           <div className="no-cards">
-            <p>아직 독서카드가 없습니다.</p>
-            <p>첫 번째 독서카드를 만들어보세요!</p>
+            <p>{isFollowingFeed ? '팔로우한 친구의 독서카드가 없어요' : '아직 독서카드가 없습니다.'}</p>
+            {!isFollowingFeed && <p>첫 번째 독서카드를 만들어보세요!</p>}
           </div>
         )}
       </div>

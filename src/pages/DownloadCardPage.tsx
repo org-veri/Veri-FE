@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import { FiDownload, FiShare2 } from 'react-icons/fi';
 
-import { getCardDetailById, type Card } from '../api/cardApi';
+import { getCardDetailById, type Card } from '../api/cards/cardApi';
 import { FullPageErrorState } from '../components/FullPageErrorState';
 import './DownloadCardPage.css';
 

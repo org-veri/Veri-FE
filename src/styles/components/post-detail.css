@@ -123,6 +123,20 @@
   margin-bottom: 15px;
 }
 
+.detail-author-profile-link {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
 .detail-author-avatar {
   width: 40px;
   height: 40px;

@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import './ReadingCardPage.css';
 import ReadingCardItem from '../../components/ReadingCardPage/ReadingCardItem';
 import ReadingCardGridItem from '../../components/ReadingCardPage/ReadingCardGridItem';
-import { getMyCards, getCardDetailById, type MyCardItem, type GetMyCardsQueryParams } from '../../api/cardApi';
+import { getMyCards, getCardDetailById, type MyCardItem, type GetMyCardsQueryParams } from '../../api/cards/cardApi';
 import TopBar from '../../components/TopBar';
 import { FullPageErrorState } from '../../components/FullPageErrorState';
 import { SkeletonList, SkeletonReadingCard, SkeletonReadingCardGrid } from '../../components/SkeletonUI';
+import { useMinLoadingDuration } from '../../utils/useMinLoadingDuration';
 
 export interface ReadingCardItemType {
     id: string;
@@ -26,6 +27,7 @@ function ReadingCardPage() {
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
     const [activeTab, setActiveTab] = useState<'image' | 'text'>('text');
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const showLoading = useMinLoadingDuration(isLoading);
 
     const handleSearch = useCallback((query: string) => {
         setSearchQuery(query);
@@ -221,7 +223,7 @@ function ReadingCardPage() {
 
                 {activeTab === 'image' && (
                     <div className="reading-card-grid-view">
-                        {isLoading ? (
+                        {showLoading ? (
                             <SkeletonList count={8}>
                                 <SkeletonReadingCardGrid />
                             </SkeletonList>
@@ -245,7 +247,7 @@ function ReadingCardPage() {
 
                 {activeTab === 'text' && (
                     <div className="reading-card-text-view">
-                        {isLoading ? (
+                        {showLoading ? (
                             <SkeletonList count={5}>
                                 <SkeletonReadingCard />
                             </SkeletonList>
@@ -271,12 +273,6 @@ function ReadingCardPage() {
             </div>
 
             <div className='main-page-margin'>
-            </div>
-
-            <div className="create-button-container">
-                <button className="create-button" onClick={handleCreateCardClick}>
-                    + 등록하기
-                </button>
             </div>
         </div>
     );

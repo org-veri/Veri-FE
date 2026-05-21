@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './ReadingCardEditModal.css';
-import { updateCard, uploadImageAndGetUrl } from '../api/cardApi';
+import { updateCard, uploadImageAndGetUrl } from '../api/cards/cardApi';
 import { FiUpload, FiX } from 'react-icons/fi';
 
 interface ReadingCardEditModalProps {

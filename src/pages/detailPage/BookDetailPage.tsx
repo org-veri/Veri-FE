@@ -13,8 +13,8 @@ import {
     updateBookVisibility,
     type Book,
     type CardSummary
-} from '../../api/bookApi';
-import { getCurrentUserId } from '../../api/auth';
+} from '../../api/bookshelf/bookshelfApi';
+import { getCurrentUserId } from '../../api/auth/authApi';
 import { StarRatingFullPage } from '../mainPage/LibraryPage';
 import { FullPageErrorState } from '../../components/FullPageErrorState';
 

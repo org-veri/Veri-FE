@@ -182,3 +182,13 @@
   padding: 0;
   min-height: 200px;
 }
+
+.books-container--loading.grid-view {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.books-container--loading.grid-view .skeleton-reading-card-grid {
+  margin: 0;
+}

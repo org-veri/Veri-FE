@@ -37,16 +37,22 @@ const buildPostDetail = (postId: number) => {
         id: 201,
         nickname: '김현아',
         profileImageUrl: '/images/profileSample/sample_user.png',
+        following: false,
+        mutualFollow: false,
       },
       {
         id: 202,
         nickname: '김세원',
         profileImageUrl: '/images/profileSample/sample_user.png',
+        following: true,
+        mutualFollow: true,
       },
       {
         id: 203,
         nickname: '이독서',
         profileImageUrl: '/images/profileSample/sample_user.png',
+        following: false,
+        mutualFollow: false,
       },
     ],
     comments: [
@@ -92,6 +98,34 @@ const buildPostDetail = (postId: number) => {
 };
 
 export const communityHandlers = [
+  http.get('*/api/posts/following', async ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('page') || '1');
+    const size = Number(url.searchParams.get('size') || '10');
+    const paginated = paginate(posts, page, size);
+    const body = createMockResponse({
+      posts: paginated,
+      page,
+      size,
+      totalElements: posts.length,
+      totalPages: Math.ceil(posts.length / size) || 1,
+    }, 'Mock 팔로잉 게시글 조회 성공');
+    return withDelay(body);
+  }),
+  http.get('*/api/cards/following', async ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('page') || '1');
+    const size = Number(url.searchParams.get('size') || '10');
+    const paginated = paginate(cards, page, size);
+    const body = createMockResponse({
+      cards: paginated,
+      page,
+      size,
+      totalElements: cards.length,
+      totalPages: Math.ceil(cards.length / size) || 1,
+    }, 'Mock 팔로잉 카드 조회 성공');
+    return withDelay(body);
+  }),
   http.get('*/api/posts', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('page') || '1');
@@ -154,13 +188,16 @@ export const communityHandlers = [
   }),
   http.patch('*/api/posts/:postId', async ({ request, params }) => {
     const payload = await safeJson<
-      Partial<{ title: string; content: string; images: string[]; bookId?: number }>
+      Partial<{ title: string; content: string; images: string[]; bookId?: number; public?: boolean }>
     >(request);
     const post = posts.find(item => item.postId === Number(params.postId));
     if (post) {
       post.title = payload.title ?? post.title;
       post.content = payload.content ?? post.content;
       post.thumbnail = payload.images?.[0] ?? post.thumbnail;
+      if (payload.public !== undefined) {
+        post.isPublic = payload.public;
+      }
       if (payload.bookId != null) {
         const shelfBook = mockBooks.find(
           (b) => b.bookId === payload.bookId || b.memberBookId === payload.bookId

@@ -4,8 +4,9 @@ import { FiDownload, FiShare2 } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
-import { getCardDetailById, deleteCard, updateCardVisibility, type Card } from '../../api/cardApi';
-import { getCurrentUserId } from '../../api/auth';
+import { getCardDetailById, deleteCard, updateCardVisibility, type Card } from '../../api/cards/cardApi';
+import { getCurrentUserId } from '../../api/auth/authApi';
+import { navigateToMemberProfile } from '../../utils/navigateToMemberProfile';
 import ReadingCardEditModal from '../../components/ReadingCardEditModal';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import Toast from '../../components/Toast';
@@ -22,6 +23,7 @@ function ReadingCardDetailPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isMyCard, setIsMyCard] = useState<boolean>(false);
   const [cardOwnerNickname, setCardOwnerNickname] = useState<string | null>(null);
+  const [cardOwnerId, setCardOwnerId] = useState<number | null>(null);
   const [isPublic, setIsPublic] = useState<boolean | null>(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -52,6 +54,7 @@ function ReadingCardDetailPage() {
       setError(null);
       setCardDetail(null);
       setCardOwnerNickname(null);
+      setCardOwnerId(null);
 
       try {
         const response = await getCardDetailById(cardId);
@@ -67,6 +70,7 @@ function ReadingCardDetailPage() {
           const isMyCardValue = mineField !== undefined ? mineField : (currentUserId !== null && cardOwnerId !== undefined && currentUserId === cardOwnerId);
           setIsMyCard(isMyCardValue);
           setCardOwnerNickname(nickname);
+          setCardOwnerId(cardOwnerId ?? null);
 
           setCardDetail({
             cardId: response.result.id,
@@ -317,7 +321,23 @@ function ReadingCardDetailPage() {
             className="mgc_left_fill"
           ></span>
         </button>
-        <h3>{isMyCard ? '나의 독서카드' : cardOwnerNickname ? `${cardOwnerNickname}의 독서카드` : '독서카드'}</h3>
+        <h3>
+          {isMyCard ? (
+            '나의 독서카드'
+          ) : cardOwnerNickname && cardOwnerId ? (
+            <button
+              type="button"
+              className="reading-card-owner-title-btn"
+              onClick={() => navigateToMemberProfile(navigate, cardOwnerId)}
+            >
+              {cardOwnerNickname}의 독서카드
+            </button>
+          ) : cardOwnerNickname ? (
+            `${cardOwnerNickname}의 독서카드`
+          ) : (
+            '독서카드'
+          )}
+        </h3>
         <div className="header-right-wrapper">
           {isMyCard && (
             <>

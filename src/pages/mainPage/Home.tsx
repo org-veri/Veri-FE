@@ -3,11 +3,12 @@ import './Home.css';
 import MyReadingCardSection from '../../components/HomePage/MyReadingCard';
 import TodaysRecommendationSection from '../../components/HomePage/TodaysRecommendation';
 import { useNavigate } from 'react-router-dom';
-import { getMemberProfile } from '../../api/memberApi';
-import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookApi';
+import { getMemberProfile } from '../../api/member/memberApi';
+import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookshelf/bookshelfApi';
 import { SkeletonHeroSection } from '../../components/SkeletonUI';
 import TopBar from '../../components/TopBar';
 import { FullPageErrorState } from '../../components/FullPageErrorState';
+import { useMinLoadingDuration } from '../../utils/useMinLoadingDuration';
 import sampleBookBackground from '../../assets/images/profileSample/sample_book_background.jpg';
 import sampleBook from '../../assets/images/profileSample/sample_book.jpg';
 
@@ -22,7 +23,7 @@ interface UserData {
   numOfCard: number;
 }
 
-function LibraryPage() {
+function Home() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [recentBooks, setRecentBooks] = useState<Book[]>([]);
@@ -31,6 +32,7 @@ function LibraryPage() {
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const heroRotateTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const showHeroLoading = useMinLoadingDuration(isUserDataLoading || !userData);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -178,7 +180,7 @@ function LibraryPage() {
     );
   }
 
-  if (isUserDataLoading || !userData) {
+  if (showHeroLoading) {
     return (
       <div className="page-container">
         <TopBar onSearchClick={handleSearchClick} onProfileClick={handleProfileClick} />
@@ -191,6 +193,10 @@ function LibraryPage() {
         <div className='main-page-margin' />
       </div>
     );
+  }
+
+  if (!userData) {
+    return null;
   }
 
   return (
@@ -294,4 +300,4 @@ function LibraryPage() {
   );
 }
 
-export default LibraryPage;
+export default Home;

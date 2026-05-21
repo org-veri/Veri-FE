@@ -35,6 +35,19 @@
   gap: 10px;
 }
 
+.comment-author-profile-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
 .comment-author-avatar {
   width: 32px;
   height: 32px;

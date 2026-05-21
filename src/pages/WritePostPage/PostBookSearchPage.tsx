@@ -5,10 +5,10 @@ import { MdArrowBackIosNew } from 'react-icons/md';
 import '../../styles/components/search.css';
 import '../../styles/components/book-list.css';
 import './PostBookSearchPage.css';
-import { getAllBooks, type Book } from '../../api/bookApi';
+import { getAllBooks, type Book } from '../../api/bookshelf/bookshelfApi';
 import Toast from '../../components/Toast';
 import { PATH } from '../../config/routes';
-import type { BookItem } from '../../api/bookSearchApi';
+import type { BookItem } from '../../api/bookshelf/bookSearchApi';
 import BookIcon from '../../assets/icons/book.svg';
 import BookActiveIcon from '../../assets/icons/book_active.svg';
 

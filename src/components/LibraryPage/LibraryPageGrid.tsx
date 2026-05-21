@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LibraryPageGrid.css';
-import { type Book } from '../../api/bookApi';
+import { type Book } from '../../api/bookshelf/bookshelfApi';
 
 interface LibraryPageGridProps {
   books: Book[];

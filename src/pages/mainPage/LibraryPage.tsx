@@ -4,14 +4,15 @@ import './LibraryPage.css';
 import starFillIcon from '../../assets/icons/star_fill.svg';
 import starLineIcon from '../../assets/icons/star_line.svg';
 
-import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookApi';
+import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookshelf/bookshelfApi';
 import BookshelfList from '../../components/LibraryPage/LibraryPageList';
 import LibraryPageGrid from '../../components/LibraryPage/LibraryPageGrid';
 import TopBar from '../../components/TopBar';
 import { FullPageErrorState } from '../../components/FullPageErrorState';
-import { SkeletonList, SkeletonCard } from '../../components/SkeletonUI';
+import { SkeletonList, SkeletonCard, SkeletonReadingCardGrid } from '../../components/SkeletonUI';
 import ReadingStatusModal from '../../components/ReadingStatusModal';
 import SortOptionsModal from '../../components/SortOptionsModal';
+import { useMinLoadingDuration } from '../../utils/useMinLoadingDuration';
 
 
 export const StarRatingFullPage: React.FC<{ rating: number }> = ({ rating }) => {
@@ -75,6 +76,7 @@ function LibraryPage() {
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const statusButtonRef = useRef<HTMLSpanElement>(null);
   const sortButtonRef = useRef<HTMLSpanElement>(null);
+  const showLoading = useMinLoadingDuration(isLoading);
 
   // fetchBooks 함수를 useCallback으로 감싸고, sortOrder가 변경될 때마다 재생성되도록 합니다.
   const fetchBooks = useCallback(async () => {
@@ -264,11 +266,17 @@ function LibraryPage() {
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="books-container list-view">
-            <SkeletonList count={5}>
-              <SkeletonCard />
-            </SkeletonList>
+        {showLoading ? (
+          <div className={`books-container ${viewMode === 'grid' ? 'grid-view' : 'list-view'} books-container--loading`}>
+            {viewMode === 'grid' ? (
+              <SkeletonList count={6}>
+                <SkeletonReadingCardGrid />
+              </SkeletonList>
+            ) : (
+              <SkeletonList count={5}>
+                <SkeletonCard />
+              </SkeletonList>
+            )}
           </div>
         ) : filteredBooks.length === 0 && !error ? (
           <div className="no-books-message">

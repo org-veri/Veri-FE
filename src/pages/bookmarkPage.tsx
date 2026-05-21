@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { MdArrowBackIosNew, MdBookmark, MdBookmarkBorder } from 'react-icons/md';
 import { FiSearch } from 'react-icons/fi';
 import './bookmarkPage.css';
-import type { Bookmark } from '../api/bookmarkApi';
-import { getBookmarks } from '../api/bookmarkApi';
+import type { Bookmark } from '../api/bookshelf/bookmarkApi';
+import { getBookmarks } from '../api/bookshelf/bookmarkApi';
 
 function BookmarkPage() {
   const navigate = useNavigate();

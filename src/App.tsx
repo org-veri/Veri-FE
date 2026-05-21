@@ -4,7 +4,7 @@ import TabBar from './components/TabBar';
 import MainLayout from './components/MainLayout';
 import FloatingCameraButton from './components/FloatingCameraButton';
 import { PATH, PATHS_PUBLIC, shouldShowTabBar, shouldShowFloatingCamera } from './config/routes';
-import { getAccessTokenAsync } from './api/auth';
+import { getAccessTokenAsync } from './api/auth/authApi';
 import './App.css';
 
 import HomePage from './pages/mainPage/Home';
@@ -35,6 +35,7 @@ import WritePostPage from './pages/WritePostPage/WritePostPage';
 import PostBookSearchPage from './pages/WritePostPage/PostBookSearchPage';
 import CommunityMoreReadingCardPage from './pages/CommunityMoreReadingCardPage';
 import PostLikeListPage from './pages/PostLikeListPage';
+import MemberProfilePage from './pages/MemberProfilePage';
 
 function App() {
   const location = useLocation();
@@ -100,6 +101,7 @@ function App() {
         <Route path={`${PATH.BOOK_DETAIL}/:id`} element={<MainLayout><BookDetailPage /></MainLayout>} />
         <Route path={`${PATH.READING_CARD_DETAIL}/:id`} element={<MainLayout><ReadingCardDetailPage /></MainLayout>} />
         <Route path={`${PATH.POST_LIKES}/:postId`} element={<MainLayout><PostLikeListPage /></MainLayout>} />
+        <Route path={`${PATH.MEMBER_PROFILE}/:memberId`} element={<MainLayout><MemberProfilePage /></MainLayout>} />
         <Route path={`${PATH.COMMUNITY_POST}/:postId`} element={<MainLayout><CommunityPostDetailPage /></MainLayout>} />
         <Route path={`${PATH.MY_COMMUNITY_POST}/:postId`} element={<MainLayout><MyCommunityPostDetailPage /></MainLayout>} />
         <Route path={PATH.MAKE_CARD} element={<MainLayout><MakeCardPage /></MainLayout>} />

@@ -1,4 +1,4 @@
-import type { Comment } from '../../api/communityApi';
+import type { Comment } from '../../api/types/community';
 import CommentItem from './CommentItem';
 import './CommentList.css';
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookApi';
+import { getAllBooks, type Book, type GetAllBooksQueryParams } from '../../api/bookshelf/bookshelfApi';
 import { SectionErrorBanner } from '../SectionErrorBanner';
 
 interface BookshelfItemType {

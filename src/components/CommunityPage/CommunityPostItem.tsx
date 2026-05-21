@@ -1,4 +1,6 @@
-import type { Post } from '../../api/communityApi';
+import type { Post } from '../../api/types/community';
+import { useNavigate } from 'react-router-dom';
+import { navigateToMemberProfile } from '../../utils/navigateToMemberProfile';
 
 export interface CommunityPostItemProps {
   post: Post;
@@ -15,6 +17,13 @@ function CommunityPostItem({
   onClick,
   innerRef,
 }: CommunityPostItemProps) {
+  const navigate = useNavigate();
+
+  const handleAuthorClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigateToMemberProfile(navigate, post.author.id);
+  };
+
   return (
     <div
       ref={innerRef}
@@ -29,7 +38,19 @@ function CommunityPostItem({
         }
       }}
     >
-      <div className="community-post-header">
+      <div
+        className="community-post-header community-post-header--clickable"
+        onClick={handleAuthorClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.stopPropagation();
+            navigateToMemberProfile(navigate, post.author.id);
+          }
+        }}
+      >
         <div className="community-post-avatar">
           <img src={post.author.profileImageUrl} alt="" />
         </div>

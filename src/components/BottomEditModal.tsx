@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './BottomEditModal.css';
-import { updateBookStatus } from '../api/bookApi';
+import { updateBookStatus } from '../api/bookshelf/bookshelfApi';
 import starFillIcon from '../assets/icons/star_fill.svg';
 import starLineIcon from '../assets/icons/star_line.svg';
 import Toast from './Toast';

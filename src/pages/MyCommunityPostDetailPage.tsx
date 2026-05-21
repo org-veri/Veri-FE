@@ -1,9 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPostDetail, deletePost, publishPost, unpublishPost, likePost, unlikePost } from '../api/communityApi';
-import type { PostDetail, Comment } from '../api/communityApi';
-import { createComment, deleteComment, updateComment, createReply } from '../api/communityCommentsApi';
-import { getCurrentUserId } from '../api/auth';
+import {
+  getPostDetail,
+  deletePost,
+  publishPost,
+  unpublishPost,
+  likePost,
+  unlikePost,
+} from '../api/community/postApi';
+import type { PostDetail, Comment } from '../api/types/community';
+import {
+  createComment,
+  deleteComment,
+  updateComment,
+  createReply,
+} from '../api/community/commentApi';
+import { getCurrentUserId } from '../api/auth/authApi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import ConfirmationModal from '../components/ConfirmationModal';
 import CommentList from '../components/CommunityPostDetailPage/CommentList';
@@ -94,8 +106,7 @@ function MyCommunityPostDetailPage() {
             comments: commentsWithIsMine
           });
           setIsLiked(postData.isLiked);
-          const responseResult = postData as any;
-          setIsPublic(responseResult.isPublic !== undefined ? responseResult.isPublic : true);
+          setIsPublic(postData.isPublic !== undefined ? postData.isPublic : true);
         } else {
           throw new Error(response.message || '게시글을 불러오는데 실패했습니다.');
         }

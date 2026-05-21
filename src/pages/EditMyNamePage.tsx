@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EditMyNamePage.css';
-import { getMemberProfile, updateMemberInfo, checkNicknameExists } from '../api/memberApi';
-import { uploadImage } from '../api/imageApi';
+import { getMemberProfile, updateMemberInfo, checkNicknameExists } from '../api/member/memberApi';
+import { uploadImage } from '../api/images/imageApi';
 import Toast from '../components/Toast';
 
 const EditMyNamePage: React.FC = () => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { handleSocialLoginCallback, setAccessToken } from '../api/auth';
+import { handleSocialLoginCallback, setAccessToken } from '../api/auth/authApi';
 
 const OAuthCallbackPage: React.FC = () => {
   const navigate = useNavigate();

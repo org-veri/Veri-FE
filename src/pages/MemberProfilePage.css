@@ -1,0 +1,346 @@
+.member-profile-page {
+  width: 100%;
+  max-width: var(--app-shell-max-width, 450px);
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.member-profile-page .detail-header h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.member-profile-page__title-strong {
+  font-weight: 600;
+}
+
+.member-profile-page__title-suffix {
+  font-weight: 500;
+}
+
+.member-profile-page__content {
+  width: 100%;
+  padding: 0 0 24px;
+  box-sizing: border-box;
+}
+
+.member-profile-page__profile {
+  width: 100%;
+  padding: 20px 20px 0;
+  box-sizing: border-box;
+}
+
+.member-profile-page__profile-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.member-profile-page__profile-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.member-profile-page__avatar-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: 55px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #e4e4e7;
+}
+
+.member-profile-page__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.member-profile-page__avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.member-profile-page__profile-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.member-profile-page__nickname {
+  margin: 0;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.member-profile-page__social-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.member-profile-page__social-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.member-profile-page__social-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.member-profile-page__social-icon::before {
+  color: #777a88 !important;
+}
+
+.member-profile-page__social-label {
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #777a88;
+}
+
+.member-profile-page__social-value {
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+}
+
+.member-profile-page__follow-btn {
+  flex-shrink: 0;
+  width: 100px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #0c0c0e;
+  color: #f4f4f5;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.member-profile-page__follow-btn--following {
+  background: #e4e4e7;
+  color: #5f626d;
+}
+
+.member-profile-page__follow-btn--mutual {
+  background: #f3f4f5;
+  color: #303336;
+}
+
+.member-profile-page__follow-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.member-profile-page__profile-rule {
+  height: 6px;
+  margin: 24px -20px 0;
+  width: calc(100% + 40px);
+  background: #f4f4f5;
+}
+
+.member-profile-page__posts {
+  width: 100%;
+  padding: 30px 20px 0;
+  box-sizing: border-box;
+}
+
+.member-profile-page__posts-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.member-profile-page__posts-title {
+  margin: 0;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #0c0c0e;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member-profile-page__posts-count {
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #777a88;
+  flex-shrink: 0;
+}
+
+.member-profile-page__posts-status,
+.member-profile-page__posts-empty {
+  text-align: center;
+  padding: 32px 16px;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 14px;
+  color: #666;
+}
+
+.member-profile-page__posts-empty p {
+  margin: 0 0 8px;
+}
+
+.member-profile-page__post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.member-profile-page__post-card {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.member-profile-page__post-cover {
+  width: 100%;
+  height: 160px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #e4e4e7;
+}
+
+.member-profile-page__post-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.member-profile-page__post-cover-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #999;
+}
+
+.member-profile-page__post-body {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.member-profile-page__post-title {
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #0c0c0e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member-profile-page__post-excerpt {
+  margin: 0;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #0c0c0e;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.member-profile-page__post-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.member-profile-page__post-book {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.member-profile-page__post-book .mgc_book_6_fill::before {
+  color: #00ed9e !important;
+  font-size: 14px;
+}
+
+.member-profile-page__post-book-title {
+  font-size: 12px;
+  color: #5f626d;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member-profile-page__post-date {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: #5f626d;
+  line-height: 1.4;
+}
+
+.member-profile-page__post-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.member-profile-page__post-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #0c0c0e;
+}
+
+.member-profile-page__post-stat .mgc_heart_line::before,
+.member-profile-page__post-stat .mgc_chat_3_line::before {
+  color: #777a88 !important;
+  font-size: 14px;
+}

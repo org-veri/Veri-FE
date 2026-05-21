@@ -5,7 +5,7 @@ import {
   createBook,
   type CreateBookRequest,
   type BookSearchResult,
-} from '../api/bookApi';
+} from '../api/bookshelf/bookshelfApi';
 import { FullPageErrorState } from '../components/FullPageErrorState';
 import { SectionErrorBanner } from '../components/SectionErrorBanner';
 

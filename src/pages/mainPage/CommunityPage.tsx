@@ -1,13 +1,22 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TopBar from '../../components/TopBar';
-import { SkeletonList, SkeletonCard } from '../../components/SkeletonUI';
-import { getPostFeed, getCards } from '../../api/communityApi';
-import type { Post, GetPostFeedQueryParams, Card, GetCardsQueryParams } from '../../api/communityApi';
-import { getCurrentUserId } from '../../api/auth';
+import { SkeletonList, SkeletonCommunityPost, SkeletonFriendsCard, SkeletonCommunityCardsGrid, SkeletonHorizontalRow } from '../../components/SkeletonUI';
+import {
+  getPostFeed,
+  getFollowingPostFeed,
+  getCards,
+  getFollowingCards,
+  type PaginationQueryParams,
+  type Card,
+} from '../../api/explore/exploreApi';
+import { PATH } from '../../config/routes';
+import type { Post } from '../../api/types/community';
+import { getCurrentUserId } from '../../api/auth/authApi';
 import CommunityPostItem from '../../components/CommunityPage/CommunityPostItem';
 import './CommunityPage.css';
 import { SectionErrorBanner } from '../../components/SectionErrorBanner';
+import { useMinLoadingDuration } from '../../utils/useMinLoadingDuration';
 
 type CommunityTab = 'subscription' | 'recommended';
 
@@ -31,6 +40,8 @@ function CommunityPage() {
   const [loadingMore, setLoadingMore] = useState(false);
 
   const observer = useRef<IntersectionObserver | null>(null);
+  const showPostsLoading = useMinLoadingDuration(isLoading && posts.length === 0);
+  const showCardsLoading = useMinLoadingDuration(cardsLoading);
 
   const lastPostElementRef = useCallback((node: HTMLDivElement | null) => {
     if (loadingMore || isLoading) return;
@@ -59,13 +70,14 @@ function CommunityPage() {
       }
       setError(null);
 
-      const params: GetPostFeedQueryParams = {
+      const params: PaginationQueryParams = {
         page: page,
         size: 10,
-        sort: 'newest'
+        sort: 'newest',
       };
 
-      const response = await getPostFeed(params);
+      const fetchFeed = activeTab === 'subscription' ? getFollowingPostFeed : getPostFeed;
+      const response = await fetchFeed(params);
 
       if (response.isSuccess && response.result) {
         const newPosts = response.result.posts;
@@ -88,56 +100,57 @@ function CommunityPage() {
       setIsLoading(false);
       setLoadingMore(false);
     }
-  }, []);
-
-  const loadMorePosts = useCallback(async () => {
-    if (loadingMore || isLoading || !hasMore) return;
-
-    await loadPosts(currentPage, false);
-  }, [currentPage, loadingMore, isLoading, hasMore, loadPosts]);
+  }, [activeTab]);
 
   const loadCards = useCallback(async () => {
     try {
       setCardsLoading(true);
 
-      const params: GetCardsQueryParams = {
+      const params: PaginationQueryParams = {
         page: 1,
         size: activeTab === 'subscription' ? 12 : 6,
-        sort: 'newest'
+        sort: 'newest',
       };
 
-      const response = await getCards(params);
+      const fetchCards = activeTab === 'subscription' ? getFollowingCards : getCards;
+      const response = await fetchCards(params);
 
       if (response.isSuccess && response.result) {
         setCards(response.result.cards);
+      } else {
+        setCards([]);
       }
     } catch {
-      // keep empty
+      setCards([]);
     } finally {
       setCardsLoading(false);
     }
   }, [activeTab]);
 
   useEffect(() => {
-    loadPosts(1, true);
-  }, [loadPosts]);
+    setCurrentPage(1);
+    setHasMore(true);
+    void loadPosts(1, true);
+  }, [activeTab, loadPosts]);
 
   useEffect(() => {
-    loadCards();
+    void loadCards();
   }, [loadCards]);
 
   useEffect(() => {
     if (currentPage > 1 && hasMore) {
-      loadMorePosts();
+      void loadPosts(currentPage, false);
     }
-  }, [currentPage, hasMore, loadMorePosts]);
+  }, [currentPage, hasMore, loadPosts]);
 
   const handleProfileClick = () => {
     navigate('/my-page');
   };
 
   const handleMoreCardsClick = () => {
-    navigate('/community/reading-cards');
+    navigate(PATH.COMMUNITY_READING_CARDS, {
+      state: { feed: activeTab === 'subscription' ? 'following' : 'all' },
+    });
   };
 
   const handlePostClick = (postId: number, post: Post) => {
@@ -177,11 +190,11 @@ function CommunityPage() {
   };
 
   const renderPostsList = () => {
-    if (isLoading && posts.length === 0) {
+    if (showPostsLoading) {
       return (
         <div className="community-posts-loading">
           <SkeletonList count={2}>
-            <SkeletonCard />
+            <SkeletonCommunityPost />
           </SkeletonList>
         </div>
       );
@@ -207,8 +220,8 @@ function CommunityPage() {
 
         {!isLoading && posts.length === 0 && !error && (
           <div className="community-no-posts">
-            <p>아직 게시글이 없습니다.</p>
-            <p>첫 번째 게시글을 작성해보세요!</p>
+            <p>{activeTab === 'subscription' ? '구독 중인 친구의 게시글이 없어요' : '아직 게시글이 없습니다.'}</p>
+            {activeTab !== 'subscription' && <p>첫 번째 게시글을 작성해보세요!</p>}
           </div>
         )}
       </div>
@@ -265,11 +278,11 @@ function CommunityPage() {
                 </button>
               </div>
 
-              {cardsLoading ? (
+              {showCardsLoading ? (
                 <div className="friends-cards-loading">
-                  <SkeletonList count={4}>
-                    <SkeletonCard />
-                  </SkeletonList>
+                  <SkeletonHorizontalRow count={4}>
+                    <SkeletonFriendsCard />
+                  </SkeletonHorizontalRow>
                 </div>
               ) : (
                 <div className="friends-cards-scroll">
@@ -294,7 +307,7 @@ function CommunityPage() {
                     Array.from({ length: 4 }).map((_, i) => (
                       <div key={`empty-${i}`} className="friends-card-item friends-card-item--empty">
                         <div className="friends-card-thumb" />
-                        <p className="friends-card-excerpt">독서카드가 없습니다</p>
+                        <p className="friends-card-excerpt"></p>
                       </div>
                     ))
                   )}
@@ -311,11 +324,9 @@ function CommunityPage() {
             <section className="reading-cards-section">
               <h2 className="reading-cards-section-title">독서카드</h2>
 
-              {cardsLoading ? (
+              {showCardsLoading ? (
                 <div className="cards-loading">
-                  <SkeletonList count={6}>
-                    <SkeletonCard />
-                  </SkeletonList>
+                  <SkeletonCommunityCardsGrid count={6} />
                 </div>
               ) : (
                 <>

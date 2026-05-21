@@ -158,6 +158,18 @@
   margin-top: 8px;
 }
 
+.friends-cards-loading {
+  min-height: 130px;
+}
+
+.cards-loading {
+  min-height: 360px;
+}
+
+.community-posts-loading {
+  min-height: 480px;
+}
+
 /* 추천 — 독서카드 그리드 */
 .reading-cards-section {
   display: flex;
@@ -278,6 +290,10 @@
   align-items: center;
   gap: 8px;
   padding: 14px 0;
+}
+
+.community-post-header--clickable {
+  cursor: pointer;
 }
 
 .community-post-avatar {

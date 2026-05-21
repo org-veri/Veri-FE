@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './CommunityPostEditModal.css';
-import { updatePost } from '../api/communityApi';
-import { uploadImageAndGetUrl } from '../api/cardApi';
+import { updatePost } from '../api/community/postApi';
+import { uploadImageAndGetUrl } from '../api/cards/cardApi';
 import { FiUpload, FiX, FiTrash2 } from 'react-icons/fi';
 
 interface CommunityPostEditModalProps {

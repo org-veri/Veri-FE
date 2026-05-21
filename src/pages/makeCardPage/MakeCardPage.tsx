@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import GalleryIcon from '../../assets/icons/gallery.svg';
 import CameraIcon from '../../assets/icons/camera.svg';
 
-import { uploadImage } from '../../api/imageApi';
+import { uploadImage } from '../../api/images/imageApi';
 import Toast from '../../components/Toast';
 
 import './MakeCardPage.css';

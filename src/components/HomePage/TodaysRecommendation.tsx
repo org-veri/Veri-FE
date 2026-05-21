@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getPopularBooks, type PopularBookItem, type GetPopularBooksQueryParams } from '../../api/bookApi';
+import { getPopularBooks, type PopularBookItem } from '../../api/explore/exploreApi';
 import { SectionErrorBanner } from '../SectionErrorBanner';
-
+import { SkeletonHorizontalRow, SkeletonBookItem } from '../SkeletonUI';
 interface RecommendedBookType {
   title: string;
   imageUrl: string;
@@ -68,13 +68,9 @@ const TodaysRecommendationSection: React.FC = () => {
       setError(null);
 
       try {
-        const queryParams: GetPopularBooksQueryParams = {
-          page: 1,
-          size: 5,
-        };
-        const response = await getPopularBooks(queryParams);
+        const response = await getPopularBooks(1, 5);
 
-        if (response.isSuccess && response.result && response.result.books) {
+        if (response.isSuccess && response.result?.books) {
           const mappedBooks: RecommendedBookType[] = response.result.books.map((book: PopularBookItem) => ({
             title: book.title,
             imageUrl: book.image,
@@ -135,9 +131,10 @@ const TodaysRecommendationSection: React.FC = () => {
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
         >
-          <p className="loading-message">오늘의 추천 데이터를 불러오는 중...</p>
-        </div>
-      </section>
+          <SkeletonHorizontalRow count={4}>
+            <SkeletonBookItem />
+          </SkeletonHorizontalRow>
+        </div>      </section>
     );
   }
 

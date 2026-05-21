@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './CardCustomizationCompletePage.css';
-import { createCard, uploadImageAndGetUrl } from '../../api/cardApi';
-import { getBookById, type GetBookByIdResponse } from '../../api/bookApi';
+import { createCard, uploadImageAndGetUrl } from '../../api/cards/cardApi';
+import { getBookById, type GetBookByIdResponse } from '../../api/bookshelf/bookshelfApi';
 import Toast from '../../components/Toast';
 import { FullPageErrorState } from '../../components/FullPageErrorState';
 import { SectionErrorBanner } from '../../components/SectionErrorBanner';

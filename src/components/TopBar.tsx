@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './TopBar.css';
 import profileIcon from '../assets/icons/TopBar/profile.svg';
 import unionIcon from '../assets/icons/TopBar/union_fill.svg';
-import { getMemberProfile } from '../api/memberApi';
+import { getMemberProfile } from '../api/member/memberApi';
 
 interface TopBarProps {
   showProfile?: boolean;

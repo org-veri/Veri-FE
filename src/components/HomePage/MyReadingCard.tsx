@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MyReadingCard.css';
 import { SectionErrorBanner } from '../SectionErrorBanner';
-import { getMyCards, type MyCardItem, type GetMyCardsQueryParams } from '../../api/cardApi';
+import { SkeletonHorizontalRow, SkeletonHomeReadingCard } from '../SkeletonUI';
+import { getMyCards, type MyCardItem, type GetMyCardsQueryParams } from '../../api/cards/cardApi';
 
 interface ReadingCardItemType {
   id: string;
@@ -133,7 +134,9 @@ const MyReadingCardSection: React.FC = () => {
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
         >
-          <p className="loadingMessage">독서 카드를 불러오는 중...</p>
+          <SkeletonHorizontalRow count={4}>
+            <SkeletonHomeReadingCard />
+          </SkeletonHorizontalRow>
         </div>
       </section>
     );

@@ -1,7 +1,5 @@
 .post-like-list-panel {
   width: 100%;
-  max-width: 390px;
-  margin: 0 auto;
   box-sizing: border-box;
   padding: 0 20px 24px;
   display: flex;
@@ -16,6 +14,12 @@
   align-items: center;
   gap: 4px;
   font-family: Pretendard, system-ui, sans-serif;
+}
+
+.post-like-list-panel__count-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .post-like-list-panel__heart-wrap {
@@ -95,6 +99,16 @@
   flex: 1;
 }
 
+.post-like-list-panel__user--clickable {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
 .post-like-list-panel__avatar {
   width: 32px;
   height: 32px;
@@ -150,4 +164,10 @@
 .post-like-list-panel__pill--mutual {
   background: #f3f4f5;
   color: #303336;
+  cursor: default;
+}
+
+.post-like-list-panel__pill:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }

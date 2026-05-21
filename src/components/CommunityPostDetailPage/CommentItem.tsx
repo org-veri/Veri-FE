@@ -1,4 +1,6 @@
-import type { Comment } from '../../api/communityApi';
+import type { Comment } from '../../api/types/community';
+import { useNavigate } from 'react-router-dom';
+import { navigateToMemberProfile } from '../../utils/navigateToMemberProfile';
 import './CommentItem.css';
 
 interface CommentItemProps {
@@ -40,6 +42,14 @@ function CommentItem({
   onSubmitReply,
   onCancelReply
 }: CommentItemProps) {
+  const navigate = useNavigate();
+
+  const handleAuthorClick = () => {
+    if (comment.author?.id) {
+      navigateToMemberProfile(navigate, comment.author.id);
+    }
+  };
+
   return (
     <div className="comment-item-container">
       {isReply && (
@@ -54,16 +64,22 @@ function CommentItem({
             <div className="comment-author-info">
               {comment.author && (
                 <>
-                  <div className="comment-author-avatar">
-                    <img
-                      src={comment.author.profileImageUrl}
-                      alt={comment.author.nickname}
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/profileSample/sample_user.png';
-                      }}
-                    />
-                  </div>
-                  <div className="comment-author">{comment.author.nickname}</div>
+                  <button
+                    type="button"
+                    className="comment-author-profile-btn"
+                    onClick={handleAuthorClick}
+                  >
+                    <div className="comment-author-avatar">
+                      <img
+                        src={comment.author.profileImageUrl}
+                        alt={comment.author.nickname}
+                        onError={(e) => {
+                          e.currentTarget.src = '/images/profileSample/sample_user.png';
+                        }}
+                      />
+                    </div>
+                    <div className="comment-author">{comment.author.nickname}</div>
+                  </button>
                 </>
               )}
               {comment.isDeleted && (

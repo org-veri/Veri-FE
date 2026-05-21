@@ -7,8 +7,8 @@ import { AiOutlineClose } from 'react-icons/ai';
 import '../styles/components/search.css';
 import '../styles/components/book-list.css';
 import './BookSearchPage.css';
-import type { BookItem, BookSearchResponseResult } from '../api/bookSearchApi';
-import { searchBooks } from '../api/bookSearchApi';
+import type { BookItem, BookSearchResponseResult } from '../api/bookshelf/bookSearchApi';
+import { searchBooks } from '../api/bookshelf/bookSearchApi';
 
 const BookSearchPage: React.FC = () => {
     const navigate = useNavigate();

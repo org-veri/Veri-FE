@@ -56,6 +56,16 @@
   gap: 8px;
 }
 
+.card-user--clickable {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
 .user-avatar {
   width: 24px;
   height: 24px;
@@ -182,7 +192,7 @@
 }
 
 .retry-button:hover {
-  background-  color: #c82333;
+  background-color: #c82333;
 }
 .no-cards {
   display: flex;

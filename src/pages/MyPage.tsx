@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MyPage.css';
-import { getMemberProfile, type GetMemberProfileResponse, type MemberProfile } from '../api/memberApi';
-import { getMyPosts, type Post } from '../api/communityApi';
+import { getMyPosts } from '../api/community/postApi';
+import type { Post } from '../api/types/community';
+import { getMemberProfile, type GetMemberProfileResponse, type MemberProfile } from '../api/member/memberApi';
 import sampleUser from '../assets/images/profileSample/sample_user.png';
 import { FullPageErrorState } from '../components/FullPageErrorState';
 
