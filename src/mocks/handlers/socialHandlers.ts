@@ -31,7 +31,7 @@ export const socialHandlers = [
     const body = createMockResponse(mockPublicProfile(memberId), 'Mock 타인 프로필 조회 성공');
     return withDelay(body);
   }),
-  http.get('*/api/social/members/:memberId/posts', async ({ request, params }) => {
+  http.get('*/api/social/members/:memberId/posts', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('page') || '1');
     const size = Number(url.searchParams.get('size') || '10');

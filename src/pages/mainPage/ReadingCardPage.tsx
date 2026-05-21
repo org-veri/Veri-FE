@@ -134,10 +134,6 @@ function ReadingCardPage() {
         setActiveTab(tab);
     }, []);
 
-    const handleCreateCardClick = () => {
-        navigate('/make-card');
-    };
-
     const handleSearchClick = () => {
         navigate('/book-search');
     };
